@@ -27,6 +27,27 @@ main(int argc, char *argv[])
 	int stack_size;
 	void *res;
 
+	//The window we'll be rendering to
+	SDL_Window* sdl_window = NULL;
+	//The surface contained by the window
+	SDL_Surface* sdl_screenSurface = NULL;
+	//The image we will load and show on the screen
+	SDL_Surface* sdl_hello_world = NULL;
+	//The window we'll be rendering to
+	SDL_Window* window = NULL;
+	//The surface contained by the window
+	SDL_Surface* screenSurface = NULL;
+	//Initialize SDL
+	if (init_sdl(&sdl_window, &sdl_screenSurface))
+	{
+		//Create window
+		loadMedia(&sdl_hello_world);
+		SDL_BlitSurface( sdl_hello_world, NULL, sdl_screenSurface, NULL );
+		SDL_UpdateWindowSurface( sdl_window );
+		pause();
+		close_sdl(&sdl_window, &sdl_hello_world);
+	}
+
 	/* The "-s" option specifies a stack size for our threads */
 
 	stack_size = -1;

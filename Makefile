@@ -6,7 +6,7 @@
 #    By: dzonda <marvin@le-101.fr>                  +:+   +:    +:    +:+      #
 #                                                  #+#   #+    #+    #+#       #
 #    Created: 2017/11/24 18:33:54 by dzonda       #+#   ##    ##    #+#        #
-#    Updated: 2019/11/19 23:16:06 by gmadec      ###    #+. /#+    ###.fr      #
+#    Updated: 2019/12/08 19:35:35 by gmadec      ###    #+. /#+    ###.fr      #
 #                                                          /                   #
 #                                                         /                    #
 # **************************************************************************** #
@@ -17,7 +17,7 @@ NAME = philo
 
 MAKE = make
 CC = gcc
-CFLAGS = -Wall -Werror -Wextra -Wunused -Wunreachable-code
+CFLAGS = #-Wall -Werror -Wextra -Wunused -Wunreachable-code
 CPPFLAGS = -I ./include/
 LDLIBS = -lft
 LDFLAGS = -Llibft/
@@ -45,7 +45,7 @@ DEL_DSYMFILE = $(shell [ -e a.out.dSYM ] && echo rm -rf a.out.dSYM)
 all: $(NAME)
 
 $(NAME): init lib $(OBJS)
-	@$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LDFLAGS) $(LDLIBS)
+	@$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LDFLAGS) $(LDLIBS) -Fframeworks -framework SDL2 -rpath frameworks
 	@printf "\e[?25h"	# set cursor to visible
 	@tput setaf 10 	# set green color
 	@tput bold
