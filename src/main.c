@@ -1,123 +1,132 @@
 #include "hello.h"
-	static void *
-thread_start(void *arg)
+
+pthread_cond_t condition = PTHREAD_COND_INITIALIZER; /* Création de la condition */
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER; /* Création du mutex */
+
+typedef enum	s_type_philo_struct
 {
-	struct thread_info *tinfo = arg;
-	char *uargv, *p;
+	PHILO,
+	WAND
+}				e_type_philo_struct;
 
-	printf("Thread %d: top of stack near %p; argv_string=%s\n",
-			tinfo->thread_num, &p, tinfo->argv_string);
+typedef enum	s_wand_state
+{
+	MID,
+	LEFT,
+	RIGHT
+}				e_wand_state;
 
-	uargv = strdup(tinfo->argv_string);
-	if (uargv == NULL)
-		handle_error("strdup");
+typedef struct			s_wand
+{
+	e_wand_state		wand_state;
+	pthread_mutex_t		mutex;
+	pthread_cond_t		condition;
+}						t_wand;
 
-	for (p = uargv; *p != '\0'; p++)
-		*p = toupper(*p);
+typedef enum	s_philo_state
+{
+	TO_REST,
+	TO_EAT,
+	TO_THIK
+}				e_philo_state;
 
-	return uargv;
+typedef struct			s_philo
+{
+	char				name[25];
+	e_philo_state		philo_state;
+	pthread_t			thread;
+}						t_philo;
+
+typedef struct				s_philo_heart
+{
+	void					*data;
+	e_type_philo_struct		type;
+	char					test[100];
+	struct s_philo_heart	*next;
+	struct s_philo_heart	*prev;
+}							t_philo_heart;
+
+void	*ft_philo(void *arg)
+{
+/*	t_philo_heart	philo_heart;
+
+	//ft_init_struct(*(t_philo_heart*)arg);
+	philo_heart = *(t_philo_heart*)arg;
+	ft_strcpy(philo_heart[0].test, "Bonjour les amis");
+	ft_printf("%s\n", philo_heart[0].test);
+	*/
+	return (NULL);
 }
 
-	int
-main(int argc, char *argv[])
+void	ft_create_thread(t_philo_heart **philo_heart, char *str)
 {
-	int s, tnum, opt, num_threads;
-	struct thread_info *tinfo;
-	pthread_attr_t attr;
-	int stack_size;
-	void *res;
+	pthread_t		thread;
+	t_philo_heart	*new_philo_heart;
+	t_philo_heart	*new_next_philo_heart;
+	t_wand			wand;
+	t_philo			philo;
 
-	//The window we'll be rendering to
-	SDL_Window* sdl_window = NULL;
-	//The surface contained by the window
-	SDL_Surface* sdl_screenSurface = NULL;
-	//The image we will load and show on the screen
-	SDL_Surface* sdl_hello_world = NULL;
-	//The window we'll be rendering to
-	SDL_Window* window = NULL;
-	//The surface contained by the window
-	SDL_Surface* screenSurface = NULL;
-	//Initialize SDL
-	if (init_sdl(&sdl_window, &sdl_screenSurface))
+	pthread_create (&thread, NULL, ft_philo, *philo_heart);
+	new_philo_heart = ft_memalloc(sizeof(t_philo_heart));
+	new_philo_heart->type = WAND;
+	wand.condition = (pthread_cond_t){0};
+	ft_strcpy(philo.name, str);
+	philo.thread = thread;
+	new_next_philo_heart = ft_memalloc(sizeof(t_philo_heart));
+	new_next_philo_heart->prev = new_philo_heart;
+	new_philo_heart->next = new_next_philo_heart;
+	new_next_philo_heart->data = &philo;
+	//wand.condition = PTHREAD_COND_INITIALIZER;
+	//wand.mutex = PTHREAD_MUTEX_INITIALIZER;
+	new_philo_heart->data = &wand;
+	new_next_philo_heart->data = &philo;
+	if (!*philo_heart)
 	{
-		//Create window
-		loadMedia(&sdl_hello_world);
-		SDL_BlitSurface( sdl_hello_world, NULL, sdl_screenSurface, NULL );
-		SDL_UpdateWindowSurface( sdl_window );
-		pause();
-		close_sdl(&sdl_window, &sdl_hello_world);
+		*philo_heart = new_philo_heart;
+	}
+	else
+	{
+		new_next_philo_heart->next = *philo_heart;
+		new_philo_heart->prev = (*philo_heart)->prev;
+		(*philo_heart)->prev = new_next_philo_heart;
+		(*philo_heart)->prev->next = new_philo_heart;
 	}
 
-	/* The "-s" option specifies a stack size for our threads */
+}
 
-	stack_size = -1;
-	while ((opt = getopt(argc, argv, "s:")) != -1) {
-		switch (opt) {
-			case 's':
-				stack_size = strtoul(optarg, NULL, 0);
-				break;
+int main (void)
+{
+	t_philo_heart	*philo_heart;
+	int				count;
+	char			**philo_name;
+	t_philo			philo;
 
-			default:
-				fprintf(stderr, "Usage: %s [-s stack-size] arg...\n",
-						argv[0]);
-				exit(EXIT_FAILURE);
-		}
+	//printf("%s\n", philo_name[1]);
+	//ft_tabdup((char**)*(&(philo_name)));
+	philo_name = NULL;
+	{printf("bonjour\n");printf("les\n");printf("amis\n");}
+	count = -1;
+	philo_heart = NULL;
+	ft_malloc_cmd(&philo_name, "Platon");
+	ft_malloc_cmd(&philo_name, "Aristote");
+	ft_malloc_cmd(&philo_name, "Héraclite");
+	ft_malloc_cmd(&philo_name, "Epictète");
+	ft_malloc_cmd(&philo_name, "Marc-Aurèle");
+	ft_malloc_cmd(&philo_name, "Sénèque");
+	ft_malloc_cmd(&philo_name, "Socrate");
+	while (++count < NB_PHILO)
+		ft_create_thread(&philo_heart, philo_name[count]);
+	philo_heart = philo_heart->next;
+	printf("[%s]\n", (char*)(*(t_philo*)philo_heart->data).name);
+	philo_heart = philo_heart->next;
+	philo_heart = philo_heart->next;
+	printf("[%s]\n", (char*)(*(t_philo*)philo_heart->data).name);
+	//printf("%s\n", philo.name);
+
+	while (--count > 0)
+	{
+		//pthread_join (platon, NULL);
 	}
 
-	num_threads = argc - optind;
-
-	/* Initialize thread creation attributes */
-
-	s = pthread_attr_init(&attr);
-	if (s != 0)
-		handle_error_en(s, "pthread_attr_init");
-
-	if (stack_size > 0) {
-		s = pthread_attr_setstacksize(&attr, stack_size);
-		if (s != 0)
-			handle_error_en(s, "pthread_attr_setstacksize");
-	}
-
-	/* Allocate memory for pthread_create() arguments */
-
-	tinfo = calloc(num_threads, sizeof(struct thread_info));
-	if (tinfo == NULL)
-		handle_error("calloc");
-
-	/* Create one thread for each command-line argument */
-
-	for (tnum = 0; tnum < num_threads; tnum++) {
-		tinfo[tnum].thread_num = tnum + 1;
-		tinfo[tnum].argv_string = argv[optind + tnum];
-
-		/* The pthread_create() call stores the thread ID into
-		 *                   corresponding element of tinfo[] */
-
-		s = pthread_create(&tinfo[tnum].thread_id, &attr,
-				&thread_start, &tinfo[tnum]);
-		if (s != 0)
-			handle_error_en(s, "pthread_create");
-	}
-
-	/* Destroy the thread attributes object, since it is no
-	 *               longer needed */
-
-	s = pthread_attr_destroy(&attr);
-	if (s != 0)
-		handle_error_en(s, "pthread_attr_destroy");
-
-	/* Now join with each thread, and display its returned value */
-
-	for (tnum = 0; tnum < num_threads; tnum++) {
-		s = pthread_join(tinfo[tnum].thread_id, &res);
-		if (s != 0)
-			handle_error_en(s, "pthread_join");
-
-		printf("Joined with thread %d; returned value was %s\n",
-				tinfo[tnum].thread_num, (char *) res);
-		free(res);      /* Free memory allocated by thread */
-	}
-
-	free(tinfo);
-	exit(EXIT_SUCCESS);
+	return 0;
 }

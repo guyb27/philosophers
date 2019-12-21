@@ -31,6 +31,8 @@ struct thread_info {    /* Used as argument to thread_start() */
 #define THINK_T 100
 #define TIMEOUT 100
 
+#define NB_PHILO 7
+
 typedef enum		e_state
 {
 	REST,

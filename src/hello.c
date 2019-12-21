@@ -33,7 +33,7 @@ bool init_sdl(SDL_Window **sdl_window, SDL_Surface **sdl_screenSurface)
 	else
 	{
 		//                                                    //Create window
-		*sdl_window = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );
+		*sdl_window = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN_DESKTOP | SDL_WINDOW_BORDERLESS);
 		if( sdl_window == NULL )
 		{
 			printf( "Window could not be created! SDL_Error: %s\n", SDL_GetError() );
@@ -55,7 +55,7 @@ bool loadMedia(SDL_Surface **sdl_hello_world)
 	bool success = true;
 
 	//Load splash image
-	*sdl_hello_world = SDL_LoadBMP( "/Users/gmadec/nm-otools/assets/pictures/lac_en_montagne.bmp" );
+	*sdl_hello_world = SDL_LoadBMP( "/Users/gmadec/philosophers/assets/pictures/lac_en_montagne.bmp" );
 	if( *sdl_hello_world == NULL )
 	{
 		printf( "Unable to load image %s! SDL Error: %s\n", "../assets/pictures/lac_en_montagne.bmp", SDL_GetError() );
