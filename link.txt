@@ -1,1 +1,4 @@
 https://gl.developpez.com/tutoriel/outil/makefile/
+
+
+https://mtodorovic.developpez.com/linux/programmation-avancee/?page=page_4
