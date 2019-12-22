@@ -6,7 +6,7 @@
 #    By: dzonda <marvin@le-101.fr>                  +:+   +:    +:    +:+      #
 #                                                  #+#   #+    #+    #+#       #
 #    Created: 2017/11/24 18:33:54 by dzonda       #+#   ##    ##    #+#        #
-#    Updated: 2019/12/21 09:47:33 by gmadec      ###    #+. /#+    ###.fr      #
+#    Updated: 2019/12/22 11:09:17 by gmadec      ###    #+. /#+    ###.fr      #
 #                                                          /                   #
 #                                                         /                    #
 # **************************************************************************** #
@@ -45,7 +45,7 @@ DEL_DSYMFILE = $(shell [ -e a.out.dSYM ] && echo rm -rf a.out.dSYM)
 all: $(NAME)
 
 $(NAME): init lib $(OBJS)
-	@$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LDFLAGS) $(LDLIBS) -Fframeworks -framework SDL2 -rpath frameworks
+	@$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LDFLAGS) $(LDLIBS) -Fframeworks -framework SDL2 -rpath frameworks -lpthread -D_REENTRANT
 	@printf "\e[?25h"	# set cursor to visible
 	@tput setaf 10 	# set green color
 	@tput bold

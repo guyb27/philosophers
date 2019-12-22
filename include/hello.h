@@ -1,4 +1,3 @@
-
 #ifndef H_GL_HELLO
 #define H_GL_HELLO
 # include "../libft/include/libft.h"
@@ -19,12 +18,6 @@
 #define handle_error(msg) \
 	do { perror(msg); exit(EXIT_FAILURE); } while (0)
 
-struct thread_info {    /* Used as argument to thread_start() */
-	pthread_t thread_id;        /* ID returned by pthread_create() */
-	int       thread_num;       /* Application-defined thread # */
-	char     *argv_string;      /* From command-line argument */
-};
-
 #define MAX_LIFE 100
 #define EAT_T 100
 #define REST_T 100
@@ -33,28 +26,54 @@ struct thread_info {    /* Used as argument to thread_start() */
 
 #define NB_PHILO 7
 
-typedef enum		e_state
+typedef enum	s_type_philo_struct
 {
-	REST,
-	EAT,
-	THINK
-}					t_state;
+	PHILO,
+	WAND
+}				e_type_philo_struct;
 
-typedef struct		s_philos
+typedef enum	s_wand_state
 {
-	t_state			state;
-	int				left_spoon;
-	int				right_spoon;
-	int				index_lst;
-	struct s_philo	*next;
-	struct s_philo	*prev;
-	//liste doublement chainee rotative
-}					t_philos;
+	MID,
+	LEFT,
+	RIGHT
+}				e_wand_state;
+
+typedef struct			s_wand
+{
+	e_wand_state		wand_state;
+	pthread_mutex_t		mutex;
+	pthread_cond_t		condition;
+}						t_wand;
+
+typedef enum	s_philo_state
+{
+	TO_REST = 0,
+	TO_EAT = 1,
+	TO_THINK = 2
+}				e_philo_state;
+
+typedef struct			s_philo
+{
+	char				name[25];
+	size_t				life;
+	size_t				time;
+	e_philo_state		state;
+	pthread_t			thread;
+}						t_philo;
+
+typedef struct				s_philo_heart
+{
+	void					*data;
+	e_type_philo_struct		type;
+	struct s_philo_heart	*next;
+	struct s_philo_heart	*prev;
+}							t_philo_heart;
 
 void Hello(void);
 
-bool init_sdl(SDL_Window **sdl_window, SDL_Surface **sdl_screenSurface);
-bool loadMedia(SDL_Surface **sdl_hello_world);
-void close_sdl(SDL_Window **sdl_window, SDL_Surface **sdl_hello_world);
+//bool init_sdl(SDL_Window **sdl_window, SDL_Surface **sdl_screenSurface);
+//bool loadMedia(SDL_Surface **sdl_hello_world);
+//void close_sdl(SDL_Window **sdl_window, SDL_Surface **sdl_hello_world);
 
 #endif
