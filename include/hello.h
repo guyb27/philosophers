@@ -19,10 +19,10 @@
 	do { perror(msg); exit(EXIT_FAILURE); } while (0)
 
 #define MAX_LIFE 100
-#define EAT_T 100
-#define REST_T 100
-#define THINK_T 100
-#define TIMEOUT 100
+#define EAT_T 5
+#define REST_T 10
+#define THINK_T 10
+#define TIMEOUT 10
 
 #define NB_PHILO 7
 

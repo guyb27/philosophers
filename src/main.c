@@ -15,14 +15,13 @@ char **ft_get_philo_name(void)
 	return (ret);
 }
 
-int		ft_can_you_do_eat(t_wand *left, t_wand *right)
+int		ft_can_you_do_eat(t_wand *left, t_wand *right, char *name)
 {
 	int		ret1;
 	int		ret2;
 
 	ret1 = pthread_mutex_trylock(&left->mutex);
 	ret2 = pthread_mutex_trylock(&right->mutex);
-	ft_printf("ret1: [%d], ret2: [%d]\n", ret1, ret2);
 //EBUSY:16
 ////EINVAL:22
 	return (ret1 + ret2 ? 0 : 1);
@@ -33,35 +32,64 @@ void	*ft_philo(void *arg)
 	t_philo_heart	*philo;
 	pthread_cond_t	condition;
 	pthread_mutex_t	mutex;
+	t_philo			*data;
 
 	philo = (t_philo_heart*)arg;
+	data = philo->data;
 	usleep(1000000 * 1);
 	ft_printf("un philosophe sauvage apparait : [%s]\n", (char*)((t_philo*)philo->data)->name);
 	while ((size_t)((t_philo*)philo->data)->life)
 	{
 		if ((e_philo_state)((t_philo*)philo->data)->state == TO_REST)
 		{
-			if (ft_can_you_do_eat(philo->prev->data, philo->next->data))
+			if (ft_can_you_do_eat(philo->prev->data, philo->next->data, (char*)((t_philo*)philo->data)->name))
 			{
-				int ret = 0;
-				ft_printf("0INIT: [%d]\n", ret);
-				ret = pthread_mutex_lock(&((t_wand*)philo->prev->data)->mutex);
-				ft_printf("1INIT: [%d]\n", ret);
-				ret =pthread_mutex_lock(&((t_wand*)philo->next->data)->mutex);
-				ft_printf("2INIT: [%d]\n", ret);
-				ret = pthread_mutex_unlock(&((t_wand*)philo->prev->data)->mutex);
-				ft_printf("3INIT: [%d]\n", ret);
-				ret = pthread_mutex_unlock(&((t_wand*)philo->next->data)->mutex);
-				ft_printf("4INIT: [%d]\n", ret);
+				ft_printf("0[%s] mange\n", (char*)((t_philo*)philo->data)->name);
+				data->state = TO_EAT;
+				data->life = MAX_LIFE;
+				usleep(1000000 * EAT_T);
+				pthread_mutex_unlock(&((t_wand*)philo->prev->data)->mutex);
+				pthread_mutex_unlock(&((t_wand*)philo->next->data)->mutex);
+				ft_printf("1[%s] mange\n", (char*)((t_philo*)philo->data)->name);
+			}
+			else
+			{
+				ft_printf("0[%s] pense\n", (char*)((t_philo*)philo->data)->name);
+				data->state = TO_THINK;
+				usleep(1000000 * THINK_T);
+				ft_printf("1[%s] pense\n", (char*)((t_philo*)philo->data)->name);
+				//Prend une baguette qui peut etre prise par un philosophe qui veut manger
 			}
 			//PEUT SOIT MANGER SOIT REFLECHIR, MAIS MANGER EST UNE PRIORITE
 		}
 		else if ((e_philo_state)((t_philo*)philo->data)->state == TO_EAT)
 		{
+			ft_printf("0[%s] se repose\n", (char*)((t_philo*)philo->data)->name);
+			data->state = TO_REST;
+			usleep(1000000 * REST_T);
+			ft_printf("1[%s] se repose\n", (char*)((t_philo*)philo->data)->name);
 			//PASSE EN REPOS
 		}
 		else if ((e_philo_state)((t_philo*)philo->data)->state == TO_THINK)
 		{
+			if (ft_can_you_do_eat(philo->prev->data, philo->next->data, (char*)((t_philo*)philo->data)->name))
+			{
+				ft_printf("0[%s] mange\n", (char*)((t_philo*)philo->data)->name);
+				data->state = TO_EAT;
+				data->life = MAX_LIFE;
+				usleep(1000000 * EAT_T);
+				pthread_mutex_unlock(&((t_wand*)philo->prev->data)->mutex);
+				pthread_mutex_unlock(&((t_wand*)philo->next->data)->mutex);
+				ft_printf("1[%s] mange\n", (char*)((t_philo*)philo->data)->name);
+			}
+			else
+			{
+				ft_printf("0[%s] pense\n", (char*)((t_philo*)philo->data)->name);
+				data->state = TO_THINK;
+				usleep(1000000 * THINK_T);
+				ft_printf("1[%s] pense\n", (char*)((t_philo*)philo->data)->name);
+				//Prend une baguette qui peut etre prise par un philosophe qui veut manger
+			}
 			//PEUT SOIT MANGER SOIT REFLECHIR, MAIS MANGER EST UNE PRIORITE
 		}
 
