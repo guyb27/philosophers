@@ -3,10 +3,10 @@
 #                                                               /              #
 #    Makefile                                         .::    .:/ .      .::    #
 #                                                  +:+:+   +:    +:  +:+:+     #
-#    By: dzonda <marvin@le-101.fr>                  +:+   +:    +:    +:+      #
+#    By: dzonda <dzonda@student.le-101.fr>          +:+   +:    +:    +:+      #
 #                                                  #+#   #+    #+    #+#       #
 #    Created: 2017/11/24 18:33:54 by dzonda       #+#   ##    ##    #+#        #
-#    Updated: 2019/12/22 11:09:17 by gmadec      ###    #+. /#+    ###.fr      #
+#    Updated: 2019/12/23 13:54:09 by dzonda      ###    #+. /#+    ###.fr      #
 #                                                          /                   #
 #                                                         /                    #
 # **************************************************************************** #
@@ -30,7 +30,9 @@ LIB_PATH = ./libft/
 
 SRCS_NAME =	\
 			hello.c \
-			main.c
+			main.c \
+			gui.c \
+			gui_utils.c
 
 OBJS_NAME = $(SRCS_NAME:.c=.o)
 

@@ -151,6 +151,7 @@ int main (void)
 	char			**philo_name;
 	t_philo			philo;
 
+	ft_philo_sdl();
 	philo_name = ft_get_philo_name();
 	int i = -1;
 	while (++i < 2) {printf("bonjour\n");printf("les\n");printf("amis\n");}
