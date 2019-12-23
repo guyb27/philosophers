@@ -70,10 +70,32 @@ typedef struct				s_philo_heart
 	struct s_philo_heart	*prev;
 }							t_philo_heart;
 
+typedef struct 				s_philo_gui
+{
+	SDL_Window		*sdl_window;
+	SDL_Surface		*sdl_screen_surface;
+	SDL_Surface 	*sdl_hello_world;
+	SDL_Window		*window;
+	SDL_Surface 	*screen_surface;
+}							t_philo_gui;
+
 void Hello(void);
 
-//bool init_sdl(SDL_Window **sdl_window, SDL_Surface **sdl_screenSurface);
-//bool loadMedia(SDL_Surface **sdl_hello_world);
-//void close_sdl(SDL_Window **sdl_window, SDL_Surface **sdl_hello_world);
+
+
+/*
+ *	gui.c
+ */
+
+int 	ft_philo_sdl(void);
+bool 	ft_philo_sdl_error(const char *info, const char *err);
+
+/*
+ *	gui_utils.c
+ */
+
+bool    ft_philo_sdl_init(t_philo_gui *philo_gui);
+bool    ft_philo_sdl_load_media(t_philo_gui *philo_gui);
+void    ft_philo_sdl_close(t_philo_gui *philo_gui);
 
 #endif
