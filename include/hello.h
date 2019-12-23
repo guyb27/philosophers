@@ -22,7 +22,7 @@
 #define EAT_T 5
 #define REST_T 10
 #define THINK_T 10
-#define TIMEOUT 10
+#define TIMEOUT 32
 
 #define NB_PHILO 7
 
