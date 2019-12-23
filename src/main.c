@@ -22,8 +22,6 @@ int		ft_can_you_do_eat(t_wand *left, t_wand *right)
 
 	ret1 = pthread_mutex_trylock(&left->mutex);
 	ret2 = pthread_mutex_trylock(&right->mutex);
-	//EBUSY:16
-	////EINVAL:22
 	return (ret1 + ret2 ? 0 : 1);
 }
 
