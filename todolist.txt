@@ -1,0 +1,3 @@
+_Recuperer le retour d'un thread sous forme d'int pour savoir si les philosophes ont echoues ou si ils ont reussis
+_des qu un thread quit, faire en sorte qu ils quitent tous
+_gerer la gestion des baguettes avec les mutex pour que les philosophes qui pensent, puissent se faire prendre leur baguette pqr quelqu'un qui peut manger

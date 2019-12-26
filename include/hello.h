@@ -18,11 +18,11 @@
 #define handle_error(msg) \
 	do { perror(msg); exit(EXIT_FAILURE); } while (0)
 
-#define MAX_LIFE 100
+#define MAX_LIFE 10
 #define EAT_T 5
-#define REST_T 10
-#define THINK_T 10
-#define TIMEOUT 32
+#define REST_T 1
+#define THINK_T 1
+#define TIMEOUT 100
 
 #define NB_PHILO 7
 
@@ -75,5 +75,6 @@ void Hello(void);
 //bool init_sdl(SDL_Window **sdl_window, SDL_Surface **sdl_screenSurface);
 //bool loadMedia(SDL_Surface **sdl_hello_world);
 //void close_sdl(SDL_Window **sdl_window, SDL_Surface **sdl_hello_world);
+int ft_philo_sdl(void);
 
 #endif

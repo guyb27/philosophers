@@ -1,80 +1,103 @@
-#include "hello.h"
+# include "hello.h"
 
-void hello(void)
+typedef struct 				s_philo_gui
 {
-	ft_printf("Hello World\n");
+	SDL_Window		*sdl_window;
+	SDL_Surface		*sdl_screen_surface;
+	SDL_Surface 	*sdl_hello_world;
+	SDL_Window		*window;
+	SDL_Surface 	*screen_surface;
+}							t_philo_gui;
+
+bool ft_philo_sdl_error(const char *info, const char *err)
+{
+    printf("%s: %s", info, err);
+    return (EXIT_FAILURE);
 }
-					
 
-//Screen dimension constants
-const int SCREEN_WIDTH = 640;
-const int SCREEN_HEIGHT = 480;
-/*
-//The window we'll be rendering to
-SDL_Window* gWindow = NULL;
-//    
-//    //The surface contained by the window
-SDL_Surface* gScreenSurface = NULL;
-//
-//    //The image we will load and show on the screen
-SDL_Surface* gHelloWorld = NULL;
-*/
-bool init_sdl(SDL_Window **sdl_window, SDL_Surface **sdl_screenSurface)
+bool    ft_philo_sdl_init(t_philo_gui *philo_gui)
 {
-	//Initialization flag
-	bool success = true;
+    const int SCREEN_WIDTH = 640;
+    const int SCREEN_HEIGHT = 480;
 
-	//Initialize SDL
+    //Initialize SDL
 	if( SDL_Init( SDL_INIT_VIDEO ) < 0 )
-	{
-		printf( "SDL could not initialize! SDL_Error: %s\n", SDL_GetError() );
-		success = false;
-	}
-	else
-	{
-		//                                                    //Create window
-		*sdl_window = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN_DESKTOP | SDL_WINDOW_BORDERLESS);
-		if( sdl_window == NULL )
-		{
-			printf( "Window could not be created! SDL_Error: %s\n", SDL_GetError() );
-			success = false;
-		}
-		else
-		{
-			//Get window surface
-			*sdl_screenSurface = SDL_GetWindowSurface( *sdl_window );
-		}
-	}
+        return (ft_philo_sdl_error("SDL failed initialize", SDL_GetError()));
 
-	return success;
+    //Create window
+    philo_gui->sdl_window = SDL_CreateWindow( "Le diner des philosophes", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_FULLSCREEN_DESKTOP );
+
+    if( philo_gui->sdl_window == NULL )
+        return (ft_philo_sdl_error("SDL failed create window", SDL_GetError()));
+
+    //Get window surface
+    philo_gui->sdl_screen_surface= SDL_GetWindowSurface( philo_gui->sdl_window );
+
+    return (EXIT_SUCCESS);
 }
 
-bool loadMedia(SDL_Surface **sdl_hello_world)
+bool    ft_philo_sdl_load_media(t_philo_gui *philo_gui)
 {
 	//Loading success flag
 	bool success = true;
 
 	//Load splash image
-	*sdl_hello_world = SDL_LoadBMP( "/Users/gmadec/philosophers/assets/pictures/lac_en_montagne.bmp" );
-	if( *sdl_hello_world == NULL )
-	{
-		printf( "Unable to load image %s! SDL Error: %s\n", "../assets/pictures/lac_en_montagne.bmp", SDL_GetError() );
-		success = false;
-	}
-
-	return success;
+	philo_gui->sdl_hello_world = SDL_LoadBMP( "/Users/guillaumemadec/philosophers/assets/pictures/philo.bmp");
+	if(philo_gui->sdl_hello_world == NULL)
+        return (ft_philo_sdl_error("SDL failed to load image", SDL_GetError()));
+	return (EXIT_SUCCESS);
 }
 
-void close_sdl(SDL_Window **sdl_window, SDL_Surface **sdl_hello_world)
+void    ft_philo_sdl_close(t_philo_gui *philo_gui)
 {
-	//Deallocate surface
-	SDL_FreeSurface( *sdl_hello_world );
-	*sdl_hello_world = NULL;
+    //Deallocate surface
+	SDL_FreeSurface(philo_gui->sdl_hello_world);
+	philo_gui->sdl_hello_world = NULL;
 
-	//            //Destroy window
-	SDL_DestroyWindow( *sdl_window );
-	*sdl_window = NULL;
+	//Destroy window
+	SDL_DestroyWindow(philo_gui->sdl_window);
+	philo_gui->sdl_window = NULL;
 
-	//                        //Quit SDL subsystems
+	//Quit SDL subsystems
 	SDL_Quit();
+}
+
+int ft_philo_sdl(void)
+{
+    t_philo_gui     philo_gui;
+
+    ft_memset(&philo_gui, 0, sizeof(philo_gui));
+
+	//Initialize SDL
+	if (ft_philo_sdl_init(&philo_gui) == EXIT_FAILURE)
+        return (ft_philo_sdl_error("SDL failed initialize", "ft_philo_sdl_init returned EXIT_FAILURE"));
+    //Create window
+    if (ft_philo_sdl_load_media(&philo_gui) == EXIT_FAILURE)
+    {
+        ft_philo_sdl_close(&philo_gui);
+        return (ft_philo_sdl_error("SDL failed load media", "ft_philo_sdl_load_media returned EXIT_FAILURE"));
+    }
+
+    //Main loop flag
+    bool quit = false;
+
+    //Event handler
+    SDL_Event e;
+    while( !quit )
+    {
+        //Handle events on queue
+        while(SDL_PollEvent( &e ) != 0)
+        {
+            //User requests quit
+            if(e.type == SDL_QUIT || e.type == SDL_KEYDOWN)
+            {
+                quit = true;
+            }
+        }  
+        SDL_BlitSurface( philo_gui.sdl_hello_world, NULL, philo_gui.sdl_screen_surface, NULL );
+        SDL_UpdateWindowSurface( philo_gui.sdl_window );
+    }
+
+    ft_philo_sdl_close(&philo_gui);
+    return (0);
 }
