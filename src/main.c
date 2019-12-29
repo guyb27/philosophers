@@ -20,8 +20,8 @@ int		ft_can_you_do_eat(t_wand *left, t_wand *right)
 	int		ret;
 	int		ret1;
 
-	ret = pthread_mutex_trylock(&left->mutex);
-	ret1 = pthread_mutex_trylock(&right->mutex);
+	ret = pthread_mutex_lock(&left->mutex);
+	ret1 = pthread_mutex_lock(&right->mutex);
 	ft_printf("C_Y_D_E ret:[%d] ret1:[%d], EBUSY:[%d], EINVAL: [%d]\n", ret, ret1, EBUSY, EINVAL);
 	return (ret + ret1);
 }
@@ -62,7 +62,7 @@ int		ft_waiting(void (*function)(t_philo *philo), t_philo *data)
 int		ft_eat_or_think(t_philo_heart *philo, t_philo	*data)
 {
 	int ret, ret0, ret1;
-	t_wand	*wand;
+//	t_wand	*wand;
 	if (!(ret = ft_can_you_do_eat(philo->prev->data, philo->next->data)))
 	{
 		ft_printf("\033[0;32m0[%s] mange\033[0;m\n", (char*)((t_philo*)philo->data)->name);
@@ -71,10 +71,10 @@ int		ft_eat_or_think(t_philo_heart *philo, t_philo	*data)
 		usleep(1000000 * EAT_T);
 		ret0 = pthread_mutex_unlock(&((t_wand*)philo->prev->data)->mutex);
 		ret1 = pthread_mutex_unlock(&((t_wand*)philo->next->data)->mutex);
-		wand = philo->next->data;
-		wand->condition = (pthread_cond_t)PTHREAD_COND_INITIALIZER;
-		wand = philo->prev->data;
-		wand->mutex = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;//RAPIDE
+//		wand = philo->next->data;
+//		wand->condition = (pthread_cond_t)PTHREAD_COND_INITIALIZER;
+//		wand = philo->prev->data;
+//		wand->mutex = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;//RAPIDE
 		ft_printf("\033[0;32m1[%s] mange 0:[%d] 1:[%d]\033[0;m\n", (char*)((t_philo*)philo->data)->name, ret0, ret1);
 	}
 	else if (ret <= EINVAL)
@@ -91,7 +91,7 @@ int		ft_eat_or_think(t_philo_heart *philo, t_philo	*data)
 	{
 		ft_printf("\033[0;31mWAITING ... RET: [%d] !\033[0;m\n", ret);
 		usleep(1000000);
-		ft_eat_or_think(philo, data);
+		//ft_eat_or_think(philo, data);
 	}
 	return (0);
 }
@@ -99,13 +99,11 @@ int		ft_eat_or_think(t_philo_heart *philo, t_philo	*data)
 void	*ft_philo(void *arg)
 {
 	t_philo_heart	*philo;
-	pthread_cond_t	condition;
-	pthread_mutex_t	mutex;
 	t_philo			*data;
 
 	philo = (t_philo_heart*)arg;
 	data = philo->data;
-	//ft_printf("un philosophe sauvage apparait : [%s]\n", (char*)((t_philo*)philo->data)->name);
+//	ft_printf("un philosophe sauvage apparait : [%s]\n", (char*)((t_philo*)philo->data)->name);
 	while ((size_t)((t_philo*)philo->data)->life)
 	{
 		if ((e_philo_state)((t_philo*)philo->data)->state == TO_REST)
@@ -169,7 +167,7 @@ void	ft_create_wand(t_philo_heart **philo_heart)
 	wand = ft_memalloc(sizeof(t_wand));
 	new_philo_heart->type = WAND;
 	wand->wand_state = MID;
-	wand->condition = (pthread_cond_t)PTHREAD_COND_INITIALIZER;
+//	wand->condition = (pthread_cond_t)PTHREAD_COND_INITIALIZER;
 	wand->mutex = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;//RAPIDE
 	//wand->mutex = (pthread_mutex_t)PTHREAD_ERRORCHECK_MUTEX_INITIALIZER;//VERIF_ERROR
 	new_philo_heart->data = wand;
@@ -235,13 +233,13 @@ int main (void)
 		ft_printf("[%d] [%s]\n", philo_heart->n, philo_heart->type == PHILO ? "PHILO" : "WAND");
 		philo_heart = philo_heart->next;
 	}*/
-	/*while (++count < NB_PHILO * 2)
+	while (++count < NB_PHILO * 2)
 	{
 		
 		if (philo_heart->type == PHILO)
 		pthread_join (((t_philo*)philo_heart->data)->thread, NULL);
 		philo_heart = philo_heart->next;
-	}*/
+	}
 	ft_waiting_to_twerk();
 	return 0;
 }
