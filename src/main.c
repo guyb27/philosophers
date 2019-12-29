@@ -18,22 +18,24 @@ char **ft_get_philo_name(void)
 int		ft_can_you_do_eat(t_wand *left, t_wand *right)
 {
 	int		ret;
+	int		ret1;
 
 	ret = pthread_mutex_trylock(&left->mutex);
-	ret += pthread_mutex_trylock(&right->mutex);
-	return (ret ? 0 : 1);
+	ret1 = pthread_mutex_trylock(&right->mutex);
+	ft_printf("C_Y_D_E ret:[%d] ret1:[%d], EBUSY:[%d], EINVAL: [%d]\n", ret, ret1, EBUSY, EINVAL);
+	return (ret + ret1);
 }
 
 void	ft_rest(t_philo *philo)
 {
 	philo->life--;
-	ft_printf("REPOS [%s]:[%zi]PV--\n", philo->name, philo->life);
+	//ft_printf("REPOS [%s]:[%zi]PV--\n", philo->name, philo->life);
 }
 
 void	ft_think(t_philo *philo)
 {
 	philo->life--;
-	ft_printf("THINK [%s]:[%zi]PV--\n", philo->name, philo->life);
+	//ft_printf("THINK [%s]:[%zi]PV--\n", philo->name, philo->life);
 }
 
 int		ft_waiting(void (*function)(t_philo *philo), t_philo *data)
@@ -49,7 +51,7 @@ int		ft_waiting(void (*function)(t_philo *philo), t_philo *data)
 		function(data);
 		if (data->life <= 0)
 		{
-			printf("%s est MORT !\n", data->name);
+		//	printf("%s est MORT !\n", data->name);
 			return (1);
 		}
 		time( (time_t*)&now_time );
@@ -59,25 +61,37 @@ int		ft_waiting(void (*function)(t_philo *philo), t_philo *data)
 
 int		ft_eat_or_think(t_philo_heart *philo, t_philo	*data)
 {
-	if (ft_can_you_do_eat(philo->prev->data, philo->next->data))
+	int ret, ret0, ret1;
+	t_wand	*wand;
+	if (!(ret = ft_can_you_do_eat(philo->prev->data, philo->next->data)))
 	{
 		ft_printf("\033[0;32m0[%s] mange\033[0;m\n", (char*)((t_philo*)philo->data)->name);
 		data->state = TO_EAT;
 		data->life = MAX_LIFE;
 		usleep(1000000 * EAT_T);
-		pthread_mutex_unlock(&((t_wand*)philo->prev->data)->mutex);
-		pthread_mutex_unlock(&((t_wand*)philo->next->data)->mutex);
-		ft_printf("\033[0;32m1[%s] mange 100% LIFE\033[0;m\n", (char*)((t_philo*)philo->data)->name);
+		ret0 = pthread_mutex_unlock(&((t_wand*)philo->prev->data)->mutex);
+		ret1 = pthread_mutex_unlock(&((t_wand*)philo->next->data)->mutex);
+		wand = philo->next->data;
+		wand->condition = (pthread_cond_t)PTHREAD_COND_INITIALIZER;
+		wand = philo->prev->data;
+		wand->mutex = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;//RAPIDE
+		ft_printf("\033[0;32m1[%s] mange 0:[%d] 1:[%d]\033[0;m\n", (char*)((t_philo*)philo->data)->name, ret0, ret1);
 	}
-	else
+	else if (ret <= EINVAL)
 	{
-		ft_printf("0[%s] pense\n", (char*)((t_philo*)philo->data)->name);
+		//ft_printf("0[%s] pense\n", (char*)((t_philo*)philo->data)->name);
 		data->state = TO_THINK;
 		if (ft_waiting(&ft_think, data))
 			return (1);
-		usleep(1000000 * THINK_T);
-		ft_printf("1[%s] pense\n", (char*)((t_philo*)philo->data)->name);
+		//usleep(1000000 * THINK_T);
+		//ft_printf("1[%s] pense\n", (char*)((t_philo*)philo->data)->name);
 		//A FAIRE:Prend une baguette qui peut etre prise par un philosophe qui veut manger
+	}
+	else
+	{
+		ft_printf("\033[0;31mWAITING ... RET: [%d] !\033[0;m\n", ret);
+		usleep(1000000);
+		ft_eat_or_think(philo, data);
 	}
 	return (0);
 }
@@ -91,7 +105,7 @@ void	*ft_philo(void *arg)
 
 	philo = (t_philo_heart*)arg;
 	data = philo->data;
-	ft_printf("un philosophe sauvage apparait : [%s]\n", (char*)((t_philo*)philo->data)->name);
+	//ft_printf("un philosophe sauvage apparait : [%s]\n", (char*)((t_philo*)philo->data)->name);
 	while ((size_t)((t_philo*)philo->data)->life)
 	{
 		if ((e_philo_state)((t_philo*)philo->data)->state == TO_REST)
@@ -99,12 +113,12 @@ void	*ft_philo(void *arg)
 			ft_eat_or_think(philo, data);
 		else if ((e_philo_state)((t_philo*)philo->data)->state == TO_EAT)
 		{
-			ft_printf("0[%s] se repose\n", (char*)((t_philo*)philo->data)->name);
+			//ft_printf("0[%s] se repose\n", (char*)((t_philo*)philo->data)->name);
 			data->state = TO_REST;
 			if (ft_waiting(&ft_rest, data))
 				return ((void*)1);
 			//usleep(1000000 * REST_T);
-			ft_printf("1[%s] se repose\n", (char*)((t_philo*)philo->data)->name);
+			//ft_printf("1[%s] se repose\n", (char*)((t_philo*)philo->data)->name);
 			//PASSE EN REPOS
 		}
 		else if ((e_philo_state)((t_philo*)philo->data)->state == TO_THINK)
@@ -114,50 +128,67 @@ void	*ft_philo(void *arg)
 	return ((void*)0);
 }
 
-void	ft_add_to_philo_heart(t_philo_heart **philo_heart, t_philo_heart *new)
-{
-	if (!*philo_heart)
-	{
-		*philo_heart = new;
-		new->prev = new->next;
-		new->next->next = new;
-	}
-	else
-	{
-		new->next->next = *philo_heart;
-		new->prev = (*philo_heart)->prev;
-		(*philo_heart)->prev->next = new;
-		(*philo_heart)->prev = new->next;
-	}
-}
-
 void	ft_create_thread(t_philo_heart **philo_heart, char *str)
 {
 	pthread_t		thread;
 	t_philo_heart	*new_philo_heart;
-	t_wand			*wand;
 	t_philo			*philo;
+
+	new_philo_heart = ft_memalloc(sizeof(t_philo_heart));
+	philo = ft_memalloc(sizeof(t_philo));
+	ft_strcpy(philo->name, str);
+	philo->state = TO_REST;
+	philo->life = MAX_LIFE;
+	new_philo_heart->type = PHILO;
+	new_philo_heart->data = philo;
+	static int i = 90;
+	new_philo_heart->n = i;
+	while (1)
+	{
+		if ((*philo_heart)->type == WAND && (*philo_heart)->prev->type == WAND)
+		{
+			new_philo_heart->next = *philo_heart;
+			new_philo_heart->prev = (*philo_heart)->prev;
+			(*philo_heart)->prev->next = new_philo_heart;
+			(*philo_heart)->prev = new_philo_heart;
+			break ;
+		}
+		*philo_heart = (*philo_heart)->next;
+	}
+	i++;
+	pthread_create (&thread, NULL, ft_philo, new_philo_heart);
+	philo->thread = thread;
+}
+
+void	ft_create_wand(t_philo_heart **philo_heart)
+{
+	t_wand			*wand;
+	t_philo_heart	*new_philo_heart;
 
 	new_philo_heart = ft_memalloc(sizeof(t_philo_heart));
 	wand = ft_memalloc(sizeof(t_wand));
 	new_philo_heart->type = WAND;
 	wand->wand_state = MID;
 	wand->condition = (pthread_cond_t)PTHREAD_COND_INITIALIZER;
-//	wand->mutex = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;//RAPIDE
-	wand->mutex = (pthread_mutex_t)PTHREAD_ERRORCHECK_MUTEX_INITIALIZER;//VERIF_ERROR
-	//	pthread_mutex_init(&wand->mutex, NULL);
+	wand->mutex = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;//RAPIDE
+	//wand->mutex = (pthread_mutex_t)PTHREAD_ERRORCHECK_MUTEX_INITIALIZER;//VERIF_ERROR
 	new_philo_heart->data = wand;
-	new_philo_heart->next = ft_memalloc(sizeof(t_philo_heart));
-	new_philo_heart->next->prev = new_philo_heart;
-	philo = ft_memalloc(sizeof(t_philo));
-	ft_strcpy(philo->name, str);
-	philo->state = TO_REST;
-	philo->life = MAX_LIFE;
-	new_philo_heart->next->type = PHILO;
-	new_philo_heart->next->data = philo;
-	pthread_create (&thread, NULL, ft_philo, new_philo_heart->next);
-	philo->thread = thread;
-	ft_add_to_philo_heart(philo_heart, new_philo_heart);
+	static int	i = 0;
+	new_philo_heart->n = i;
+	if (!*philo_heart)
+	{
+		*philo_heart = new_philo_heart;
+		new_philo_heart->prev = new_philo_heart;
+		new_philo_heart->next = new_philo_heart;
+	}
+	else if (new_philo_heart->type == WAND)
+	{
+		new_philo_heart->next = *philo_heart;
+		new_philo_heart->prev = (*philo_heart)->prev;
+		(*philo_heart)->prev->next = new_philo_heart;
+		(*philo_heart)->prev = new_philo_heart;
+	}
+	i++;
 }
 
 void	ft_waiting_to_twerk(void)
@@ -167,7 +198,7 @@ void	ft_waiting_to_twerk(void)
 
 	time( (time_t*)&begin_time );
 	now_time = begin_time;
-	ft_printf("TIME: [%zi]\n", begin_time);
+	//ft_printf("TIME: [%zi]\n", begin_time);
 	while (now_time < begin_time + TIMEOUT)
 	{
 		usleep(1000000);
@@ -180,26 +211,37 @@ int main (void)
 {
 	t_philo_heart	*philo_heart;
 	int				count;
+	int				count2;
 	char			**philo_name;
 	t_philo			philo;
 
 //	ft_philo_sdl();
 	philo_name = ft_get_philo_name();
 	count = -1;
+	count2 = -1;
 	philo_heart = NULL;
 	while (++count < NB_PHILO)
-	{
-		ft_create_thread(&philo_heart, philo_name[count]);
-	}
-	count *= 2;
+		ft_create_wand(&philo_heart);
 	while (--count >= 0)
 	{
-		/*
+		//ft_printf("[%d]\n", philo_heart->n);
+		ft_create_thread(&philo_heart, philo_name[count]);
+		//philo_heart = philo_heart->next;
+	}
+	/*ft_printf("COUNT: [%d]\n", count);
+	count2 = -1;
+	while (++count2 < NB_PHILO*2)
+	{
+		ft_printf("[%d] [%s]\n", philo_heart->n, philo_heart->type == PHILO ? "PHILO" : "WAND");
+		philo_heart = philo_heart->next;
+	}*/
+	/*while (++count < NB_PHILO * 2)
+	{
+		
 		if (philo_heart->type == PHILO)
 		pthread_join (((t_philo*)philo_heart->data)->thread, NULL);
 		philo_heart = philo_heart->next;
-		*/
-	}
+	}*/
 	ft_waiting_to_twerk();
 	return 0;
 }

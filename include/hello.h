@@ -18,11 +18,11 @@
 #define handle_error(msg) \
 	do { perror(msg); exit(EXIT_FAILURE); } while (0)
 
-#define MAX_LIFE 10
-#define EAT_T 5
+#define MAX_LIFE 50
+#define EAT_T 1
 #define REST_T 1
 #define THINK_T 1
-#define TIMEOUT 100
+#define TIMEOUT 10
 
 #define NB_PHILO 7
 
@@ -64,6 +64,7 @@ typedef struct			s_philo
 
 typedef struct				s_philo_heart
 {
+	int						n;//POUR LE DEBUG
 	void					*data;
 	e_type_philo_struct		type;
 	struct s_philo_heart	*next;
