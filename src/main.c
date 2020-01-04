@@ -29,7 +29,7 @@ int		ft_can_you_do_eat(t_wand *left, t_wand *right)
 void	ft_rest(t_philo *philo)
 {
 	philo->life--;
-	//ft_printf("REPOS [%s]:[%zi]PV--\n", philo->name, philo->life);
+	ft_printf("REPOS [%s]:[%zi]PV--\n", philo->name, philo->life);
 }
 
 void	ft_think(t_philo *philo)
@@ -38,20 +38,21 @@ void	ft_think(t_philo *philo)
 	//ft_printf("THINK [%s]:[%zi]PV--\n", philo->name, philo->life);
 }
 
-int		ft_waiting(void (*function)(t_philo *philo), t_philo *data)
+int		ft_waiting(void (*function)(t_philo *philo), t_philo *data, size_t wait_time)
 {
 	size_t			begin_time;
 	size_t			now_time;
 
 	time( (time_t*)&begin_time );
 	now_time = begin_time;
-	while (now_time < begin_time + TIMEOUT)
+	while (now_time < begin_time + wait_time)
 	{
+		ft_printf("now_time: [%zi], begin_time: [%zi]\n", now_time, begin_time);
 		usleep(1000000);
 		function(data);
 		if (data->life <= 0)
 		{
-		//	printf("%s est MORT !\n", data->name);
+			printf("%s est MORT !\n", data->name);
 			return (1);
 		}
 		time( (time_t*)&now_time );
@@ -79,12 +80,33 @@ int		ft_eat_or_think(t_philo_heart *philo, t_philo	*data)
 	}
 	else if (ret <= EINVAL)
 	{
-		//ft_printf("0[%s] pense\n", (char*)((t_philo*)philo->data)->name);
+		ft_printf("0[%s] pense\n", (char*)((t_philo*)philo->data)->name);
 		data->state = TO_THINK;
-		if (ft_waiting(&ft_think, data))
+		/**/
+
+	size_t			begin_time;
+	size_t			now_time;
+	size_t			life = 0;
+
+	time( (time_t*)&begin_time );
+	now_time = begin_time;
+	while (now_time < begin_time + THINK_T)
+	{
+		life = (size_t)((t_philo*)philo->data)->life;
+		life--;
+		if (!(size_t)((t_philo*)philo->data)->life)
+		{
+			ft_printf("[%s] EST MORT\n", (char*)((t_philo*)philo->data)->name);
 			return (1);
+		}
+		time( (time_t*)&now_time );
+	}
+
+		/**/
+//		if (ft_waiting(&ft_think, data, THINK_T))
+//			return (1);
 		//usleep(1000000 * THINK_T);
-		//ft_printf("1[%s] pense\n", (char*)((t_philo*)philo->data)->name);
+		ft_printf("1[%s] pense\n", (char*)((t_philo*)philo->data)->name);
 		//A FAIRE:Prend une baguette qui peut etre prise par un philosophe qui veut manger
 	}
 	else
@@ -111,18 +133,40 @@ void	*ft_philo(void *arg)
 			ft_eat_or_think(philo, data);
 		else if ((e_philo_state)((t_philo*)philo->data)->state == TO_EAT)
 		{
-			//ft_printf("0[%s] se repose\n", (char*)((t_philo*)philo->data)->name);
+			ft_printf("0[%s] se repose\n", (char*)((t_philo*)philo->data)->name);
 			data->state = TO_REST;
-			if (ft_waiting(&ft_rest, data))
+			/**///
+
+	size_t			begin_time;
+	size_t			now_time;
+	size_t			life = 0;
+
+	time( (time_t*)&begin_time );
+	now_time = begin_time;
+	while (now_time < begin_time + REST_T)
+	{
+		life = (size_t)((t_philo*)philo->data)->life;
+		life = life - 1;
+		ft_printf("[%s] Perd une vie : [%zi]\n", (char*)((t_philo*)philo->data)->name, life);
+		if (!(size_t)((t_philo*)philo->data)->life)
+		{
+			ft_printf("[%s] EST MORT\n", (char*)((t_philo*)philo->data)->name);
 				return ((void*)1);
+		}
+		time( (time_t*)&now_time );
+	}
+			/**///
+		//	if (ft_waiting(&ft_rest, data, REST_T))
+		//		return ((void*)1);
 			//usleep(1000000 * REST_T);
-			//ft_printf("1[%s] se repose\n", (char*)((t_philo*)philo->data)->name);
+			ft_printf("1[%s] se repose\n", (char*)((t_philo*)philo->data)->name);
 			//PASSE EN REPOS
 		}
 		else if ((e_philo_state)((t_philo*)philo->data)->state == TO_THINK)
 			//PEUT SOIT MANGER SOIT REFLECHIR, MAIS MANGER EST UNE PRIORITE
 			ft_eat_or_think(philo, data);
 	}
+//	}
 	return ((void*)0);
 }
 
