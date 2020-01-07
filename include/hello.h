@@ -19,12 +19,20 @@
 	do { perror(msg); exit(EXIT_FAILURE); } while (0)
 
 #define MAX_LIFE 50
-#define EAT_T 1
-#define REST_T 1
-#define THINK_T 1
+#define EAT_T 6
+#define REST_T 4
+#define THINK_T 5
 #define TIMEOUT 100
 
 #define NB_PHILO 7
+
+typedef enum	s_ret_status
+{
+	NOTHING,
+	LEFT,
+	RIGHT,
+	ALL
+}				e_ret_status;
 
 typedef enum	s_type_philo_struct
 {
@@ -34,9 +42,11 @@ typedef enum	s_type_philo_struct
 
 typedef enum	s_wand_state
 {
-	MID,
-	LEFT,
-	RIGHT
+	FREE,
+	THINK_LEFT,
+	THINK_RIGHT,
+	EAT_LEFT,
+	EAT_RIGHT
 }				e_wand_state;
 
 typedef struct			s_wand
