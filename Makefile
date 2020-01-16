@@ -29,7 +29,6 @@ INCS_PATH = ./include/
 LIB_PATH = ./libft/
 
 SRCS_NAME =	\
-			hello.c \
 			main.c \
 			gui.c \
 			gui_utils.c

@@ -26,6 +26,14 @@
 
 #define NB_PHILO 7
 
+typedef enum	s_ret_status
+{
+	NOTHING,
+	LEFT,
+	RIGHT,
+	ALL
+}				e_ret_status;
+
 typedef enum	s_type_philo_struct
 {
 	PHILO,
@@ -34,9 +42,11 @@ typedef enum	s_type_philo_struct
 
 typedef enum	s_wand_state
 {
-	MID,
-	LEFT,
-	RIGHT
+	FREE,
+	THINK_LEFT,
+	THINK_RIGHT,
+	EAT_LEFT,
+	EAT_RIGHT
 }				e_wand_state;
 
 typedef struct			s_wand
@@ -64,6 +74,7 @@ typedef struct			s_philo
 
 typedef struct				s_philo_heart
 {
+	int						n;//POUR LE DEBUG
 	void					*data;
 	e_type_philo_struct		type;
 	struct s_philo_heart	*next;

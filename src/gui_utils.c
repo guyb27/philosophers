@@ -15,15 +15,15 @@
 
 bool    ft_philo_sdl_init(t_philo_gui *philo_gui)
 {
-    const int SCREEN_WIDTH = 640;
-    const int SCREEN_HEIGHT = 480;
+    const int SCREEN_WIDTH = 1280;
+    const int SCREEN_HEIGHT = 720;
 
     //Initialize SDL
 	if( SDL_Init( SDL_INIT_VIDEO ) < 0 )
         return (ft_philo_sdl_error("SDL failed initialize", SDL_GetError()));
 
     //Create window
-    philo_gui->sdl_window = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );
+    philo_gui->sdl_window = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );
     
     if( philo_gui->sdl_window == NULL )
         return (ft_philo_sdl_error("SDL failed create window", SDL_GetError()));
@@ -40,7 +40,7 @@ bool    ft_philo_sdl_load_media(t_philo_gui *philo_gui)
 	bool success = true;
 
 	//Load splash image
-	philo_gui->sdl_hello_world = SDL_LoadBMP( "/Users/dzonda/Dev/philosophers/assets/pictures/lac_en_montagne.bmp");
+	philo_gui->sdl_hello_world = SDL_LoadBMP( "/Users/guillaumemadec/philosophers/assets/pictures/lac_en_montagne.bmp");
 	if(philo_gui->sdl_hello_world == NULL)    
         return (ft_philo_sdl_error("SDL failed to load image", SDL_GetError()));
 	return (EXIT_SUCCESS);

@@ -18,7 +18,7 @@ bool ft_philo_sdl_error(const char *info, const char *err)
     printf("%s: %s", info, err);
     return (EXIT_FAILURE);
 }
-
+/*
 int ft_philo_sdl(void)
 {
     t_philo_gui     philo_gui;
@@ -57,4 +57,4 @@ int ft_philo_sdl(void)
 
     ft_philo_sdl_close(&philo_gui);
     return (0);
-}
+}*/
