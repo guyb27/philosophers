@@ -496,13 +496,13 @@ void	ft_print_baguette(t_philo_heart *philo_heart)
 	wand = (t_wand*)philo_heart->data;
 	philo_before = philo_heart->prev->data;
 	philo_next = philo_heart->next->data;
-	move(wand->locate->x_before, wand->locate->y_before);
+	//move(wand->locate->x_before, wand->locate->y_before);
 	move(wand->locate->x_mid, wand->locate->y_mid);
 	printw(philo_before->name);
-	printw("[], MID:[], ");
+	printw("[  ], MID:[|], ");
 	//move(wand->locate->x_after, wand->locate->y_after);
 	printw(philo_next->name);
-	printw(":[]");
+	printw(":[ ]");
 	refresh();
 	ft_dprintf(2, "\nNUMBER: [%d]\n", wand->locate->number);
 	ft_dprintf(2, "before: [%d, %d]\n", wand->locate->x_before, wand->locate->y_before);
@@ -529,6 +529,12 @@ int main (void)
 	count2 = -1;
 	philo_heart = NULL;
 	ft_init_curses();
+	move(0, 0);
+	printw("A problem has been detected and windows been shut down to prevent damage to your computer.");
+	move(1, 0);
+	printw("UNMOUNTABLE_BOOT_VOLUME :");
+	move(2, 0);
+	printw("*** STOP: 0X89F1080ED (0X345A3BC5, 0X62348EB3A, 0X0967EAC4F0)");
 	while (++count < NB_PHILO)
 		ft_create_wand(&philo_heart, wand_locate[count]);
 //	while(1);
