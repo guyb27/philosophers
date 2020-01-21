@@ -49,11 +49,23 @@ typedef enum	s_wand_state
 	EAT_RIGHT
 }				e_wand_state;
 
+typedef struct			s_wand_location
+{
+	int					x_before;
+	int					y_before;
+	int					x_mid;
+	int					y_mid;
+	int					x_after;
+	int					y_after;
+	int					number;
+}						t_wand_location;
+
 typedef struct			s_wand
 {
 	e_wand_state		wand_state;
 	pthread_mutex_t		mutex;
 	pthread_cond_t		condition;
+	t_wand_location		*locate;
 }						t_wand;
 
 typedef enum	s_philo_state
