@@ -2,60 +2,88 @@
 
 void	ft_get_wand_locate(t_wand_location locate[])
 {
-	locate[0].x_before = 7;
-	locate[0].y_before = 75;
+	//locate[0].x_before = 7;
+	//locate[0].y_before = 75;
+	locate[0].x_before = -1;
+	locate[0].y_before = -1;
 	locate[0].x_mid = 8;
 	locate[0].y_mid = 75;
-	locate[0].x_after = 9;
-	locate[0].y_after = 75;
+	//locate[0].x_after = 9;
+	//locate[0].y_after = 75;
+	locate[0].x_after = -1;
+	locate[0].y_after = -1;
 	locate[0].number = 0;
 
-	locate[1].x_before = 14;//22
-	locate[1].y_before = 75;
+	//locate[1].x_before = 14;//22
+	//locate[1].y_before = 75;
+	locate[1].x_before = -1;//22
+	locate[1].y_before = -1;
 	locate[1].x_mid = 15;
 	locate[1].y_mid = 75;
-	locate[1].x_after = 16;
-	locate[1].y_after = 75;
+	//locate[1].x_after = 16;
+	//locate[1].y_after = 75;
+	locate[1].x_after = -1;
+	locate[1].y_after = -1;
 	locate[1].number = 1;
 
-	locate[2].x_before = 21;
-	locate[2].y_before = 75;
+//	locate[2].x_before = 21;
+//	locate[2].y_before = 75;
+	locate[2].x_before = -1;
+	locate[2].y_before = -1;
 	locate[2].x_mid = 22;
 	locate[2].y_mid = 75;
-	locate[2].x_after = 23;
-	locate[2].y_after = 75;
+	//locate[2].x_after = 23;
+	//locate[2].y_after = 75;
+	locate[2].x_after = -1;
+	locate[2].y_after = -1;
 	locate[2].number = 2;
 
-	locate[3].x_before = 27;
-	locate[3].y_before = 40;
+	//locate[3].x_before = 27;
+	//locate[3].y_before = 40;
+	locate[3].x_before = -1;
+	locate[3].y_before = -1;
 	locate[3].x_mid = 28;
 	locate[3].y_mid = 40;
-	locate[3].x_after = 29;
-	locate[3].y_after = 40;
+	//locate[3].x_after = 29;
+	//locate[3].y_after = 40;
+	locate[3].x_after = -1;
+	locate[3].y_after = -1;
 	locate[3].number = 3;
 
-	locate[4].x_before = 21;
-	locate[4].y_before = 10;
+	//locate[4].x_before = 21;
+	//locate[4].y_before = 10;
+	locate[4].x_before = -1;
+	locate[4].y_before = -1;
 	locate[4].x_mid = 22;
 	locate[4].y_mid = 10;
-	locate[4].x_after = 23;
-	locate[4].y_after = 15;
+	locate[4].x_after = -1;
+	locate[4].y_after = -1;
+//	locate[4].x_after = 23;
+//	locate[4].y_after = 15;
 	locate[4].number = 4;
 
-	locate[5].x_before = 14;
-	locate[5].y_before = 10;
+	//locate[5].x_before = 14;
+	//locate[5].y_before = 10;
+	locate[5].x_before = -1;
+	locate[5].y_before = -1;
 	locate[5].x_mid = 15;
 	locate[5].y_mid = 10;
-	locate[5].x_after = 16;
-	locate[5].y_after = 15;
+	//locate[5].x_after = 16;
+	//locate[5].y_after = 15;
+	locate[5].x_after = -1;
+	locate[5].y_after = -1;
 	locate[5].number = 5;
 
-	locate[6].x_before = 7;
-	locate[6].y_before = 10;
+	//locate[6].x_before = 7;
+	//locate[6].y_before = 10;
+	locate[6].x_before = -1;
+	locate[6].y_before = -1;
 	locate[6].x_mid = 8;
 	locate[6].y_mid = 10;
-	locate[6].x_after = 9;
-	locate[6].y_after = 15;
+	//locate[6].x_after = 9;
+	//locate[6].y_after = 15;
+	locate[6].x_after = -1;
+	locate[6].y_after = -1;
 	locate[6].number = 6;
 
 }
@@ -299,12 +327,10 @@ void	*ft_philo(void *arg)
 {
 	t_philo_heart	*philo;
 	t_philo			*data;
-
 	size_t			*life;
 
 	philo = (t_philo_heart*)arg;
 	data = philo->data;
-//	//ft_dprintf(2, "un philosophe sauvage apparait : [%s]\n", (char*)((t_philo*)philo->data)->name);
 	life = &((t_philo*)philo->data)->life;
 	while ((size_t)((t_philo*)philo->data)->life)
 	{
@@ -358,6 +384,8 @@ void	ft_print_philo(t_philo *philo)
 	move(philo->locate.x_life, philo->locate.y_life);
 	printw("LIFE PONTS: [");
 	printw(ft_itoa(philo->life));
+	printw("/");
+	printw(ft_itoa(MAX_LIFE));
 	printw("]");
 	move(philo->locate.x_state, philo->locate.y_state);
 	printw("STATE: ");
@@ -368,30 +396,65 @@ void	ft_print_philo(t_philo *philo)
 	refresh();
 }
 
+void	ft_print_baguette(t_philo_heart *philo_heart)
+{
+	t_wand *wand;
+
+	wand = (t_wand*)philo_heart->data;
+	move(wand->locate->x_mid, wand->locate->y_mid);
+	printw("MID:[|]");
+	refresh();
+}
+
 void	ft_create_thread(t_philo_heart **philo_heart, char *str, t_philo_location locate)
 {
 	pthread_t		thread;
 	t_philo_heart	*new_philo_heart;
 	t_philo			*philo;
+	t_wand			*wand;
 
 	new_philo_heart = ft_memalloc(sizeof(t_philo_heart));
 	philo = ft_memalloc(sizeof(t_philo));
 	ft_strcpy(philo->name, str);
 	philo->state = TO_REST;
 	philo->life = MAX_LIFE;
-	//philo->locate = locate;
-	//ft_print_before_baguette_name();
 	new_philo_heart->type = PHILO;
 	new_philo_heart->data = philo;
-	static int i = 1;
-	new_philo_heart->n = i;
-	//ft_dprintf(2, "NAME: [%s], NUMBER: [%d]\n", philo->name, i);
 	while (1)
 	{
 		if ((*philo_heart)->type == WAND && (*philo_heart)->prev->type == WAND)
 		{
 			ft_get_philo_locate((*philo_heart)->data, &philo->locate);
 			ft_print_philo(philo);
+			wand = (*philo_heart)->prev->data;
+			wand->locate->y_after = wand->locate->y_mid + 9;
+			move(wand->locate->x_mid, wand->locate->y_mid + 7);
+			printw(", ");
+			printw(philo->name);
+			printw(":[");
+			printw(" ");
+			printw("]");
+			wand = (*philo_heart)->data;
+			wand->locate->y_before = wand->locate->y_mid;
+			wand->locate->y_mid = wand->locate->y_before + ft_strlen(philo->name) + 6;
+			move(wand->locate->x_mid, wand->locate->y_before);
+			printw(philo->name);
+			printw(":[");
+			printw(" ");
+			printw("], MID:[");
+			printw("|");
+			printw("]");
+			if (wand->locate->y_after > -1)
+			{
+				printw(", ");
+				wand->locate->y_after = wand->locate->y_mid + 9;
+				philo = (*philo_heart)->next->data;
+				printw(philo->name);
+				printw(":[");
+				printw(" ");
+				printw("]");
+			}
+			refresh();
 			new_philo_heart->next = *philo_heart;
 			new_philo_heart->prev = (*philo_heart)->prev;
 			(*philo_heart)->prev->next = new_philo_heart;
@@ -400,7 +463,6 @@ void	ft_create_thread(t_philo_heart **philo_heart, char *str, t_philo_location l
 		}
 		*philo_heart = (*philo_heart)->next;
 	}
-	i++;
 	pthread_create (&thread, NULL, ft_philo, new_philo_heart);
 	philo->thread = thread;
 }
@@ -429,32 +491,7 @@ void	ft_create_wand(t_philo_heart **philo_heart, t_wand_location wand_locate)
 	//wand->mutex = (pthread_mutex_t)PTHREAD_ERRORCHECK_MUTEX_INITIALIZER;//VERIF_ERROR
 	////ft_dprintf(2, "PTHREAD_MUTEX_INITIALIZER: [%d], PTHREAD_ERRORCHECK_MUTEX_INITIALIZER\n", (int)PTHREAD_MUTEX_INITIALIZER, (int)PTHREAD_ERRORCHECK_MUTEX_INITIALIZER);
 	new_philo_heart->data = wand;
-	static int	i = 0;
-	new_philo_heart->n = i;
 	wand->locate = locate;
-	//
-	/*
-	move(wand->locate.x_before, wand->locate.y_before);
-	printw("BEFORE: [");
-	printw(ft_itoa(wand->locate.x_before));
-	printw(", ");
-	printw(ft_itoa(wand->locate.y_before));
-	printw("]");
-	move(wand->locate.x_mid, wand->locate.y_mid);
-	printw("MID: [");
-	printw(ft_itoa(wand->locate.x_mid));
-	printw(", ");
-	printw(ft_itoa(wand->locate.y_mid));
-	printw("]");
-	move(wand->locate.x_after, wand->locate.y_after);
-	printw("AFTER: [");
-	printw(ft_itoa(wand->locate.x_after));
-	printw(", ");
-	printw(ft_itoa(wand->locate.y_after));
-	printw("]");
-	refresh();
-	*/
-	//
 	if (!*philo_heart)
 	{
 		*philo_heart = new_philo_heart;
@@ -467,8 +504,8 @@ void	ft_create_wand(t_philo_heart **philo_heart, t_wand_location wand_locate)
 		new_philo_heart->prev = (*philo_heart)->prev;
 		(*philo_heart)->prev->next = new_philo_heart;
 		(*philo_heart)->prev = new_philo_heart;
+		*philo_heart  = (*philo_heart)->prev;
 	}
-	i++;
 }
 
 void	ft_waiting_to_twerk(void)
@@ -483,31 +520,14 @@ void	ft_waiting_to_twerk(void)
 	{
 		usleep(1000000);
 		time( (time_t*)&now_time );
+		move(28, 1);
+		printw("TIME: ");
+		printw(ft_itoa(now_time - begin_time));
+		printw("/");
+		printw(ft_itoa(TIMEOUT));
+		refresh();
 	}
 	//ft_dprintf(2, "Now, it is time... To DAAAAAAAANCE ! ! !\n");
-}
-
-void	ft_print_baguette(t_philo_heart *philo_heart)
-{
-	t_philo *philo_before;
-	t_philo *philo_next;
-	t_wand *wand;
-
-	wand = (t_wand*)philo_heart->data;
-	philo_before = philo_heart->prev->data;
-	philo_next = philo_heart->next->data;
-	//move(wand->locate->x_before, wand->locate->y_before);
-	move(wand->locate->x_mid, wand->locate->y_mid);
-	printw(philo_before->name);
-	printw("[  ], MID:[|], ");
-	//move(wand->locate->x_after, wand->locate->y_after);
-	printw(philo_next->name);
-	printw(":[ ]");
-	refresh();
-	ft_dprintf(2, "\nNUMBER: [%d]\n", wand->locate->number);
-	ft_dprintf(2, "before: [%d, %d]\n", wand->locate->x_before, wand->locate->y_before);
-	ft_dprintf(2, "mid: [%d, %d]\n", wand->locate->x_before, wand->locate->y_before);
-	ft_dprintf(2, "after: [%d, %d]\n", wand->locate->x_before, wand->locate->y_before);
 }
 
 int main (void)
@@ -523,7 +543,6 @@ int main (void)
 	ft_bzero(&philo_locate, sizeof(philo_locate));
 	ft_bzero(&wand_locate, sizeof(wand_locate));
 	philo_name = ft_get_philo_name();
-	//ft_get_philo_locate(philo_locate);
 	ft_get_wand_locate(wand_locate);
 	count = -1;
 	count2 = -1;
@@ -536,18 +555,21 @@ int main (void)
 	move(2, 0);
 	printw("*** STOP: 0X89F1080ED (0X345A3BC5, 0X62348EB3A, 0X0967EAC4F0)");
 	while (++count < NB_PHILO)
+	{
 		ft_create_wand(&philo_heart, wand_locate[count]);
-//	while(1);
+		ft_print_baguette(philo_heart);
+	}
+//	while (1);
 	while (--count >= 0)
 		ft_create_thread(&philo_heart, philo_name[count], philo_locate[count]);
-	while (++count < NB_PHILO * 2)
+	/*while (++count < NB_PHILO * 2)
 	{
 		if (philo_heart->type == WAND)
 		{
 			ft_print_baguette(philo_heart);
 		}
 		philo_heart = philo_heart->next;
-	}
+	}*/
 	/*//ft_dprintf(2, "COUNT: [%d]\n", count);
 	count2 = -1;
 	while (++count2 < NB_PHILO*2)
@@ -556,12 +578,12 @@ int main (void)
 		philo_heart = philo_heart->next;
 	}*/
 	
-	while (++count < NB_PHILO * 2)
+	/*while (++count < NB_PHILO * 2)
 	{
 		if (philo_heart->type == PHILO)
 			pthread_join (((t_philo*)philo_heart->data)->thread, NULL);
 		philo_heart = philo_heart->next;
-	}
+	}*/
 	ft_waiting_to_twerk();
 	endwin();
 	ft_tabdel(&philo_name);

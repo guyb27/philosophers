@@ -99,7 +99,7 @@ typedef struct			s_philo
 
 typedef struct				s_philo_heart
 {
-	int						n;//POUR LE DEBUG
+//	int						n;//POUR LE DEBUG
 	void					*data;
 	e_type_philo_struct		type;
 	struct s_philo_heart	*next;
