@@ -2,90 +2,41 @@
 
 void	ft_get_wand_locate(t_wand_location locate[])
 {
-	//locate[0].x_before = 7;
-	//locate[0].y_before = 75;
-	locate[0].x_before = -1;
 	locate[0].y_before = -1;
 	locate[0].x_mid = 8;
 	locate[0].y_mid = 75;
-	//locate[0].x_after = 9;
-	//locate[0].y_after = 75;
-	locate[0].x_after = -1;
 	locate[0].y_after = -1;
 	locate[0].number = 0;
-
-	//locate[1].x_before = 14;//22
-	//locate[1].y_before = 75;
-	locate[1].x_before = -1;//22
 	locate[1].y_before = -1;
 	locate[1].x_mid = 15;
 	locate[1].y_mid = 75;
-	//locate[1].x_after = 16;
-	//locate[1].y_after = 75;
-	locate[1].x_after = -1;
 	locate[1].y_after = -1;
 	locate[1].number = 1;
-
-//	locate[2].x_before = 21;
-//	locate[2].y_before = 75;
-	locate[2].x_before = -1;
 	locate[2].y_before = -1;
 	locate[2].x_mid = 22;
 	locate[2].y_mid = 75;
-	//locate[2].x_after = 23;
-	//locate[2].y_after = 75;
-	locate[2].x_after = -1;
 	locate[2].y_after = -1;
 	locate[2].number = 2;
-
-	//locate[3].x_before = 27;
-	//locate[3].y_before = 40;
-	locate[3].x_before = -1;
 	locate[3].y_before = -1;
 	locate[3].x_mid = 28;
 	locate[3].y_mid = 40;
-	//locate[3].x_after = 29;
-	//locate[3].y_after = 40;
-	locate[3].x_after = -1;
 	locate[3].y_after = -1;
 	locate[3].number = 3;
-
-	//locate[4].x_before = 21;
-	//locate[4].y_before = 10;
-	locate[4].x_before = -1;
 	locate[4].y_before = -1;
 	locate[4].x_mid = 22;
 	locate[4].y_mid = 10;
-	locate[4].x_after = -1;
 	locate[4].y_after = -1;
-//	locate[4].x_after = 23;
-//	locate[4].y_after = 15;
 	locate[4].number = 4;
-
-	//locate[5].x_before = 14;
-	//locate[5].y_before = 10;
-	locate[5].x_before = -1;
 	locate[5].y_before = -1;
 	locate[5].x_mid = 15;
 	locate[5].y_mid = 10;
-	//locate[5].x_after = 16;
-	//locate[5].y_after = 15;
-	locate[5].x_after = -1;
 	locate[5].y_after = -1;
 	locate[5].number = 5;
-
-	//locate[6].x_before = 7;
-	//locate[6].y_before = 10;
-	locate[6].x_before = -1;
 	locate[6].y_before = -1;
 	locate[6].x_mid = 8;
 	locate[6].y_mid = 10;
-	//locate[6].x_after = 9;
-	//locate[6].y_after = 15;
-	locate[6].x_after = -1;
 	locate[6].y_after = -1;
 	locate[6].number = 6;
-
 }
 
 void	ft_get_philo_locate(t_wand *wand, t_philo_location *locate)
@@ -259,6 +210,10 @@ int		ft_eat_or_think(t_philo_heart *philo, t_philo	*data)
 	if ((ret = ft_can_you_do_eat(philo->prev->data, philo->next->data, philo->data)) == ALL)
 	{
 		//ft_dprintf(2, "\033[0;32m0[%s] mange\033[0;m\n", (char*)((t_philo*)philo->data)->name);
+		/*move(data->locate.x_state, data->locate.y_state);
+		printw("STATE: ");
+		printw("MANGE");
+		refresh();*/
 		data->state = TO_EAT;
 		data->life = MAX_LIFE;
 		usleep(1000000 * EAT_T);
@@ -273,7 +228,11 @@ int		ft_eat_or_think(t_philo_heart *philo, t_philo	*data)
 	else if (ret == LEFT || ret == RIGHT)
 	{
 		//ft_dprintf(2, "0[%s] pense\n", (char*)((t_philo*)philo->data)->name);
-		data->state = TO_THINK;
+		/*data->state = TO_THINK;
+		move(data->locate.x_state, data->locate.y_state);
+		printw("STATE: ");
+		printw("REFLECHIS");
+		refresh();*/
 		/**/
 
 	size_t			begin_time;
@@ -287,6 +246,14 @@ int		ft_eat_or_think(t_philo_heart *philo, t_philo	*data)
 	{
 		usleep(1000000);
 		life--;
+
+/*		move(data->locate.x, data->locate.y_life);
+		printw("LIFE POINTS: [");
+		printw(ft_itoa(10));
+		printw("/");
+		printw(ft_itoa(MAX_LIFE));
+		printw("]");
+		refresh();*/
 		if (!(size_t)((t_philo*)philo->data)->life)
 		{
 			//ft_dprintf(2, "[%s] EST MORT\n", (char*)((t_philo*)philo->data)->name);
@@ -341,6 +308,10 @@ void	*ft_philo(void *arg)
 		{
 			//ft_dprintf(2, "0[%s] se repose\n", (char*)((t_philo*)philo->data)->name);
 			data->state = TO_REST;
+	/*	move(data->locate.x_state, data->locate.y_state);
+		printw("STATE: ");
+		printw("SE REPOSE");
+		refresh();*/
 			/**///
 
 	size_t			begin_time;
@@ -352,10 +323,21 @@ void	*ft_philo(void *arg)
 	{
 		*life = *life - 1;
 		usleep(1000000);
+	/*	move(data->locate.x_life, data->locate.y_life);
+		printw("LIFE POINTS: [");
+		printw(ft_itoa(*life));
+		printw("/");
+		printw(ft_itoa(MAX_LIFE));
+		printw("]");
+		refresh();*/
 		//ft_dprintf(2, "[%s][ REPOS ]Perd une vie : [%zi]\n", (char*)((t_philo*)philo->data)->name, *life);
 		//if (!(size_t)((t_philo*)philo->data)->life)
 		if (!*life)
 		{
+	/*	move(data->locate.x_state, data->locate.y_state);
+		printw("STATE: ");
+		printw("IS DEAD");
+		refresh();*/
 			//ft_dprintf(2, "[%s] EST MORT DE REPOS\n", (char*)((t_philo*)philo->data)->name);
 				return ((void*)1);
 		}
@@ -382,7 +364,7 @@ void	ft_print_philo(t_philo *philo)
 	printw("NAME: ");
 	printw(philo->name);
 	move(philo->locate.x_life, philo->locate.y_life);
-	printw("LIFE PONTS: [");
+	printw("LIFE POINTS: [");
 	printw(ft_itoa(philo->life));
 	printw("/");
 	printw(ft_itoa(MAX_LIFE));
@@ -475,11 +457,11 @@ void	ft_create_wand(t_philo_heart **philo_heart, t_wand_location wand_locate)
 
 	new_philo_heart = ft_memalloc(sizeof(t_philo_heart));
 	locate = ft_memalloc(sizeof(t_wand_location));
-	locate->x_before = wand_locate.x_before;
+//	locate->x_before = wand_locate.x_before;
 	locate->y_before = wand_locate.y_before;
 	locate->x_mid = wand_locate.x_mid;
 	locate->y_mid = wand_locate.y_mid;
-	locate->x_after = wand_locate.x_after;
+//	locate->x_after = wand_locate.x_after;
 	locate->y_after = wand_locate.y_after;
 	locate->number = wand_locate.number;
 	wand = ft_memalloc(sizeof(t_wand));
@@ -521,10 +503,8 @@ void	ft_waiting_to_twerk(void)
 		usleep(1000000);
 		time( (time_t*)&now_time );
 		move(28, 1);
-		printw("TIME: ");
-		printw(ft_itoa(now_time - begin_time));
-		printw("/");
-		printw(ft_itoa(TIMEOUT));
+		printw("TIME LEFT: ");
+		printw(ft_itoa(TIMEOUT - (now_time - begin_time)));
 		refresh();
 	}
 	//ft_dprintf(2, "Now, it is time... To DAAAAAAAANCE ! ! !\n");

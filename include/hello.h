@@ -51,11 +51,9 @@ typedef enum	s_wand_state
 
 typedef struct			s_wand_location
 {
-	int					x_before;
 	int					y_before;
 	int					x_mid;
 	int					y_mid;
-	int					x_after;
 	int					y_after;
 	int					number;
 }						t_wand_location;
