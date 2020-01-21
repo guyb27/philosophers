@@ -1,103 +1,126 @@
-# include "hello.h"
+#include "../include/hello.h"
 
-typedef struct 				s_philo_gui
-{
-	SDL_Window		*sdl_window;
-	SDL_Surface		*sdl_screen_surface;
-	SDL_Surface 	*sdl_hello_world;
-	SDL_Window		*window;
-	SDL_Surface 	*screen_surface;
-}							t_philo_gui;
+#define ENTER 10
+#define ESCAPE 27
 
-bool ft_philo_sdl_error(const char *info, const char *err)
+void ft_init_curses(void)
 {
-    printf("%s: %s", info, err);
-    return (EXIT_FAILURE);
+	initscr();
+	start_color();
+	init_pair(1,COLOR_WHITE,COLOR_BLUE);
+	init_pair(2,COLOR_BLUE,COLOR_WHITE);
+	init_pair(3,COLOR_RED,COLOR_WHITE);
+	curs_set(0);
+	noecho();
+	keypad(stdscr,TRUE);
+	bkgd(COLOR_PAIR(1));
 }
 
-bool    ft_philo_sdl_init(t_philo_gui *philo_gui)
+int ft_init_philos(void)
 {
-    const int SCREEN_WIDTH = 640;
-    const int SCREEN_HEIGHT = 480;
-
-    //Initialize SDL
-	if( SDL_Init( SDL_INIT_VIDEO ) < 0 )
-        return (ft_philo_sdl_error("SDL failed initialize", SDL_GetError()));
-
-    //Create window
-    philo_gui->sdl_window = SDL_CreateWindow( "Le diner des philosophes", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_FULLSCREEN_DESKTOP );
-
-    if( philo_gui->sdl_window == NULL )
-        return (ft_philo_sdl_error("SDL failed create window", SDL_GetError()));
-
-    //Get window surface
-    philo_gui->sdl_screen_surface= SDL_GetWindowSurface( philo_gui->sdl_window );
-
-    return (EXIT_SUCCESS);
-}
-
-bool    ft_philo_sdl_load_media(t_philo_gui *philo_gui)
-{
-	//Loading success flag
-	bool success = true;
-
-	//Load splash image
-	philo_gui->sdl_hello_world = SDL_LoadBMP( "/Users/guillaumemadec/philosophers/assets/pictures/philo.bmp");
-	if(philo_gui->sdl_hello_world == NULL)
-        return (ft_philo_sdl_error("SDL failed to load image", SDL_GetError()));
-	return (EXIT_SUCCESS);
-}
-
-void    ft_philo_sdl_close(t_philo_gui *philo_gui)
-{
-    //Deallocate surface
-	SDL_FreeSurface(philo_gui->sdl_hello_world);
-	philo_gui->sdl_hello_world = NULL;
-
-	//Destroy window
-	SDL_DestroyWindow(philo_gui->sdl_window);
-	philo_gui->sdl_window = NULL;
-
-	//Quit SDL subsystems
-	SDL_Quit();
-}
-
-int ft_philo_sdl(void)
-{
-    t_philo_gui     philo_gui;
-
-    ft_memset(&philo_gui, 0, sizeof(philo_gui));
-
-	//Initialize SDL
-	if (ft_philo_sdl_init(&philo_gui) == EXIT_FAILURE)
-        return (ft_philo_sdl_error("SDL failed initialize", "ft_philo_sdl_init returned EXIT_FAILURE"));
-    //Create window
-    if (ft_philo_sdl_load_media(&philo_gui) == EXIT_FAILURE)
-    {
-        ft_philo_sdl_close(&philo_gui);
-        return (ft_philo_sdl_error("SDL failed load media", "ft_philo_sdl_load_media returned EXIT_FAILURE"));
-    }
-
-    //Main loop flag
-    bool quit = false;
-
-    //Event handler
-    SDL_Event e;
-    while( !quit )
-    {
-        //Handle events on queue
-        while(SDL_PollEvent( &e ) != 0)
-        {
-            //User requests quit
-            if(e.type == SDL_QUIT || e.type == SDL_KEYDOWN)
-            {
-                quit = true;
-            }
-        }  
-        SDL_BlitSurface( philo_gui.sdl_hello_world, NULL, philo_gui.sdl_screen_surface, NULL );
-        SDL_UpdateWindowSurface( philo_gui.sdl_window );
-    }
-
-    ft_philo_sdl_close(&philo_gui);
-    return (0);
+	int key;
+	ft_init_curses();
+	move(3,50);
+	printw("Life Point: [          ]");
+	move(4,50);
+	printw("NAME: Philo1");
+	move(5,50);
+	printw("STATE: NOTHING");
+	move(6,50);
+	printw("Time State: [          ]");
+	move(10,10);
+	printw("Life Point: [          ]");
+	move(11,10);
+	printw("NAME: Philo2");
+	move(12,10);
+	printw("STATE: NOTHING");
+	move(13,10);
+	printw("Time State: [          ]");
+	move(10,90);
+	printw("Life Point: [          ]");
+	move(11,90);
+	printw("NAME: Philo3");
+	move(12,90);
+	printw("STATE: NOTHING");
+	move(13,90);
+	printw("Time State: [          ]");
+	move(17,10);
+	printw("Life Point: [          ]");
+	move(18,10);
+	printw("NAME: Philo4");
+	move(19,10);
+	printw("STATE: NOTHING");
+	move(20,10);
+	printw("Time State: [          ]");
+	move(17,90);
+	printw("Life Point: [          ]");
+	move(18,90);
+	printw("NAME: Philo5");
+	move(19,90);
+	printw("STATE: NOTHING");
+	move(20,90);
+	printw("Time State: [          ]");
+	move(24,30);
+	printw("Life Point: [          ]");
+	move(25,30);
+	printw("NAME: Philo6");
+	move(26,30);
+	printw("STATE: NOTHING");
+	move(27,30);
+	printw("Time State: [          ]");
+	move(24,70);
+	printw("Life Point: [          ]");
+	move(25,70);
+	printw("NAME: Philo7");
+	move(26,70);
+	printw("STATE: NOTHING");
+	move(27,70);
+	printw("Time State: [          ]");
+	refresh();
+	//delwin(messagebar);
+	//while(1);
+	do
+	{
+		//int selected_item;
+		//WINDOW **menu_items;
+		key=getch();
+		//werase(messagebar);
+		//wrefresh(messagebar);
+		if (key==KEY_F(1))
+		{
+		/*	menu_items=draw_menu(0);
+			selected_item=scroll_menu(menu_items,8,0);
+			delete_menu(menu_items,9);
+			if (selected_item<0)
+				wprintw(messagebar,"Vous n’avez pas selectionne de rubrique.");
+			else
+				wprintw(messagebar, "Vous avez selectionne la rubrique %d.",selected_item+1);
+			touchwin(stdscr);
+		*/
+			move(5,57);
+			clrtoeol();
+			printw("MANGE");
+			refresh();
+		}
+		else if (key==KEY_F(2))
+		{
+		/*
+			menu_items=draw_menu(20);
+			selected_item=scroll_menu(menu_items,8,20);
+			delete_menu(menu_items,9);
+			if (selected_item<0)
+				wprintw(messagebar,"Vous n’avez pas selectionne de rubrique.");
+			else
+				wprintw(messagebar, "Vous avez selectionne la rubrique %d.", selected_item+1);
+			touchwin(stdscr);
+			refresh();
+		*/
+			move(5,57);
+			clrtoeol();
+			printw("Se repose");
+			refresh();
+		}
+	} while (key!=ESCAPE);
+	endwin();
+	return 0;
 }

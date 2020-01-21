@@ -1,4 +1,4 @@
-#include "hello.h"
+#include "../include/hello.h"
 
 char **ft_get_philo_name(void)
 {
@@ -300,7 +300,8 @@ int main (void)
 	char			**philo_name;
 	t_philo			philo;
 
-//	ft_philo_sdl();
+	ft_init_philos();
+	/*
 	philo_name = ft_get_philo_name();
 	count = -1;
 	count2 = -1;
@@ -312,7 +313,7 @@ int main (void)
 		//ft_printf("[%d]\n", philo_heart->n);
 		ft_create_thread(&philo_heart, philo_name[count]);
 		//philo_heart = philo_heart->next;
-	}
+	}*/
 	/*ft_printf("COUNT: [%d]\n", count);
 	count2 = -1;
 	while (++count2 < NB_PHILO*2)
@@ -320,6 +321,7 @@ int main (void)
 		ft_printf("[%d] [%s]\n", philo_heart->n, philo_heart->type == PHILO ? "PHILO" : "WAND");
 		philo_heart = philo_heart->next;
 	}*/
+	/*
 	while (++count < NB_PHILO * 2)
 	{
 		
@@ -327,6 +329,6 @@ int main (void)
 		pthread_join (((t_philo*)philo_heart->data)->thread, NULL);
 		philo_heart = philo_heart->next;
 	}
-	ft_waiting_to_twerk();
+	ft_waiting_to_twerk();*/
 	return 0;
 }

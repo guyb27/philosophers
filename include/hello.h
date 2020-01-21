@@ -9,8 +9,8 @@
 #include <unistd.h>
 #include <errno.h>
 #include <ctype.h>
-#include <SDL2/SDL.h>
 #include <stdbool.h>
+#include <curses.h>
 
 #define handle_error_en(en, msg) \
 	do { errno = en; perror(msg); exit(EXIT_FAILURE); } while (0)
@@ -81,11 +81,9 @@ typedef struct				s_philo_heart
 	struct s_philo_heart	*prev;
 }							t_philo_heart;
 
-void Hello(void);
+//void Hello(void);
 
-//bool init_sdl(SDL_Window **sdl_window, SDL_Surface **sdl_screenSurface);
-//bool loadMedia(SDL_Surface **sdl_hello_world);
-//void close_sdl(SDL_Window **sdl_window, SDL_Surface **sdl_hello_world);
-int ft_philo_sdl(void);
+void ft_init_curses(void);
+int ft_init_philos(void);
 
 #endif
