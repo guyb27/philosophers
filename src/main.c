@@ -3,35 +3,35 @@
 void	ft_get_wand_locate(t_wand_location locate[])
 {
 	locate[0].x_before = 7;
-	locate[0].y_before = 25;
+	locate[0].y_before = 75;
 	locate[0].x_mid = 8;
-	locate[0].y_mid = 25;
+	locate[0].y_mid = 75;
 	locate[0].x_after = 9;
-	locate[0].y_after = 25;
+	locate[0].y_after = 75;
 	locate[0].number = 0;
 
-	locate[1].x_before = 7;
+	locate[1].x_before = 14;//22
 	locate[1].y_before = 75;
-	locate[1].x_mid = 8;
+	locate[1].x_mid = 15;
 	locate[1].y_mid = 75;
-	locate[1].x_after = 9;
+	locate[1].x_after = 16;
 	locate[1].y_after = 75;
 	locate[1].number = 1;
 
-	locate[2].x_before = 14;
-	locate[2].y_before = 25;
-	locate[2].x_mid = 15;
-	locate[2].y_mid = 25;
-	locate[2].x_after = 16;
-	locate[2].y_after = 25;
+	locate[2].x_before = 21;
+	locate[2].y_before = 75;
+	locate[2].x_mid = 22;
+	locate[2].y_mid = 75;
+	locate[2].x_after = 23;
+	locate[2].y_after = 75;
 	locate[2].number = 2;
 
-	locate[3].x_before = 14;//22
-	locate[3].y_before = 75;
-	locate[3].x_mid = 15;
-	locate[3].y_mid = 75;
-	locate[3].x_after = 16;
-	locate[3].y_after = 75;
+	locate[3].x_before = 25;
+	locate[3].y_before = 50;
+	locate[3].x_mid = 26;
+	locate[3].y_mid = 50;
+	locate[3].x_after = 27;
+	locate[3].y_after = 50;
 	locate[3].number = 3;
 
 	locate[4].x_before = 21;
@@ -42,88 +42,103 @@ void	ft_get_wand_locate(t_wand_location locate[])
 	locate[4].y_after = 25;
 	locate[4].number = 4;
 
-	locate[5].x_before = 21;
-	locate[5].y_before = 75;
-	locate[5].x_mid = 22;
-	locate[5].y_mid = 75;
-	locate[5].x_after = 23;
-	locate[5].y_after = 75;
-	locate[5].number = 5;
+	locate[6].x_before = 14;
+	locate[6].y_before = 25;
+	locate[6].x_mid = 15;
+	locate[6].y_mid = 25;
+	locate[6].x_after = 16;
+	locate[6].y_after = 25;
+	locate[6].number = 5;
 
-	locate[6].x_before = 25;
-	locate[6].y_before = 50;
-	locate[6].x_mid = 26;
-	locate[6].y_mid = 50;
-	locate[6].x_after = 27;
-	locate[6].y_after = 50;
-	locate[6].number = 6;
+	locate[5].x_before = 7;
+	locate[5].y_before = 25;
+	locate[5].x_mid = 8;
+	locate[5].y_mid = 25;
+	locate[5].x_after = 9;
+	locate[5].y_after = 25;
+	locate[5].number = 6;
 
 }
 
-void	ft_get_philo_locate(t_philo_location locate[])
+void	ft_get_philo_locate(t_wand *wand, t_philo_location *locate)
 {
-	locate[0].x_name = 3;
-	locate[0].y_name = 50;
-	locate[0].x_life = 4;
-	locate[0].y_life = 50;
-	locate[0].x_state = 5;
-	locate[0].y_state = 50;
-	locate[0].x_time = 6;
-	locate[0].y_time = 50;
-
-	locate[1].x_name = 10;
-	locate[1].y_name = 10;
-	locate[1].x_life = 11;
-	locate[1].y_life = 10;
-	locate[1].x_state = 12;
-	locate[1].y_state = 10;
-	locate[1].x_time = 13;
-	locate[1].y_time = 10;
-
-	locate[2].x_name = 10;
-	locate[2].y_name = 90;
-	locate[2].x_life = 11;
-	locate[2].y_life = 90;
-	locate[2].x_state = 12;
-	locate[2].y_state = 90;
-	locate[2].x_time = 13;
-	locate[2].y_time = 90;
-
-	locate[3].x_name = 17;
-	locate[3].y_name = 10;
-	locate[3].x_life = 18;
-	locate[3].y_life = 10;
-	locate[3].x_state = 19;
-	locate[3].y_state = 10;
-	locate[3].x_time = 20;
-	locate[3].y_time = 10;
-
-	locate[4].x_name = 17;
-	locate[4].y_name = 90;
-	locate[4].x_life = 18;
-	locate[4].y_life = 90;
-	locate[4].x_state = 19;
-	locate[4].y_state = 90;
-	locate[4].x_time = 20;
-	locate[4].y_time = 90;
-
-	locate[5].x_name = 24;
-	locate[5].y_name = 30;
-	locate[5].x_life = 25;
-	locate[5].y_life = 30;
-	locate[5].x_state = 26;
-	locate[5].y_state = 30;
-	locate[5].x_time = 27;
-	locate[5].y_time = 30;
-
-	locate[6].x_name = 24;
-	locate[6].y_name = 70;
-	locate[6].x_life = 25;
-	locate[6].y_life = 70;
-	locate[6].x_state = 26;
-	locate[6].y_state = 70;
-	locate[6].x_time = 27;
-	locate[6].y_time = 70;
+	if (wand->locate->number == 0)
+	{
+		locate->x_name = 3;
+		locate->y_name = 50;
+		locate->x_life = 4;
+		locate->y_life = 50;
+		locate->x_state = 5;
+		locate->y_state = 50;
+		locate->x_time = 6;
+		locate->y_time = 50;
+	}
+	else if (wand->locate->number == 1)
+	{
+		locate->x_name = 10;
+		locate->y_name = 10;
+		locate->x_life = 11;
+		locate->y_life = 10;
+		locate->x_state = 12;
+		locate->y_state = 10;
+		locate->x_time = 13;
+		locate->y_time = 10;
+	}
+	else if (wand->locate->number == 2)
+	{
+		locate->x_name = 10;
+		locate->y_name = 90;
+		locate->x_life = 11;
+		locate->y_life = 90;
+		locate->x_state = 12;
+		locate->y_state = 90;
+		locate->x_time = 13;
+		locate->y_time = 90;
+	}
+	else if (wand->locate->number == 3)
+	{
+		locate->x_name = 17;
+		locate->y_name = 10;
+		locate->x_life = 18;
+		locate->y_life = 10;
+		locate->x_state = 19;
+		locate->y_state = 10;
+		locate->x_time = 20;
+		locate->y_time = 10;
+	}
+	else if (wand->locate->number == 4)
+	{
+		locate->x_name = 17;
+		locate->y_name = 90;
+		locate->x_life = 18;
+		locate->y_life = 90;
+		locate->x_state = 19;
+		locate->y_state = 90;
+		locate->x_time = 20;
+		locate->y_time = 90;
+	}
+	else if (wand->locate->number == 5)
+	{
+		locate->x_name = 24;
+		locate->y_name = 30;
+		locate->x_life = 25;
+		locate->y_life = 30;
+		locate->x_state = 26;
+		locate->y_state = 30;
+		locate->x_time = 27;
+		locate->y_time = 30;
+	}
+	else if (wand->locate->number == 6)
+	{
+		locate->x_name = 24;
+		locate->y_name = 70;
+		locate->x_life = 25;
+		locate->y_life = 70;
+		locate->x_state = 26;
+		locate->y_state = 70;
+		locate->x_time = 27;
+		locate->y_time = 70;
+	}
 }
 char **ft_get_philo_name(void)
 {
@@ -364,8 +379,7 @@ void	ft_create_thread(t_philo_heart **philo_heart, char *str, t_philo_location l
 	ft_strcpy(philo->name, str);
 	philo->state = TO_REST;
 	philo->life = MAX_LIFE;
-	philo->locate = locate;
-	ft_print_philo(philo);
+	//philo->locate = locate;
 	//ft_print_before_baguette_name();
 	new_philo_heart->type = PHILO;
 	new_philo_heart->data = philo;
@@ -376,6 +390,8 @@ void	ft_create_thread(t_philo_heart **philo_heart, char *str, t_philo_location l
 	{
 		if ((*philo_heart)->type == WAND && (*philo_heart)->prev->type == WAND)
 		{
+			ft_get_philo_locate((*philo_heart)->data, &philo->locate);
+			ft_print_philo(philo);
 			new_philo_heart->next = *philo_heart;
 			new_philo_heart->prev = (*philo_heart)->prev;
 			(*philo_heart)->prev->next = new_philo_heart;
@@ -403,6 +419,7 @@ void	ft_create_wand(t_philo_heart **philo_heart, t_wand_location wand_locate)
 	locate->y_mid = wand_locate.y_mid;
 	locate->x_after = wand_locate.x_after;
 	locate->y_after = wand_locate.y_after;
+	locate->number = wand_locate.number;
 	wand = ft_memalloc(sizeof(t_wand));
 	new_philo_heart->type = WAND;
 	wand->wand_state = FREE;
@@ -505,7 +522,7 @@ int main (void)
 	ft_bzero(&philo_locate, sizeof(philo_locate));
 	ft_bzero(&wand_locate, sizeof(wand_locate));
 	philo_name = ft_get_philo_name();
-	ft_get_philo_locate(philo_locate);
+	//ft_get_philo_locate(philo_locate);
 	ft_get_wand_locate(wand_locate);
 	count = -1;
 	count2 = -1;
