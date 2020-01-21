@@ -63,12 +63,25 @@ typedef enum	s_philo_state
 	TO_THINK = 2
 }				e_philo_state;
 
+typedef struct			s_philo_location
+{
+	int					x_name;
+	int					y_name;
+	int					x_life;
+	int					y_life;
+	int					x_state;
+	int					y_state;
+	int					x_time;
+	int					y_time;
+}						t_philo_location;
+
 typedef struct			s_philo
 {
 	char				name[25];
 	size_t				life;
 	size_t				time;
 	e_philo_state		state;
+	t_philo_location	locate;
 	pthread_t			thread;
 }						t_philo;
 

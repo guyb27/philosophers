@@ -6,64 +6,64 @@ void	ft_get_philo_locate(t_philo_location locate[])
 	locate[0].y_name = 50;
 	locate[0].x_life = 4;
 	locate[0].y_life = 50;
-	locate[0].x_state = 5;
-	locate[0].y_state = 50;
-	locate[0].x_time = 6;
+	locate[0].x_time = 5;
 	locate[0].y_time = 50;
+	locate[0].x_state = 6;
+	locate[0].y_state = 50;
 
 	locate[1].x_name = 10;
 	locate[1].y_name = 10;
 	locate[1].x_life = 11;
 	locate[1].y_life = 10;
-	locate[1].x_state = 12;
-	locate[1].y_state = 10;
-	locate[1].x_time = 13;
+	locate[1].x_time = 12;
 	locate[1].y_time = 10;
+	locate[1].x_state = 13;
+	locate[1].y_state = 10;
 
 	locate[2].x_name = 10;
 	locate[2].y_name = 90;
 	locate[2].x_life = 11;
 	locate[2].y_life = 90;
-	locate[2].x_state = 12;
-	locate[2].y_state = 90;
-	locate[2].x_time = 13;
+	locate[2].x_time = 12;
 	locate[2].y_time = 90;
+	locate[2].x_state = 13;
+	locate[2].y_state = 90;
 
 	locate[3].x_name = 17;
 	locate[3].y_name = 10;
 	locate[3].x_life = 18;
 	locate[3].y_life = 10;
-	locate[3].x_state = 19;
-	locate[3].y_state = 10;
-	locate[3].x_time = 20;
+	locate[3].x_time = 19;
 	locate[3].y_time = 10;
+	locate[3].x_state = 20;
+	locate[3].y_state = 10;
 
 	locate[4].x_name = 17;
 	locate[4].y_name = 90;
-	locate[4].x_life = 18;
+	locate[4].x_life = 17;
 	locate[4].y_life = 90;
-	locate[4].x_state = 19;
-	locate[4].y_state = 90;
-	locate[4].x_time = 20;
+	locate[4].x_time = 17;
 	locate[4].y_time = 90;
+	locate[4].x_state = 17;
+	locate[4].y_state = 90;
 
 	locate[5].x_name = 24;
 	locate[5].y_name = 30;
-	locate[5].x_life = 25;
+	locate[5].x_life = 24;
 	locate[5].y_life = 30;
-	locate[5].x_state = 26;
-	locate[5].y_state = 30;
-	locate[5].x_time = 27;
+	locate[5].x_time = 24;
 	locate[5].y_time = 30;
+	locate[5].x_state = 24;
+	locate[5].y_state = 30;
 
 	locate[6].x_name = 24;
 	locate[6].y_name = 70;
-	locate[6].x_life = 25;
+	locate[6].x_life = 24;
 	locate[6].y_life = 70;
-	locate[6].x_state = 26;
-	locate[6].y_state = 70;
-	locate[6].x_time = 27;
+	locate[6].x_time = 24;
 	locate[6].y_time = 70;
+	locate[6].x_state = 24
+	locate[6].y_state = 70;
 }
 char **ft_get_philo_name(void)
 {
@@ -275,7 +275,7 @@ void	*ft_philo(void *arg)
 	return ((void*)0);
 }
 
-void	ft_create_thread(t_philo_heart **philo_heart, char *str, t_philo_location locate)
+void	ft_create_thread(t_philo_heart **philo_heart, char *str)
 {
 	pthread_t		thread;
 	t_philo_heart	*new_philo_heart;
@@ -286,21 +286,6 @@ void	ft_create_thread(t_philo_heart **philo_heart, char *str, t_philo_location l
 	ft_strcpy(philo->name, str);
 	philo->state = TO_REST;
 	philo->life = MAX_LIFE;
-	philo->locate = locate;
-	move(philo->locate.x_name, philo->locate.y_name);
-	printw("NAME: ");
-	printw(philo->name);
-	move(philo->locate.x_life, philo->locate.y_life);
-	printw("LIFE PONTS: [");
-	printw(ft_itoa(philo->life));
-	printw("]");
-	move(philo->locate.x_state, philo->locate.y_state);
-	printw("STATE: ");
-	printw(philo->state == TO_REST ? "SE REPOSE" : philo->state == TO_EAT ? "MANGE" : philo->state == TO_THINK ? "PENSE" : "UNKNOW");
-	move(philo->locate.x_time, philo->locate.y_time);
-	printw("TIME: ");
-	printw(ft_itoa(philo->time));
-	refresh();
 	new_philo_heart->type = PHILO;
 	new_philo_heart->data = philo;
 	static int i = 1;
@@ -381,17 +366,17 @@ int main (void)
 	t_philo				philo;
 	t_philo_location	locate[7];
 
+	ft_init_philos();
 	ft_bzero(&locate, sizeof(locate));
 	philo_name = ft_get_philo_name();
 	ft_get_philo_locate(locate);
 	count = -1;
 	count2 = -1;
 	philo_heart = NULL;
-	ft_init_curses();
 	while (++count < NB_PHILO)
 		ft_create_wand(&philo_heart);
 	while (--count >= 0)
-		ft_create_thread(&philo_heart, philo_name[count], locate[count]);
+		ft_create_thread(&philo_heart, philo_name[count]);
 	/*ft_dprintf(2, "COUNT: [%d]\n", count);
 	count2 = -1;
 	while (++count2 < NB_PHILO*2)
