@@ -23,16 +23,16 @@ void	ft_get_locate(t_wand_location wand_locate[])
 	wand_locate[6].x_window = 8;
 	wand_locate[6].y_window = 10;
 	wand_locate[6].number = 6;/*
-	locate->x_capsule = 3;
-	locate->y_capsule = 50;
-	locate->x_name = 3;
-	locate->y_name = 50;
-	locate->x_life = 4;
-	locate->y_life = 50;
-	locate->x_state = 5;
-	locate->y_state = 50;
-	locate->x_time = 6;
-		locate->y_time = 50;*/
+								 locate->x_capsule = 3;
+								 locate->y_capsule = 50;
+								 locate->x_name = 3;
+								 locate->y_name = 50;
+								 locate->x_life = 4;
+								 locate->y_life = 50;
+								 locate->x_state = 5;
+								 locate->y_state = 50;
+								 locate->x_time = 6;
+								 locate->y_time = 50;*/
 }
 
 t_philo_location	*ft_get_philo_locate(int wand_number)
@@ -165,7 +165,7 @@ e_ret_status	ft_can_you_do_eat(t_wand *left, t_wand *right, t_philo *data)
 	}
 	if (!ret_right)
 	{
-		////////ft_dprintf(2, "MUTEX_ERROR\n");
+		ft_dprintf(2, "MUTEX_ERROR\n");
 		//exit(1);
 	}
 	if (!ret_left && ret_right)
@@ -176,18 +176,6 @@ e_ret_status	ft_can_you_do_eat(t_wand *left, t_wand *right, t_philo *data)
 		return (NOTHING);
 	else
 		return (ALL);
-}
-
-void	ft_rest(t_philo *philo)
-{
-	philo->life--;
-	//////ft_dprintf(2, "REPOS [%s]:[%zi]PV--\n", philo->name, philo->life);
-}
-
-void	ft_think(t_philo *philo)
-{
-	philo->life--;
-	////////ft_dprintf(2, "THINK [%s]:[%zi]PV--\n", philo->name, philo->life);
 }
 
 void	ft_actualize(WINDOW *capsule, char *data, int x, int y)
@@ -226,6 +214,86 @@ int		ft_waiting(void (*function)(t_philo *philo), t_philo *data, size_t wait_tim
 	return (0);
 }
 
+int		ft_eat(t_philo **data, t_philo_heart **philo)
+{
+	char *str;
+	t_wand	*wand;
+	size_t			begin_time;
+	size_t			now_time;
+
+	str = NULL;
+	(*data)->state = TO_EAT;
+	ft_actualize((*data)->capsule, "MANGE", X_STATE, Y_STATE);
+	ft_sprintf(&str, "%zi", EAT_T);
+	ft_actualize((*data)->capsule, str, X_TIME, Y_TIME);
+	ft_strdel(&str);
+	time( (time_t*)&begin_time );
+	now_time = begin_time;
+	while (now_time < begin_time + EAT_T)
+	{
+		usleep(1000000);
+		time( (time_t*)&now_time );
+		ft_sprintf(&str, "%zi", (begin_time + EAT_T) - now_time);
+		ft_actualize((*data)->capsule, str, X_TIME, Y_TIME);
+		ft_strdel(&str);
+	}
+	pthread_mutex_unlock(&((t_wand*)(*philo)->prev->data)->mutex);
+	pthread_mutex_unlock(&((t_wand*)(*philo)->next->data)->mutex);
+	wand = (t_wand*)(*philo)->next->data;
+	wand->condition = (pthread_cond_t)PTHREAD_COND_INITIALIZER;
+	wand = (t_wand*)(*philo)->prev->data;
+	wand->mutex = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;//RAPIDE
+	(*data)->life = MAX_LIFE;
+	ft_sprintf(&str, "%d", MAX_LIFE);
+	ft_actualize((*data)->capsule, str, X_LIFE, Y_LIFE);
+	return (0);
+}
+
+int		ft_think(int ret, t_philo_heart **philo, t_philo **data)
+{
+	size_t			begin_time;
+	size_t			now_time;
+	size_t			life = 0;
+	char *str;
+	t_wand	*wand;
+
+	time( (time_t*)&begin_time );
+	now_time = begin_time;
+	life = (size_t)((t_philo*)(*philo)->data)->life;
+	ft_actualize((*data)->capsule, "REFLECHIS", X_STATE, Y_STATE);
+	ft_sprintf(&str, "%zi", THINK_T);
+	ft_actualize((*data)->capsule, str, X_TIME, Y_TIME);
+	while (now_time < begin_time + THINK_T)
+	{
+		usleep(1000000);
+		life--;
+		ft_sprintf(&str, "%d", life);
+		ft_actualize((*data)->capsule, str, X_LIFE, Y_LIFE);
+		if (!(size_t)((t_philo*)(*philo)->data)->life)
+		{
+			//////ft_dprintf(2, "[%s] EST MORT\n", (char*)((t_philo*)philo->data)->name);
+			return (1);
+		}
+		time( (time_t*)&now_time );
+		ft_sprintf(&str, "%zi", (begin_time + THINK_T) - now_time);
+		ft_actualize((*data)->capsule, str, X_TIME, Y_TIME);
+		ft_strdel(&str);
+	}
+	if (ret == LEFT)
+	{
+		pthread_mutex_unlock(&((t_wand*)(*philo)->prev->data)->mutex);
+		wand = (t_wand*)(*philo)->prev->data;
+		wand->mutex = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;//RAPIDE
+	}
+	else if (ret == RIGHT)
+	{
+		pthread_mutex_unlock(&((t_wand*)(*philo)->next->data)->mutex);
+		wand = (t_wand*)(*philo)->next->data;
+		wand->condition = (pthread_cond_t)PTHREAD_COND_INITIALIZER;
+	}
+	return (0);
+}
+
 int		ft_eat_or_think(t_philo_heart *philo, t_philo	*data)
 {
 	int ret, ret0, ret1;
@@ -236,99 +304,48 @@ int		ft_eat_or_think(t_philo_heart *philo, t_philo	*data)
 
 	str = NULL;
 	if ((ret = ft_can_you_do_eat(philo->prev->data, philo->next->data, philo->data)) == ALL)
-	{
-		//////ft_dprintf(2, "\033[0;32m0[%s] mange\033[0;m\n", (char*)((t_philo*)philo->data)->name);
-		/*move(data->locate.x_state, data->locate.y_state);
-		printw("STATE: ");
-		printw("MANGE");
-		refresh();*/
-		data->state = TO_EAT;
-		ft_actualize(data->capsule, "MANGE", X_STATE, Y_STATE);
-		ft_sprintf(&str, "%zi", EAT_T);
-		ft_actualize(data->capsule, str, X_TIME, Y_TIME);
-		ft_strdel(&str);
-		time( (time_t*)&begin_time );
-		now_time = begin_time;
-		while (now_time < begin_time + EAT_T)
-		{
-			usleep(1000000);
-			time( (time_t*)&now_time );
-			ft_sprintf(&str, "%zi", (begin_time + EAT_T) - now_time);
-			ft_actualize(data->capsule, str, X_TIME, Y_TIME);
-			ft_strdel(&str);
-		}
-		ret0 = pthread_mutex_unlock(&((t_wand*)philo->prev->data)->mutex);
-		ret1 = pthread_mutex_unlock(&((t_wand*)philo->next->data)->mutex);
-		wand = (t_wand*)philo->next->data;
-		wand->condition = (pthread_cond_t)PTHREAD_COND_INITIALIZER;
-		wand = (t_wand*)philo->prev->data;
-		wand->mutex = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;//RAPIDE
-		data->life = MAX_LIFE;
-		ft_sprintf(&str, "%d", MAX_LIFE);
-		ft_actualize(data->capsule, str, X_LIFE, Y_LIFE);
-		//////ft_dprintf(2, "\033[0;32m1[%s] mange 0:[%d] 1:[%d]\033[0;m\n", (char*)((t_philo*)philo->data)->name, ret0, ret1);
-	}
+		ft_eat(&data, &philo);
 	else if (ret == LEFT || ret == RIGHT)
-	{
-		//////ft_dprintf(2, "0[%s] pense\n", (char*)((t_philo*)philo->data)->name);
-		/*data->state = TO_THINK;
-		move(data->locate.x_state, data->locate.y_state);
-		printw("STATE: ");
-		printw("REFLECHIS");
-		refresh();*/
-		/**/
-
-	size_t			begin_time;
-	size_t			now_time;
-	size_t			life = 0;
-
-	time( (time_t*)&begin_time );
-	now_time = begin_time;
-	life = (size_t)((t_philo*)philo->data)->life;
-	while (now_time < begin_time + THINK_T)
-	{
-		usleep(1000000);
-		life--;
-
-/*		move(data->locate.x, data->locate.y_life);
-		printw("LIFE POINTS: [");
-		printw(ft_itoa(10));
-		printw("/");
-		printw(ft_itoa(MAX_LIFE));
-		printw("]");
-		refresh();*/
-		if (!(size_t)((t_philo*)philo->data)->life)
-		{
-			//////ft_dprintf(2, "[%s] EST MORT\n", (char*)((t_philo*)philo->data)->name);
-			return (1);
-		}
-		time( (time_t*)&now_time );
-	}
-	if (ret == LEFT)
-	{
-		ret0 = pthread_mutex_unlock(&((t_wand*)philo->prev->data)->mutex);
-		wand = (t_wand*)philo->prev->data;
-		wand->mutex = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;//RAPIDE
-	}
-	else if (ret == RIGHT)
-	{
-		ret1 = pthread_mutex_unlock(&((t_wand*)philo->next->data)->mutex);
-		wand = (t_wand*)philo->next->data;
-		wand->condition = (pthread_cond_t)PTHREAD_COND_INITIALIZER;
-	}
-
-		/**/
-//		if (ft_waiting(&ft_think, data, THINK_T))
-//			return (1);
-		//usleep(1000000 * THINK_T);
-		//////ft_dprintf(2, "1[%s] pense\n", (char*)((t_philo*)philo->data)->name);
-		//A FAIRE:Prend une baguette qui peut etre prise par un philosophe qui veut manger
-	}
+		ft_think(ret, &philo, &data);
+	//A FAIRE:Prend une baguette qui peut etre prise par un philosophe qui veut manger
 	else
 	{
 		//////ft_dprintf(2, "\033[0;31mWAITING ... RET: [%d] !\033[0;m\n", ret);
 		usleep(1000000);
 		//ft_eat_or_think(philo, data);
+	}
+	return (0);
+}
+
+int		ft_rest(t_philo_heart **philo, t_philo **data)
+{
+	char *str;
+	size_t			begin_time;
+	size_t			now_time;
+
+	str = NULL;
+	(*data)->state = TO_REST;
+	ft_actualize((*data)->capsule, "SE REPOSE", X_STATE, Y_STATE);
+	ft_sprintf(&str, "%d", REST_T);
+	ft_actualize((*data)->capsule, str, X_TIME, Y_TIME);
+	ft_strdel(&str);
+	time( (time_t*)&begin_time );
+	now_time = begin_time;
+	while (now_time < begin_time + REST_T)
+	{
+		(*data)->life = (*data)->life - 1;
+		usleep(1000000);
+		ft_sprintf(&str, "%d", (*data)->life);
+		ft_actualize((*data)->capsule, str, X_LIFE, Y_LIFE);
+		time( (time_t*)&now_time );
+		ft_sprintf(&str, "%d", (int)((REST_T + begin_time) - now_time));
+		ft_actualize((*data)->capsule, str, X_TIME, Y_TIME);
+		ft_strdel(&str);
+		if (!(*data)->life)
+		{
+			ft_actualize((*data)->capsule, "IS DEAD", X_STATE, Y_STATE);
+			return (1);
+		}
 	}
 	return (0);
 }
@@ -349,38 +366,11 @@ void	*ft_philo(void *arg)
 			//PEUT SOIT MANGER SOIT REFLECHIR, MAIS MANGER EST UNE PRIORITE
 			ft_eat_or_think(philo, data);
 		else if ((e_philo_state)((t_philo*)philo->data)->state == TO_EAT)
-		{
-			data->state = TO_REST;
-			ft_actualize(data->capsule, "SE REPOSE", X_STATE, Y_STATE);
-			ft_sprintf(&str, "%d", REST_T);
-			ft_actualize(data->capsule, str, X_TIME, Y_TIME);
-			ft_strdel(&str);
-			size_t			begin_time;
-			size_t			now_time;
-			time( (time_t*)&begin_time );
-			now_time = begin_time;
-			while (now_time < begin_time + REST_T)
-			{
-				*life = *life - 1;
-				usleep(1000000);
-				ft_sprintf(&str, "%d", *life);
-				ft_actualize(data->capsule, str, X_LIFE, Y_LIFE);
-				time( (time_t*)&now_time );
-				ft_sprintf(&str, "%d", (int)((REST_T + begin_time) - now_time));
-				ft_actualize(data->capsule, str, X_TIME, Y_TIME);
-				ft_strdel(&str);
-				if (!*life)
-				{
-					ft_actualize(data->capsule, "IS DEAD", X_STATE, Y_STATE);
-					return ((void*)1);
-				}
-			}
-		}
+			ft_rest(&philo, &data);
 		else if ((e_philo_state)((t_philo*)philo->data)->state == TO_THINK)
 			//PEUT SOIT MANGER SOIT REFLECHIR, MAIS MANGER EST UNE PRIORITE
 			ft_eat_or_think(philo, data);
 	}
-//	}
 	return ((void*)0);
 }
 
@@ -479,7 +469,7 @@ void	ft_create_wand(t_philo_heart **philo_heart, t_wand_location wand_locate)
 	wand = ft_memalloc(sizeof(t_wand));
 	new_philo_heart->type = WAND;
 	wand->wand_state = FREE;
-//	wand->condition = (pthread_cond_t)PTHREAD_COND_INITIALIZER;
+	//	wand->condition = (pthread_cond_t)PTHREAD_COND_INITIALIZER;
 	//ft_bzero(&wand->mutex, sizeof(pthread_mutex_t));
 	wand->mutex = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;//RAPIDE
 	//wand->mutex = (pthread_mutex_t)PTHREAD_ERRORCHECK_MUTEX_INITIALIZER;//VERIF_ERROR
@@ -520,22 +510,22 @@ void	ft_waiting_to_twerk(void)
 	WINDOW *base;
 	base = subwin(stdscr, 5, 25, 0, 92);
 	wbkgd(base, COLOR_PAIR(2));
-		wmove(base, 0, 0);
-		wprintw(base, "MAX_LIFE: ");
-		wprintw(base, ft_itoa(MAX_LIFE));
-		wmove(base, 1, 0);
-		wprintw(base, "EAT_TIME: ");
-		wprintw(base, ft_itoa(EAT_T));
-		wmove(base, 2, 0);
-		wprintw(base, "REST_TIME: ");
-		wprintw(base, ft_itoa(REST_T));
-		wmove(base, 3, 0);
-		wprintw(base, "THINK_TIME: ");
-		wprintw(base, ft_itoa(THINK_T));
-		wmove(base, 4, 0);
-		wprintw(base, "TIME LEFT: ");
-		wprintw(base, ft_itoa(TIMEOUT));
-		wrefresh(base);
+	wmove(base, 0, 0);
+	wprintw(base, "MAX_LIFE: ");
+	wprintw(base, ft_itoa(MAX_LIFE));
+	wmove(base, 1, 0);
+	wprintw(base, "EAT_TIME: ");
+	wprintw(base, ft_itoa(EAT_T));
+	wmove(base, 2, 0);
+	wprintw(base, "REST_TIME: ");
+	wprintw(base, ft_itoa(REST_T));
+	wmove(base, 3, 0);
+	wprintw(base, "THINK_TIME: ");
+	wprintw(base, ft_itoa(THINK_T));
+	wmove(base, 4, 0);
+	wprintw(base, "TIME LEFT: ");
+	wprintw(base, ft_itoa(TIMEOUT));
+	wrefresh(base);
 	pthread_mutex_unlock(&g_mut);
 	while (now_time < begin_time + TIMEOUT)
 	{
@@ -571,40 +561,16 @@ int main (void)
 	count2 = -1;
 	philo_heart = NULL;
 	ft_init_curses();
-/*	move(0, 0);
-	printw("A problem has been detected and windows been shut down to prevent damage to your computer.");
-	move(1, 0);
-	printw("UNMOUNTABLE_BOOT_VOLUME :");
-	move(2, 0);
-	printw("*** STOP: 0X89F1080ED (0X345A3BC5, 0X62348EB3A, 0X0967EAC4F0)");
-	refresh();*/
 	while (++count < NB_PHILO)
 		ft_create_wand(&philo_heart, wand_locate[count]);
-//	while (1);
 	while (--count >= 0)
 		ft_create_thread(&philo_heart, philo_name[count], philo_locate[count]);
 	/*while (++count < NB_PHILO * 2)
-	{
-		if (philo_heart->type == WAND)
-		{
-			ft_print_baguette(philo_heart);
-		}
-		philo_heart = philo_heart->next;
-	}*/
-	/*//////ft_dprintf(2, "COUNT: [%d]\n", count);
-	count2 = -1;
-	while (++count2 < NB_PHILO*2)
-	{
-		//////ft_dprintf(2, "[%d] [%s]\n", philo_heart->n, philo_heart->type == PHILO ? "PHILO" : "WAND");
-		philo_heart = philo_heart->next;
-	}*/
-	
-	/*while (++count < NB_PHILO * 2)
-	{
-		if (philo_heart->type == PHILO)
-			pthread_join (((t_philo*)philo_heart->data)->thread, NULL);
-		philo_heart = philo_heart->next;
-	}*/
+	  {
+	  if (philo_heart->type == PHILO)
+	  pthread_join (((t_philo*)philo_heart->data)->thread, NULL);
+	  philo_heart = philo_heart->next;
+	  }*/
 	ft_waiting_to_twerk();
 	endwin();
 	ft_tabdel(&philo_name);
