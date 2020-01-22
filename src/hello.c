@@ -60,3 +60,39 @@ WINDOW	*ft_create_philo_window(t_philo *philo)
 	return (capsule);
 }
 
+void	ft_print_wand(t_philo_heart *philo_heart)
+{
+	t_wand	*wand;
+	t_philo		*philo;
+
+	if (philo_heart->type == WAND)
+	{
+		pthread_mutex_lock(&g_mut);
+		wand = philo_heart->data;
+		wmove(wand->capsule, 0, 0);
+		wclrtoeol(wand->capsule);
+		if (philo_heart->prev->type == PHILO)
+		{
+			philo = philo_heart->prev->data;
+			wprintw(wand->capsule, philo->name);
+			if (wand->wand_state == THINK_LEFT || wand->wand_state == EAT_LEFT)
+				wprintw(wand->capsule, ":[|]");
+			else
+				wprintw(wand->capsule, ":[ ]");
+		}
+		if (wand->wand_state == FREE)
+			wprintw(wand->capsule, "MID:[|]");
+		else
+			wprintw(wand->capsule, "MID:[ ]");
+		if (philo_heart->next->type == PHILO)
+		{
+			wprintw(wand->capsule, ", ");
+			if (wand->wand_state == THINK_RIGHT || wand->wand_state == EAT_RIGHT)
+				wprintw(wand->capsule, ":[|]");
+			else
+				wprintw(wand->capsule, ":[ ]");
+		}
+		wrefresh(wand->capsule);
+		pthread_mutex_unlock(&g_mut);
+	}
+}

@@ -113,5 +113,6 @@ typedef struct				s_philo_heart
 void ft_init_curses(void);
 void ft_actualize(WINDOW *capsule, char *data, int x, int y);
 WINDOW *ft_create_philo_window(t_philo *philo);
+void	ft_print_wand(t_philo_heart *philo_heart);
 
 #endif

@@ -34,93 +34,36 @@ t_philo_location	*ft_get_philo_locate(int wand_number)
 	{
 		locate->x_capsule = 3;
 		locate->y_capsule = 50;
-/*		locate->x_name = 3;
-		locate->y_name = 50;
-		locate->x_life = 4;
-		locate->y_life = 50;
-		locate->x_state = 5;
-		locate->y_state = 50;
-		locate->x_time = 6;
-		locate->y_time = 50;*/
 	}
 	else if (wand_number == 6)
 	{
 		locate->x_capsule = 10;
 		locate->y_capsule = 5;
-/*		locate->x_name = 10;
-		locate->y_name = 5;
-		locate->x_life = 11;
-		locate->y_life = 5;
-		locate->x_state = 12;
-		locate->y_state = 5;
-		locate->x_time = 13;
-		locate->y_time = 5;*/
 	}
 	else if (wand_number == 1)
 	{
 		locate->x_capsule = 10;
 		locate->y_capsule = 90;
-/*		locate->x_name = 10;
-		locate->y_name = 90;
-		locate->x_life = 11;
-		locate->y_life = 90;
-		locate->x_state = 12;
-		locate->y_state = 90;
-		locate->x_time = 13;
-		locate->y_time = 90;*/
 	}
 	else if (wand_number == 5)
 	{
 		locate->x_capsule = 17;
 		locate->y_capsule = 5;
-/*		locate->x_name = 17;
-		locate->y_name = 5;
-		locate->x_life = 18;
-		locate->y_life = 5;
-		locate->x_state = 19;
-		locate->y_state = 5;
-		locate->x_time = 20;
-		locate->y_time = 5;*/
 	}
 	else if (wand_number == 2)
 	{
 		locate->x_capsule = 17;
 		locate->y_capsule = 90;
-/*		locate->x_name = 17;
-		locate->y_name = 90;
-		locate->x_life = 18;
-		locate->y_life = 90;
-		locate->x_state = 19;
-		locate->y_state = 90;
-		locate->x_time = 20;
-		locate->y_time = 90;*/
 	}
 	else if (wand_number == 4)
 	{
 		locate->x_capsule = 24;
 		locate->y_capsule = 10;
-/*		locate->x_name = 24;
-		locate->y_name = 10;
-		locate->x_life = 25;
-		locate->y_life = 10;
-		locate->x_state = 26;
-		locate->y_state = 10;
-		locate->x_time = 27;
-		locate->y_time = 10;*/
 	}
-	//else if (wand->locate->number == 3)
 	else if (wand_number == 3)
 	{
 		locate->x_capsule = 24;
 		locate->y_capsule = 80;
-/*		locate->x_name = 24;
-		locate->y_name = 80;
-		locate->x_life = 25;
-		locate->y_life = 80;
-		locate->x_state = 26;
-		locate->y_state = 80;
-		locate->x_time = 27;
-		locate->y_time = 80;*/
 	}
 	return locate;
 }
@@ -203,6 +146,7 @@ int		ft_eat(t_philo **data, t_philo_heart **philo)
 
 	str = NULL;
 	(*data)->state = TO_EAT;
+
 	ft_actualize((*data)->capsule, "MANGE", X_STATE, Y_STATE);
 	ft_sprintf(&str, "%zi", EAT_T);
 	ft_actualize((*data)->capsule, str, X_TIME, Y_TIME);
@@ -219,10 +163,11 @@ int		ft_eat(t_philo **data, t_philo_heart **philo)
 	}
 	pthread_mutex_unlock(&((t_wand*)(*philo)->prev->data)->mutex);
 	pthread_mutex_unlock(&((t_wand*)(*philo)->next->data)->mutex);
-	//wand = (t_wand*)(*philo)->next->data;
-	//wand->condition = (pthread_cond_t)PTHREAD_COND_INITIALIZER;
-	//wand = (t_wand*)(*philo)->prev->data;
-	//wand->mutex = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;//RAPIDE
+	wand = (t_wand*)(*philo)->next->data;
+	wand->wand_state = EAT_LEFT;
+	wand = (t_wand*)(*philo)->prev->data;
+	wand->wand_state = EAT_RIGHT;
+//	oo
 	(*data)->life = MAX_LIFE;
 	ft_sprintf(&str, "%d", MAX_LIFE);
 	ft_actualize((*data)->capsule, str, X_LIFE, Y_LIFE);
@@ -374,7 +319,7 @@ void	ft_create_thread(t_philo_heart **philo_heart, char *str, t_philo_location l
 	{
 		if ((*philo_heart)->type == WAND && (*philo_heart)->prev->type == WAND)
 		{
-			philo->locate = ft_get_philo_locate(((t_wand*)(*philo_heart)->data)->locate->number);
+			philo->locate = ft_get_philo_locate(((t_wand*)(*philo_heart)->prev->data)->locate->number);
 			philo->capsule = ft_create_philo_window(philo);
 			new_philo_heart->next = *philo_heart;
 			new_philo_heart->prev = (*philo_heart)->prev;
@@ -411,13 +356,9 @@ void	ft_create_wand(t_philo_heart **philo_heart, t_wand_location wand_locate)
 	////////ft_dprintf(2, "PTHREAD_MUTEX_INITIALIZER: [%d], PTHREAD_ERRORCHECK_MUTEX_INITIALIZER\n", (int)PTHREAD_MUTEX_INITIALIZER, (int)PTHREAD_ERRORCHECK_MUTEX_INITIALIZER);
 	new_philo_heart->data = wand;
 	wand->locate = locate;
-	pthread_mutex_lock(&g_mut);
+	wand->wand_state = FREE;
 	wand->capsule=subwin(stdscr, 1, 40, locate->x_window, locate->y_window);
 	wbkgd(wand->capsule, COLOR_PAIR(2));
-	wmove(wand->capsule, 0, 0);
-	wprintw(wand->capsule, "MID:[|]");
-	wrefresh(wand->capsule);
-	pthread_mutex_unlock(&g_mut);
 	if (!*philo_heart)
 	{
 		*philo_heart = new_philo_heart;
@@ -432,6 +373,8 @@ void	ft_create_wand(t_philo_heart **philo_heart, t_wand_location wand_locate)
 		(*philo_heart)->prev = new_philo_heart;
 		*philo_heart  = (*philo_heart)->prev;
 	}
+//void	ft_print_wand(t_philo_heart *philo_heart)
+	ft_print_wand(*philo_heart);
 }
 
 void	ft_waiting_to_twerk(void)
