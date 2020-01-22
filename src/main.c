@@ -2,36 +2,50 @@
 
 void	ft_get_wand_locate(t_wand_location locate[])
 {
+	locate[0].x_window = 8;
+	locate[0].y_window = 70;
 	locate[0].y_before = -1;
 	locate[0].x_mid = 8;
 	locate[0].y_mid = 75;
 	locate[0].y_after = -1;
 	locate[0].number = 0;
+	locate[1].x_window = 15;
+	locate[1].y_window = 70;
 	locate[1].y_before = -1;
 	locate[1].x_mid = 15;
 	locate[1].y_mid = 75;
 	locate[1].y_after = -1;
 	locate[1].number = 1;
+	locate[2].x_window = 22;
+	locate[2].y_window = 70;
 	locate[2].y_before = -1;
 	locate[2].x_mid = 22;
 	locate[2].y_mid = 75;
 	locate[2].y_after = -1;
 	locate[2].number = 2;
+	locate[3].x_window = 28;
+	locate[3].y_window = 40;
 	locate[3].y_before = -1;
 	locate[3].x_mid = 28;
 	locate[3].y_mid = 40;
 	locate[3].y_after = -1;
 	locate[3].number = 3;
+	locate[4].x_window = 22;
+	locate[4].y_window = 10;
 	locate[4].y_before = -1;
 	locate[4].x_mid = 22;
 	locate[4].y_mid = 10;
 	locate[4].y_after = -1;
 	locate[4].number = 4;
+	locate[5].x_window = 15;
+	locate[5].y_window = 10;
 	locate[5].y_before = -1;
 	locate[5].x_mid = 15;
 	locate[5].y_mid = 10;
 	locate[5].y_after = -1;
 	locate[5].number = 5;
+	locate[6].x_window = 8;
+	locate[6].y_window = 10;
 	locate[6].y_before = -1;
 	locate[6].x_mid = 8;
 	locate[6].y_mid = 10;
@@ -383,9 +397,11 @@ void	ft_print_baguette(t_philo_heart *philo_heart)
 	t_wand *wand;
 
 	wand = (t_wand*)philo_heart->data;
-	move(wand->locate->x_mid, wand->locate->y_mid);
-	printw("MID:[|]");
-	refresh();
+	wand->locate->capsule=subwin(stdscr, 1, 50, wand->locate->x_window, wand->locate->y_window);
+	wbkgd(wand->locate->capsule, COLOR_PAIR(2));
+	wmove(wand->locate->capsule, 0, 0);
+	wprintw(wand->locate->capsule, "MID:[|]");
+	wrefresh(wand->locate->capsule);
 }
 
 void	ft_create_thread(t_philo_heart **philo_heart, char *str, t_philo_location locate)
@@ -409,32 +425,32 @@ void	ft_create_thread(t_philo_heart **philo_heart, char *str, t_philo_location l
 			ft_get_philo_locate((*philo_heart)->data, &philo->locate);
 			ft_print_philo(philo);
 			wand = (*philo_heart)->prev->data;
-			wand->locate->y_after = wand->locate->y_mid + 9;
-			move(wand->locate->x_mid, wand->locate->y_mid + 7);
-			printw(", ");
-			printw(philo->name);
-			printw(":[");
-			printw(" ");
-			printw("]");
+//			wand->locate->y_after = wand->locate->y_mid + 9;
+//			move(wand->locate->x_mid, wand->locate->y_mid + 7);
+//			printw(", ");
+//			printw(philo->name);
+//			printw(":[");
+//			printw(" ");
+//			printw("]");
 			wand = (*philo_heart)->data;
 			wand->locate->y_before = wand->locate->y_mid;
 			wand->locate->y_mid = wand->locate->y_before + ft_strlen(philo->name) + 6;
-			move(wand->locate->x_mid, wand->locate->y_before);
-			printw(philo->name);
-			printw(":[");
-			printw(" ");
-			printw("], MID:[");
-			printw("|");
-			printw("]");
+//			move(wand->locate->x_mid, wand->locate->y_before);
+///			printw(philo->name);
+//			printw(":[");
+//			printw(" ");
+//			printw("], MID:[");
+//			printw("|");
+//			printw("]");
 			if (wand->locate->y_after > -1)
 			{
-				printw(", ");
+//				printw(", ");
 				wand->locate->y_after = wand->locate->y_mid + 9;
-				philo = (*philo_heart)->next->data;
-				printw(philo->name);
-				printw(":[");
-				printw(" ");
-				printw("]");
+//				philo = (*philo_heart)->next->data;
+//				printw(philo->name);
+//				printw(":[");
+//				printw(" ");
+//				printw("]");
 			}
 			refresh();
 			new_philo_heart->next = *philo_heart;
@@ -459,11 +475,18 @@ void	ft_create_wand(t_philo_heart **philo_heart, t_wand_location wand_locate)
 	locate = ft_memalloc(sizeof(t_wand_location));
 //	locate->x_before = wand_locate.x_before;
 	locate->y_before = wand_locate.y_before;
+	locate->x_window = wand_locate.x_window;
+	locate->y_window = wand_locate.y_window;
 	locate->x_mid = wand_locate.x_mid;
 	locate->y_mid = wand_locate.y_mid;
 //	locate->x_after = wand_locate.x_after;
 	locate->y_after = wand_locate.y_after;
 	locate->number = wand_locate.number;
+	locate->capsule=subwin(stdscr, 1, 40, locate->x_window, locate->y_window);
+	wbkgd(locate->capsule, COLOR_PAIR(2));
+	wmove(locate->capsule, 0, 0);
+	wprintw(locate->capsule, "MID:[|]");
+	wrefresh(locate->capsule);
 	wand = ft_memalloc(sizeof(t_wand));
 	new_philo_heart->type = WAND;
 	wand->wand_state = FREE;
@@ -552,7 +575,7 @@ int main (void)
 	while (++count < NB_PHILO)
 	{
 		ft_create_wand(&philo_heart, wand_locate[count]);
-		ft_print_baguette(philo_heart);
+		//ft_print_baguette(philo_heart);
 	}
 //	while (1);
 	while (--count >= 0)
