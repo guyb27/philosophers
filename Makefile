@@ -17,7 +17,7 @@ NAME = philo
 
 MAKE = make
 CC = gcc
-CFLAGS = #-Wall -Werror -Wextra -Wunused -Wunreachable-code
+CFLAGS = -lncurses#-Wall -Werror -Wextra -Wunused -Wunreachable-code
 CPPFLAGS = -I ./include/
 LDLIBS = -lft
 LDFLAGS = -Llibft/
