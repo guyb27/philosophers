@@ -5,6 +5,8 @@
 
 void ft_init_curses(void)
 {
+	//	g_mut = PTHREAD_MUTEX_INITIALIZER;
+	pthread_mutex_lock(&g_mut);
 	initscr();
 	start_color();
 	init_pair(1,COLOR_WHITE,COLOR_BLUE);
@@ -14,6 +16,14 @@ void ft_init_curses(void)
 	noecho();
 	keypad(stdscr,TRUE);
 	bkgd(COLOR_PAIR(1));
+	move(0, 0);
+	printw("A problem has been detected and windows been shut down to prevent damage to your computer.");
+	move(1, 0);
+	printw("UNMOUNTABLE_BOOT_VOLUME :");
+	move(2, 0);
+	printw("*** STOP: 0X89F1080ED (0X345A3BC5, 0X62348EB3A, 0X0967EAC4F0)");
+	refresh();
+	pthread_mutex_unlock(&g_mut);
 }
 
 int ft_init_philos(void)
@@ -77,24 +87,24 @@ int ft_init_philos(void)
 	move(27,70);
 	printw("Time State: [          ]");
 	refresh();
-/*	do
-	{
+	/*	do
+		{
 		key=getch();
 		if (key==KEY_F(1))
 		{
-			move(5,57);
-			clrtoeol();
-			printw("MANGE");
-			refresh();
+		move(5,57);
+		clrtoeol();
+		printw("MANGE");
+		refresh();
 		}
 		else if (key==KEY_F(2))
 		{
-			move(5,57);
-			clrtoeol();
-			printw("Se repose");
-			refresh();
+		move(5,57);
+		clrtoeol();
+		printw("Se repose");
+		refresh();
 		}
-	} while (key!=ESCAPE);*/
-//	endwin();
+		} while (key!=ESCAPE);*/
+	//	endwin();
 	return 0;
 }

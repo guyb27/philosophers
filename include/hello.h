@@ -26,6 +26,8 @@
 
 #define NB_PHILO 7
 
+pthread_mutex_t g_mut;
+
 typedef enum	s_ret_status
 {
 	NOTHING,
@@ -51,13 +53,11 @@ typedef enum	s_wand_state
 
 typedef struct			s_wand_location
 {
-	WINDOW				*capsule;
 	int					x_window;
 	int					y_window;
-	int					y_before;
-	int					x_mid;
-	int					y_mid;
-	int					y_after;
+	//int					y_before;
+	//int					y_mid;
+	//int					y_after;
 	int					number;
 }						t_wand_location;
 
@@ -67,6 +67,7 @@ typedef struct			s_wand
 	pthread_mutex_t		mutex;
 	pthread_cond_t		condition;
 	t_wand_location		*locate;
+	WINDOW				*capsule;
 }						t_wand;
 
 typedef enum	s_philo_state
@@ -78,6 +79,8 @@ typedef enum	s_philo_state
 
 typedef struct			s_philo_location
 {
+	int					x_capsule;
+	int					y_capsule;
 	int					x_name;
 	int					y_name;
 	int					x_life;
@@ -94,8 +97,9 @@ typedef struct			s_philo
 	size_t				life;
 	size_t				time;
 	e_philo_state		state;
-	t_philo_location	locate;
+	t_philo_location	*locate;
 	pthread_t			thread;
+	WINDOW				*capsule;
 }						t_philo;
 
 typedef struct				s_philo_heart
