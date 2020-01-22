@@ -497,27 +497,30 @@ void	ft_waiting_to_twerk(void)
 
 	time( (time_t*)&begin_time );
 	now_time = begin_time;
-	////ft_dprintf(2, "TIME: [%zi]\n", begin_time);
-		move(0, 100);
-		printw("MAX_LIFE: ");
-		printw(ft_itoa(MAX_LIFE));
-		move(1, 100);
-		printw("EAT_TIME: ");
-		printw(ft_itoa(EAT_T));
-		move(2, 100);
-		printw("REST_TIME: ");
-		printw(ft_itoa(REST_T));
-		move(3, 100);
-		printw("THINK_TIME: ");
-		printw(ft_itoa(THINK_T));
+	WINDOW *base;
+	base = subwin(stdscr, 5, 25, 0, 92);
+	wbkgd(base, COLOR_PAIR(2));
+		wmove(base, 0, 0);
+		wprintw(base, "MAX_LIFE: ");
+		wprintw(base, ft_itoa(MAX_LIFE));
+		wmove(base, 1, 0);
+		wprintw(base, "EAT_TIME: ");
+		wprintw(base, ft_itoa(EAT_T));
+		wmove(base, 2, 0);
+		wprintw(base, "REST_TIME: ");
+		wprintw(base, ft_itoa(REST_T));
+		wmove(base, 3, 0);
+		wprintw(base, "THINK_TIME: ");
+		wprintw(base, ft_itoa(THINK_T));
 	while (now_time < begin_time + TIMEOUT)
 	{
 		usleep(1000000);
 		time( (time_t*)&now_time );
-		move(4, 100);
-		printw("TIME LEFT: ");
-		printw(ft_itoa(TIMEOUT - (now_time - begin_time)));
-		refresh();
+		wmove(base, 4, 0);
+		wclrtoeol(base);
+		wprintw(base, "TIME LEFT: ");
+		wprintw(base, ft_itoa(TIMEOUT - (now_time - begin_time)));
+		wrefresh(base);
 	}
 	//ft_dprintf(2, "Now, it is time... To DAAAAAAAANCE ! ! !\n");
 }
