@@ -26,6 +26,13 @@
 
 #define NB_PHILO 7
 
+#define X_LIFE 1
+#define Y_LIFE 13
+#define X_STATE 2
+#define Y_STATE 7
+#define X_TIME 3
+#define Y_TIME 6
+
 pthread_mutex_t g_mut;
 
 typedef enum	s_ret_status

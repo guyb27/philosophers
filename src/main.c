@@ -156,18 +156,12 @@ e_ret_status	ft_can_you_do_eat(t_wand *left, t_wand *right, t_philo *data)
 
 	ret_left = pthread_mutex_destroy(&left->mutex);
 	ret_right = pthread_mutex_destroy(&right->mutex);
-	//////ft_dprintf(2, "C_Y_D_E ret_left:[real:%d][%s] ret_right:[real:%d][%s], EBUSY:[%d], EINVAL:[%d]\n", ret_left,
-//	ret_left == EBUSY ? "EBUSY(NOT INIT)" : "MUTEX INIT :)",
-//	ret_right,
-//	ret_right == EBUSY ? "EBUSY(NOT INIT)" : "MUTEX INIT :)",
-//	EBUSY, EINVAL);
 	if (!ret_left && !ret_right)
 	{
 		left->mutex = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;//RAPIDE
 		ret_left = pthread_mutex_trylock(&left->mutex);
 		right->mutex = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;//RAPIDE
 		ret_right = pthread_mutex_trylock(&right->mutex);
-	//wand->mutex = (pthread_mutex_t)PTHREAD_ERRORCHECK_MUTEX_INITIALIZER;//VERIF_ERROR
 	}
 	if (!ret_right)
 	{
@@ -196,18 +190,32 @@ void	ft_think(t_philo *philo)
 	////////ft_dprintf(2, "THINK [%s]:[%zi]PV--\n", philo->name, philo->life);
 }
 
+void	ft_actualize(WINDOW *capsule, char *data, int x, int y)
+{
+	pthread_mutex_lock(&g_mut);
+	wmove(capsule, x, y);
+	wclrtoeol(capsule);
+	wprintw(capsule, data);
+	wrefresh(capsule);
+	pthread_mutex_unlock(&g_mut);
+}
+
 int		ft_waiting(void (*function)(t_philo *philo), t_philo *data, size_t wait_time)
 {
 	size_t			begin_time;
 	size_t			now_time;
+	char *str;
 
 	time( (time_t*)&begin_time );
 	now_time = begin_time;
+	ft_actualize(data->capsule, "WAITING...", X_STATE, Y_STATE);
 	while (now_time < begin_time + wait_time)
 	{
 		//////ft_dprintf(2, "now_time: [%zi], begin_time: [%zi]\n", now_time, begin_time);
 		usleep(1000000);
+		ft_actualize(data->capsule, "WAITING...", X_STATE, Y_STATE);
 		function(data);
+		ft_sprintf(&str, "");
 		if (data->life <= 0)
 		{
 			printf("%s est MORT !\n", data->name);
@@ -221,7 +229,12 @@ int		ft_waiting(void (*function)(t_philo *philo), t_philo *data, size_t wait_tim
 int		ft_eat_or_think(t_philo_heart *philo, t_philo	*data)
 {
 	int ret, ret0, ret1;
+	size_t			begin_time;
+	size_t			now_time;
+	char *str;
 	t_wand	*wand;
+
+	str = NULL;
 	if ((ret = ft_can_you_do_eat(philo->prev->data, philo->next->data, philo->data)) == ALL)
 	{
 		//////ft_dprintf(2, "\033[0;32m0[%s] mange\033[0;m\n", (char*)((t_philo*)philo->data)->name);
@@ -230,20 +243,29 @@ int		ft_eat_or_think(t_philo_heart *philo, t_philo	*data)
 		printw("MANGE");
 		refresh();*/
 		data->state = TO_EAT;
-		data->life = MAX_LIFE;
-	pthread_mutex_lock(&g_mut);
-		wmove(data->capsule, 2, 7);
-		wclrtoeol(data->capsule);
-		wprintw(data->capsule, "MANGE");
-		wrefresh(data->capsule);
-	pthread_mutex_unlock(&g_mut);
-		usleep(1000000 * EAT_T);
+		ft_actualize(data->capsule, "MANGE", X_STATE, Y_STATE);
+		ft_sprintf(&str, "%zi", EAT_T);
+		ft_actualize(data->capsule, str, X_TIME, Y_TIME);
+		ft_strdel(&str);
+		time( (time_t*)&begin_time );
+		now_time = begin_time;
+		while (now_time < begin_time + EAT_T)
+		{
+			usleep(1000000);
+			time( (time_t*)&now_time );
+			ft_sprintf(&str, "%zi", (begin_time + EAT_T) - now_time);
+			ft_actualize(data->capsule, str, X_TIME, Y_TIME);
+			ft_strdel(&str);
+		}
 		ret0 = pthread_mutex_unlock(&((t_wand*)philo->prev->data)->mutex);
 		ret1 = pthread_mutex_unlock(&((t_wand*)philo->next->data)->mutex);
 		wand = (t_wand*)philo->next->data;
 		wand->condition = (pthread_cond_t)PTHREAD_COND_INITIALIZER;
 		wand = (t_wand*)philo->prev->data;
 		wand->mutex = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;//RAPIDE
+		data->life = MAX_LIFE;
+		ft_sprintf(&str, "%d", MAX_LIFE);
+		ft_actualize(data->capsule, str, X_LIFE, Y_LIFE);
 		//////ft_dprintf(2, "\033[0;32m1[%s] mange 0:[%d] 1:[%d]\033[0;m\n", (char*)((t_philo*)philo->data)->name, ret0, ret1);
 	}
 	else if (ret == LEFT || ret == RIGHT)
@@ -316,6 +338,7 @@ void	*ft_philo(void *arg)
 	t_philo_heart	*philo;
 	t_philo			*data;
 	size_t			*life;
+	char			*str;
 
 	philo = (t_philo_heart*)arg;
 	data = philo->data;
@@ -327,55 +350,31 @@ void	*ft_philo(void *arg)
 			ft_eat_or_think(philo, data);
 		else if ((e_philo_state)((t_philo*)philo->data)->state == TO_EAT)
 		{
-			//////ft_dprintf(2, "0[%s] se repose\n", (char*)((t_philo*)philo->data)->name);
 			data->state = TO_REST;
-	pthread_mutex_lock(&g_mut);
-		wmove(data->capsule, 2, 7);
-		wprintw(data->capsule, "SE REPOSE");
-		wrefresh(data->capsule);
-	pthread_mutex_unlock(&g_mut);
-			/**///
-
-	size_t			begin_time;
-	size_t			now_time;
-
-	time( (time_t*)&begin_time );
-	now_time = begin_time;
-	while (now_time < begin_time + REST_T)
-	{
-		*life = *life - 1;
-		usleep(1000000);
-	pthread_mutex_lock(&g_mut);
-		wmove(data->capsule, 1, 13);
-		wprintw(data->capsule, ft_itoa(*life));
-		wrefresh(data->capsule);
-	pthread_mutex_unlock(&g_mut);
-	/*	move(data->locate.x_life, data->locate.y_life);
-		printw("LIFE POINTS: [");
-		printw(ft_itoa(*life));
-		printw("/");
-		printw(ft_itoa(MAX_LIFE));
-		printw("]");
-		refresh();*/
-		//////ft_dprintf(2, "[%s][ REPOS ]Perd une vie : [%zi]\n", (char*)((t_philo*)philo->data)->name, *life);
-		//if (!(size_t)((t_philo*)philo->data)->life)
-		if (!*life)
-		{
-	/*	move(data->locate.x_state, data->locate.y_state);
-		printw("STATE: ");
-		printw("IS DEAD");
-		refresh();*/
-			//////ft_dprintf(2, "[%s] EST MORT DE REPOS\n", (char*)((t_philo*)philo->data)->name);
-				return ((void*)1);
-		}
-		time( (time_t*)&now_time );
-	}
-			/**///
-		//	if (ft_waiting(&ft_rest, data, REST_T))
-		//		return ((void*)1);
-			//usleep(1000000 * REST_T);
-			//////ft_dprintf(2, "1[%s] se repose\n", (char*)((t_philo*)philo->data)->name);
-			//PASSE EN REPOS
+			ft_actualize(data->capsule, "SE REPOSE", X_STATE, Y_STATE);
+			ft_sprintf(&str, "%d", REST_T);
+			ft_actualize(data->capsule, str, X_TIME, Y_TIME);
+			ft_strdel(&str);
+			size_t			begin_time;
+			size_t			now_time;
+			time( (time_t*)&begin_time );
+			now_time = begin_time;
+			while (now_time < begin_time + REST_T)
+			{
+				*life = *life - 1;
+				usleep(1000000);
+				ft_sprintf(&str, "%d", *life);
+				ft_actualize(data->capsule, str, X_LIFE, Y_LIFE);
+				time( (time_t*)&now_time );
+				ft_sprintf(&str, "%d", (int)((REST_T + begin_time) - now_time));
+				ft_actualize(data->capsule, str, X_TIME, Y_TIME);
+				ft_strdel(&str);
+				if (!*life)
+				{
+					ft_actualize(data->capsule, "IS DEAD", X_STATE, Y_STATE);
+					return ((void*)1);
+				}
+			}
 		}
 		else if ((e_philo_state)((t_philo*)philo->data)->state == TO_THINK)
 			//PEUT SOIT MANGER SOIT REFLECHIR, MAIS MANGER EST UNE PRIORITE
@@ -388,7 +387,7 @@ void	*ft_philo(void *arg)
 WINDOW	*ft_create_philo_window(t_philo *philo)
 {
 	WINDOW *capsule;
-	//dprintf(2, "PHILO: [%s], x:[%d], y:[%d]\n", philo->name, philo->locate->x_capsule, philo->locate->y_capsule);
+
 	pthread_mutex_lock(&g_mut);
 	capsule = subwin(stdscr, 4, 25, philo->locate->x_capsule, philo->locate->y_capsule);
 	wbkgd(capsule, COLOR_PAIR(3));
@@ -406,23 +405,6 @@ WINDOW	*ft_create_philo_window(t_philo *philo)
 	wprintw(capsule, ft_itoa(philo->time));
 	wrefresh(capsule);
 	pthread_mutex_unlock(&g_mut);
-	/*
-	move(philo->locate.x_name, philo->locate.y_name);
-	printw("NAME: ");
-	printw(philo->name);
-	move(philo->locate.x_life, philo->locate.y_life);
-	printw("LIFE POINTS: [");
-	printw(ft_itoa(philo->life));
-	printw("/");
-	printw(ft_itoa(MAX_LIFE));
-	printw("]");
-	move(philo->locate.x_state, philo->locate.y_state);
-	printw("STATE: ");
-	printw(philo->state == TO_REST ? "SE REPOSE" : philo->state == TO_EAT ? "MANGE" : philo->state == TO_THINK ? "PENSE" : "UNKNOW");
-	move(philo->locate.x_time, philo->locate.y_time);
-	printw("TIME: ");
-	printw(ft_itoa(philo->time));
-	refresh();*/
 	return (capsule);
 }
 
@@ -432,9 +414,10 @@ void	ft_print_baguette(t_philo_heart *heart)
 	t_wand *wand;
 
 	wand = heart->data;
+	philo = heart->prev->data;
 	pthread_mutex_lock(&g_mut);
 	wmove(wand->capsule, 0, 0);
-	philo = heart->prev->data;
+	wclrtoeol(wand->capsule);
 	wprintw(wand->capsule, philo->name);
 	wprintw(wand->capsule,":[ ], MID:[|]");
 	if (heart->next->type == PHILO)
