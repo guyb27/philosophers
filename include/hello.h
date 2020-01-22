@@ -21,7 +21,7 @@
 #define MAX_LIFE 50
 #define EAT_T 6
 #define REST_T 4
-#define THINK_T 3
+#define THINK_T 30
 #define TIMEOUT 10003
 
 #define NB_PHILO 7
@@ -121,6 +121,6 @@ typedef struct				s_philo_heart
 //void Hello(void);
 
 void ft_init_curses(void);
-int ft_init_philos(void);
+void ft_actualize(WINDOW *capsule, char *data, int x, int y);
 
 #endif
