@@ -22,17 +22,7 @@ void	ft_get_locate(t_wand_location wand_locate[])
 	wand_locate[5].number = 5;
 	wand_locate[6].x_window = 8;
 	wand_locate[6].y_window = 10;
-	wand_locate[6].number = 6;/*
-								 locate->x_capsule = 3;
-								 locate->y_capsule = 50;
-								 locate->x_name = 3;
-								 locate->y_name = 50;
-								 locate->x_life = 4;
-								 locate->y_life = 50;
-								 locate->x_state = 5;
-								 locate->y_state = 50;
-								 locate->x_time = 6;
-								 locate->y_time = 50;*/
+	wand_locate[6].number = 6;
 }
 
 t_philo_location	*ft_get_philo_locate(int wand_number)
@@ -44,93 +34,93 @@ t_philo_location	*ft_get_philo_locate(int wand_number)
 	{
 		locate->x_capsule = 3;
 		locate->y_capsule = 50;
-		locate->x_name = 3;
+/*		locate->x_name = 3;
 		locate->y_name = 50;
 		locate->x_life = 4;
 		locate->y_life = 50;
 		locate->x_state = 5;
 		locate->y_state = 50;
 		locate->x_time = 6;
-		locate->y_time = 50;
+		locate->y_time = 50;*/
 	}
 	else if (wand_number == 6)
 	{
 		locate->x_capsule = 10;
 		locate->y_capsule = 5;
-		locate->x_name = 10;
+/*		locate->x_name = 10;
 		locate->y_name = 5;
 		locate->x_life = 11;
 		locate->y_life = 5;
 		locate->x_state = 12;
 		locate->y_state = 5;
 		locate->x_time = 13;
-		locate->y_time = 5;
+		locate->y_time = 5;*/
 	}
 	else if (wand_number == 1)
 	{
 		locate->x_capsule = 10;
 		locate->y_capsule = 90;
-		locate->x_name = 10;
+/*		locate->x_name = 10;
 		locate->y_name = 90;
 		locate->x_life = 11;
 		locate->y_life = 90;
 		locate->x_state = 12;
 		locate->y_state = 90;
 		locate->x_time = 13;
-		locate->y_time = 90;
+		locate->y_time = 90;*/
 	}
 	else if (wand_number == 5)
 	{
 		locate->x_capsule = 17;
 		locate->y_capsule = 5;
-		locate->x_name = 17;
+/*		locate->x_name = 17;
 		locate->y_name = 5;
 		locate->x_life = 18;
 		locate->y_life = 5;
 		locate->x_state = 19;
 		locate->y_state = 5;
 		locate->x_time = 20;
-		locate->y_time = 5;
+		locate->y_time = 5;*/
 	}
 	else if (wand_number == 2)
 	{
 		locate->x_capsule = 17;
 		locate->y_capsule = 90;
-		locate->x_name = 17;
+/*		locate->x_name = 17;
 		locate->y_name = 90;
 		locate->x_life = 18;
 		locate->y_life = 90;
 		locate->x_state = 19;
 		locate->y_state = 90;
 		locate->x_time = 20;
-		locate->y_time = 90;
+		locate->y_time = 90;*/
 	}
 	else if (wand_number == 4)
 	{
 		locate->x_capsule = 24;
 		locate->y_capsule = 10;
-		locate->x_name = 24;
+/*		locate->x_name = 24;
 		locate->y_name = 10;
 		locate->x_life = 25;
 		locate->y_life = 10;
 		locate->x_state = 26;
 		locate->y_state = 10;
 		locate->x_time = 27;
-		locate->y_time = 10;
+		locate->y_time = 10;*/
 	}
 	//else if (wand->locate->number == 3)
 	else if (wand_number == 3)
 	{
 		locate->x_capsule = 24;
 		locate->y_capsule = 80;
-		locate->x_name = 24;
+/*		locate->x_name = 24;
 		locate->y_name = 80;
 		locate->x_life = 25;
 		locate->y_life = 80;
 		locate->x_state = 26;
 		locate->y_state = 80;
 		locate->x_time = 27;
-		locate->y_time = 80;
+		locate->y_time = 80;*/
 	}
 	return locate;
 }
@@ -243,33 +233,23 @@ int		ft_think(int ret, t_philo_heart **philo, t_philo **data)
 {
 	size_t			begin_time;
 	size_t			now_time;
-	size_t			life = 0;
 	char *str;
 	t_wand	*wand;
 
 	if (ret == LEFT)
-	{
 		pthread_mutex_unlock(&((t_wand*)(*philo)->prev->data)->mutex);
-	//	wand = (t_wand*)(*philo)->prev->data;
-	//	wand->mutex = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;//RAPIDE
-	}
 	else if (ret == RIGHT)
-	{
 		pthread_mutex_unlock(&((t_wand*)(*philo)->next->data)->mutex);
-	//	wand = (t_wand*)(*philo)->next->data;
-	//	wand->condition = (pthread_cond_t)PTHREAD_COND_INITIALIZER;
-	}
 	time( (time_t*)&begin_time );
 	now_time = begin_time;
-	life = (size_t)((t_philo*)(*philo)->data)->life;
 	ft_actualize((*data)->capsule, "REFLECHIS", X_STATE, Y_STATE);
 	ft_sprintf(&str, "%zi", THINK_T);
 	ft_actualize((*data)->capsule, str, X_TIME, Y_TIME);
 	while (now_time < begin_time + THINK_T)
 	{
 		usleep(1000000);
-		life--;
-		ft_sprintf(&str, "%d", life);
+		(*data)->life--;
+		ft_sprintf(&str, "%d", (*data)->life);
 		ft_actualize((*data)->capsule, str, X_LIFE, Y_LIFE);
 		if (!(size_t)((t_philo*)(*philo)->data)->life)
 			return (1);
@@ -281,7 +261,7 @@ int		ft_think(int ret, t_philo_heart **philo, t_philo **data)
 	return (0);
 }
 
-int		ft_eat_or_think(t_philo_heart *philo, t_philo	*data)
+int		ft_eat_or_think(t_philo_heart **philo, t_philo **data)
 {
 	int ret, ret0, ret1;
 	size_t			begin_time;
@@ -290,17 +270,11 @@ int		ft_eat_or_think(t_philo_heart *philo, t_philo	*data)
 	t_wand	*wand;
 
 	str = NULL;
-	if ((ret = ft_can_you_do_eat(philo->prev->data, philo->next->data, philo->data)) == ALL)
-		ft_eat(&data, &philo);
+	if ((ret = ft_can_you_do_eat((*philo)->prev->data, (*philo)->next->data, (*philo)->data)) == ALL)
+		ft_eat(data, philo);
 	else if (ret == LEFT || ret == RIGHT)
-		ft_think(ret, &philo, &data);
+		ft_think(ret, philo, data);
 	//A FAIRE:Prend une baguette qui peut etre prise par un philosophe qui veut manger
-	else
-	{
-		//////ft_dprintf(2, "\033[0;31mWAITING ... RET: [%d] !\033[0;m\n", ret);
-		usleep(1000000);
-		//ft_eat_or_think(philo, data);
-	}
 	return (0);
 }
 
@@ -341,48 +315,22 @@ void	*ft_philo(void *arg)
 {
 	t_philo_heart	*philo;
 	t_philo			*data;
-	size_t			*life;
 	char			*str;
 
 	philo = (t_philo_heart*)arg;
 	data = philo->data;
-	life = &((t_philo*)philo->data)->life;
 	while ((size_t)((t_philo*)philo->data)->life)
 	{
 		if ((e_philo_state)((t_philo*)philo->data)->state == TO_REST)
 			//PEUT SOIT MANGER SOIT REFLECHIR, MAIS MANGER EST UNE PRIORITE
-			ft_eat_or_think(philo, data);
+			ft_eat_or_think(&philo, &data);
 		else if ((e_philo_state)((t_philo*)philo->data)->state == TO_EAT)
 			ft_rest(&philo, &data);
 		else if ((e_philo_state)((t_philo*)philo->data)->state == TO_THINK)
 			//PEUT SOIT MANGER SOIT REFLECHIR, MAIS MANGER EST UNE PRIORITE
-			ft_eat_or_think(philo, data);
+			ft_eat_or_think(&philo, &data);
 	}
 	return ((void*)0);
-}
-
-WINDOW	*ft_create_philo_window(t_philo *philo)
-{
-	WINDOW *capsule;
-
-	pthread_mutex_lock(&g_mut);
-	capsule = subwin(stdscr, 4, 25, philo->locate->x_capsule, philo->locate->y_capsule);
-	wbkgd(capsule, COLOR_PAIR(3));
-	wmove(capsule, 0, 0);
-	wprintw(capsule, "NAME: ");
-	wprintw(capsule, philo->name);
-	wmove(capsule, 1, 0);
-	wprintw(capsule, "LIFE POINTS: ");
-	wprintw(capsule, ft_itoa(philo->life));
-	wmove(capsule, 2, 0);
-	wprintw(capsule, "STATE: ");
-	wprintw(capsule, philo->state == TO_REST ? "SE REPOSE" : philo->state == TO_EAT ? "MANGE" : philo->state == TO_THINK ? "PENSE" : "UNKNOW");
-	wmove(capsule, 3, 0);
-	wprintw(capsule, "TIME: ");
-	wprintw(capsule, ft_itoa(philo->time));
-	wrefresh(capsule);
-	pthread_mutex_unlock(&g_mut);
-	return (capsule);
 }
 
 void	ft_print_baguette(t_philo_heart *heart)
@@ -490,7 +438,10 @@ void	ft_waiting_to_twerk(void)
 {
 	size_t			begin_time;
 	size_t			now_time;
+	char			*str;
+	int				key = 0;
 
+	str = NULL;
 	time( (time_t*)&begin_time );
 	now_time = begin_time;
 	pthread_mutex_lock(&g_mut);
@@ -518,15 +469,26 @@ void	ft_waiting_to_twerk(void)
 	{
 		usleep(1000000);
 		time( (time_t*)&now_time );
-		pthread_mutex_lock(&g_mut);
-		wmove(base, 4, 0);
-		wclrtoeol(base);
-		wprintw(base, "TIME LEFT: ");
-		wprintw(base, ft_itoa(TIMEOUT - (now_time - begin_time)));
-		wrefresh(base);
-		pthread_mutex_unlock(&g_mut);
+		ft_sprintf(&str, "%zi", TIMEOUT - (now_time - begin_time));
+		ft_actualize(base, str, X_TIMEOUT, Y_TIMEOUT);
+		ft_strdel(&str);
 	}
 	//////ft_dprintf(2, "Now, it is time... To DAAAAAAAANCE ! ! !\n");
+	pthread_mutex_lock(&g_mut);
+	clear();
+	while (key != 27)
+	{
+		bkgd(COLOR_PAIR(2));
+		usleep(1000000);
+		refresh();
+		key = getch();
+		bkgd(COLOR_PAIR(3));
+		usleep(1000000);
+		refresh();
+		bkgd(COLOR_PAIR(1));
+		usleep(1000000);
+		refresh();
+	}
 }
 
 int main (void)

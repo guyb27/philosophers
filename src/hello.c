@@ -14,6 +14,7 @@ void ft_init_curses(void)
 	init_pair(3,COLOR_RED,COLOR_WHITE);
 	curs_set(0);
 	noecho();
+	nodelay(stdscr, true);
 	keypad(stdscr,TRUE);
 	bkgd(COLOR_PAIR(1));
 	move(0, 0);
@@ -35,3 +36,27 @@ void		ft_actualize(WINDOW *capsule, char *data, int x, int y)
 	wrefresh(capsule);
 	pthread_mutex_unlock(&g_mut);
 }
+WINDOW	*ft_create_philo_window(t_philo *philo)
+{
+	WINDOW *capsule;
+
+	pthread_mutex_lock(&g_mut);
+	capsule = subwin(stdscr, 4, 25, philo->locate->x_capsule, philo->locate->y_capsule);
+	wbkgd(capsule, COLOR_PAIR(3));
+	wmove(capsule, 0, 0);
+	wprintw(capsule, "NAME: ");
+	wprintw(capsule, philo->name);
+	wmove(capsule, 1, 0);
+	wprintw(capsule, "LIFE POINTS: ");
+	wprintw(capsule, ft_itoa(philo->life));
+	wmove(capsule, 2, 0);
+	wprintw(capsule, "STATE: ");
+	wprintw(capsule, philo->state == TO_REST ? "SE REPOSE" : philo->state == TO_EAT ? "MANGE" : philo->state == TO_THINK ? "PENSE" : "UNKNOW");
+	wmove(capsule, 3, 0);
+	wprintw(capsule, "TIME: ");
+	wprintw(capsule, ft_itoa(philo->time));
+	wrefresh(capsule);
+	pthread_mutex_unlock(&g_mut);
+	return (capsule);
+}
+

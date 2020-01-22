@@ -21,8 +21,8 @@
 #define MAX_LIFE 50
 #define EAT_T 6
 #define REST_T 4
-#define THINK_T 30
-#define TIMEOUT 10003
+#define THINK_T 3
+#define TIMEOUT 30
 
 #define NB_PHILO 7
 
@@ -32,6 +32,8 @@
 #define Y_STATE 7
 #define X_TIME 3
 #define Y_TIME 6
+#define X_TIMEOUT 4
+#define Y_TIMEOUT 11
 
 pthread_mutex_t g_mut;
 
@@ -62,9 +64,6 @@ typedef struct			s_wand_location
 {
 	int					x_window;
 	int					y_window;
-	//int					y_before;
-	//int					y_mid;
-	//int					y_after;
 	int					number;
 }						t_wand_location;
 
@@ -88,14 +87,6 @@ typedef struct			s_philo_location
 {
 	int					x_capsule;
 	int					y_capsule;
-	int					x_name;
-	int					y_name;
-	int					x_life;
-	int					y_life;
-	int					x_state;
-	int					y_state;
-	int					x_time;
-	int					y_time;
 }						t_philo_location;
 
 typedef struct			s_philo
@@ -111,7 +102,6 @@ typedef struct			s_philo
 
 typedef struct				s_philo_heart
 {
-//	int						n;//POUR LE DEBUG
 	void					*data;
 	e_type_philo_struct		type;
 	struct s_philo_heart	*next;
@@ -122,5 +112,6 @@ typedef struct				s_philo_heart
 
 void ft_init_curses(void);
 void ft_actualize(WINDOW *capsule, char *data, int x, int y);
+WINDOW *ft_create_philo_window(t_philo *philo);
 
 #endif
