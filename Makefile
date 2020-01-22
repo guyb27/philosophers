@@ -45,7 +45,7 @@ DEL_DSYMFILE = $(shell [ -e a.out.dSYM ] && echo rm -rf a.out.dSYM)
 all: $(NAME)
 
 $(NAME): init lib $(OBJS)
-	@$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LDFLAGS) $(LDLIBS) -Fframeworks -framework SDL2 -rpath frameworks -lpthread -D_REENTRANT
+	@$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LDFLAGS) $(LDLIBS) -lpthread -D_REENTRANT
 	@printf "\e[?25h"	# set cursor to visible
 	@tput setaf 10 	# set green color
 	@tput bold

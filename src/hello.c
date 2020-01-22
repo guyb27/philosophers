@@ -76,9 +76,9 @@ void	ft_print_wand(t_philo_heart *philo_heart)
 			philo = philo_heart->prev->data;
 			wprintw(wand->capsule, philo->name);
 			if (wand->wand_state == THINK_LEFT || wand->wand_state == EAT_LEFT)
-				wprintw(wand->capsule, ":[|]");
+				wprintw(wand->capsule, ":[|], ");
 			else
-				wprintw(wand->capsule, ":[ ]");
+				wprintw(wand->capsule, ":[ ], ");
 		}
 		if (wand->wand_state == FREE)
 			wprintw(wand->capsule, "MID:[|]");
@@ -87,6 +87,8 @@ void	ft_print_wand(t_philo_heart *philo_heart)
 		if (philo_heart->next->type == PHILO)
 		{
 			wprintw(wand->capsule, ", ");
+			philo = philo_heart->prev->data;
+			wprintw(wand->capsule, philo->name);
 			if (wand->wand_state == THINK_RIGHT || wand->wand_state == EAT_RIGHT)
 				wprintw(wand->capsule, ":[|]");
 			else

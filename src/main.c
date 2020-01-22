@@ -147,6 +147,10 @@ int		ft_eat(t_philo **data, t_philo_heart **philo)
 	str = NULL;
 	(*data)->state = TO_EAT;
 
+	((t_wand*)(*philo)->next->data)->wand_state = EAT_LEFT;
+	((t_wand*)(*philo)->prev->data)->wand_state = EAT_RIGHT;
+	ft_print_wand((*philo)->prev);
+	ft_print_wand((*philo)->next);
 	ft_actualize((*data)->capsule, "MANGE", X_STATE, Y_STATE);
 	ft_sprintf(&str, "%zi", EAT_T);
 	ft_actualize((*data)->capsule, str, X_TIME, Y_TIME);
