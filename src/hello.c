@@ -60,10 +60,20 @@ WINDOW	*ft_create_philo_window(t_philo *philo)
 	return (capsule);
 }
 
-void		ft_actualize_wand(t_wand **wand, e_wand_state new_state)
+void		ft_actualize_wand(t_philo_heart **heart, e_wand_state new_state)
 {
-	(*wand)->state = new_state;
-	ft_actualize((*wand)->capsule, "ok", 0, 0);
+	char	*str;
+
+	str = NULL;
+	//(*wand)->wand_state = new_state;
+	((t_wand*)(*heart)->data)->wand_state = new_state;
+	ft_sprintf(&str, "%s:[ ], MID:[0], %s:[ ]",
+	((t_philo*)(*heart)->prev->data)->name,
+	((t_philo*)(*heart)->next->data)->name
+	);
+	//ft_actualize((*wand)->capsule, str, 0, 0);
+	ft_actualize(((t_wand*)(*heart)->data)->capsule, str, 0, 0);
+	ft_strdel(&str);
 }
 
 void	ft_print_wand(t_philo_heart *philo_heart)//Faire une fonction plus propre qui utilise ft_actualize

@@ -64,6 +64,9 @@ typedef struct			s_wand_location
 {
 	int					x_window;
 	int					y_window;
+	int					y_before;
+	int					y_mid;
+	int					y_after;
 	int					number;
 }						t_wand_location;
 
@@ -114,5 +117,6 @@ void ft_init_curses(void);
 void ft_actualize(WINDOW *capsule, char *data, int x, int y);
 WINDOW *ft_create_philo_window(t_philo *philo);
 void	ft_print_wand(t_philo_heart *philo_heart);
+void	ft_actualize_wand(t_philo_heart **heart, e_wand_state new_state);
 
 #endif
