@@ -147,8 +147,8 @@ int		ft_eat(t_philo **data, t_philo_heart **philo)
 	str = NULL;
 	(*data)->state = TO_EAT;
 
-	((t_wand*)(*philo)->next->data)->wand_state = EAT_LEFT;
-	((t_wand*)(*philo)->prev->data)->wand_state = EAT_RIGHT;
+	((t_wand*)(*philo)->prev->data)->wand_state = EAT_LEFT;
+	((t_wand*)(*philo)->next->data)->wand_state = EAT_RIGHT;
 	ft_print_wand((*philo)->prev);
 	ft_print_wand((*philo)->next);
 	ft_actualize((*data)->capsule, "MANGE", X_STATE, Y_STATE);
@@ -268,6 +268,7 @@ void	*ft_philo(void *arg)
 
 	philo = (t_philo_heart*)arg;
 	data = philo->data;
+	//while (1);
 	while ((size_t)((t_philo*)philo->data)->life)
 	{
 		if ((e_philo_state)((t_philo*)philo->data)->state == TO_REST)
@@ -459,6 +460,7 @@ int main (void)
 	ft_init_curses();
 	while (++count < NB_PHILO)
 		ft_create_wand(&philo_heart, wand_locate[count]);
+	//while(1);
 	while (--count >= 0)
 		ft_create_thread(&philo_heart, philo_name[count], philo_locate[count]);
 	/*while (++count < NB_PHILO * 2)

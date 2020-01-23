@@ -60,7 +60,13 @@ WINDOW	*ft_create_philo_window(t_philo *philo)
 	return (capsule);
 }
 
-void	ft_print_wand(t_philo_heart *philo_heart)
+void		ft_actualize_wand(t_wand **wand, e_wand_state new_state)
+{
+	(*wand)->state = new_state;
+	ft_actualize((*wand)->capsule, "ok", 0, 0);
+}
+
+void	ft_print_wand(t_philo_heart *philo_heart)//Faire une fonction plus propre qui utilise ft_actualize
 {
 	t_wand	*wand;
 	t_philo		*philo;
