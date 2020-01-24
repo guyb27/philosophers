@@ -72,7 +72,7 @@ typedef struct			s_wand_location
 
 typedef struct			s_wand
 {
-	e_wand_state		wand_state;
+	e_wand_state		wand_state;//REMPLACER PAR STATE
 	pthread_mutex_t		mutex;
 	pthread_cond_t		condition;
 	t_wand_location		*locate;
@@ -116,7 +116,7 @@ typedef struct				s_philo_heart
 void ft_init_curses(void);
 void ft_actualize(WINDOW *capsule, char *data, int x, int y);
 WINDOW *ft_create_philo_window(t_philo *philo);
-void	ft_print_wand(t_philo_heart *philo_heart);
+void	ft_print_wand(t_philo_heart **philo_heart);
 void	ft_actualize_wand(t_philo_heart **heart, e_wand_state new_state);
 
 #endif
