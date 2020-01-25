@@ -160,6 +160,7 @@ int		ft_think(int ret, t_philo_heart **philo, t_philo **data)
 		ft_actualize((*data)->capsule, str, X_TIME, Y_TIME);
 		ft_strdel(&str);
 	}
+	ft_think_end_actualize(philo, ret);
 	return (0);
 }
 

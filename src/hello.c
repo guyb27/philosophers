@@ -119,6 +119,7 @@ void	ft_eat_end_actualize(t_philo_heart **philo)
 }
 
 void	ft_think_begin_actualize(t_philo_heart **philo, int wand)
+//FAUDRAI QUE LA FONCTION RENVOIE UN SIZE_T QUI CONTIENT L HEURE ACTUELLE (BEGIN_TIME)
 {
 	char	*str;
 
@@ -137,6 +138,16 @@ void	ft_think_begin_actualize(t_philo_heart **philo, int wand)
 	ft_sprintf(&str, "%zi", THINK_T);
 	ft_actualize(((t_philo*)(*philo)->data)->capsule, str, X_TIME, Y_TIME);
 	ft_strdel(&str);
+}
+
+void	ft_think_end_actualize(t_philo_heart **philo, int wand)
+{
+	if (wand == LEFT)
+	{
+	}
+	else if (wand == RIGHT)
+	{
+	}
 }
 
 void	ft_print_wand(t_philo_heart **philo_heart)//Faire une fonction plus propre qui utilise ft_actualize
