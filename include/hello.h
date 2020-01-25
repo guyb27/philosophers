@@ -118,5 +118,8 @@ void ft_actualize(WINDOW *capsule, char *data, int x, int y);
 WINDOW *ft_create_philo_window(t_philo *philo);
 void	ft_print_wand(t_philo_heart **philo_heart);
 void	ft_actualize_wand(t_philo_heart **heart, e_wand_state new_state);
+void	ft_eat_begin_actualize(t_philo_heart **philo);
+void	ft_eat_end_actualize(t_philo_heart **philo);
+void	ft_think_begin_actualize(t_philo_heart **philo, int wand);
 
 #endif

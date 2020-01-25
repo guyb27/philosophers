@@ -87,19 +87,8 @@ e_ret_status	ft_can_you_do_eat(t_wand *left, t_wand *right, t_philo *data)
 	int		ret_left = 0;
 	int		ret_right = 0;
 
-	//ret_left = pthread_mutex_destroy(&left->mutex);
-	//ret_right = pthread_mutex_destroy(&right->mutex);
-//	if (!ret_left && !ret_right)
-//	{
-		//left->mutex = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;//RAPIDE
-		ret_left = pthread_mutex_trylock(&left->mutex);
-		//right->mutex = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;//RAPIDE
-		ret_right = pthread_mutex_trylock(&right->mutex);
-//	}
-	/*if (!ret_right)
-	{
-		//exit(1);
-	}*/
+	ret_left = pthread_mutex_trylock(&left->mutex);
+	ret_right = pthread_mutex_trylock(&right->mutex);
 	if (!ret_left && ret_right)
 		return (LEFT);
 	else if (ret_left && !ret_right)
@@ -110,31 +99,6 @@ e_ret_status	ft_can_you_do_eat(t_wand *left, t_wand *right, t_philo *data)
 		return (ALL);
 }
 
-int		ft_waiting(void (*function)(t_philo *philo), t_philo *data, size_t wait_time)
-{
-	size_t			begin_time;
-	size_t			now_time;
-	char *str;
-
-	time( (time_t*)&begin_time );
-	now_time = begin_time;
-	ft_actualize(data->capsule, "WAITING...", X_STATE, Y_STATE);
-	while (now_time < begin_time + wait_time)
-	{
-		usleep(1000000);
-		ft_actualize(data->capsule, "WAITING...", X_STATE, Y_STATE);
-		function(data);
-		ft_sprintf(&str, "");
-		if (data->life <= 0)
-		{
-			printf("%s est MORT !\n", data->name);
-			return (1);
-		}
-		time( (time_t*)&now_time );
-	}
-	return (0);
-}
-
 int		ft_eat(t_philo **data, t_philo_heart **philo)
 {
 	char *str;
@@ -143,21 +107,10 @@ int		ft_eat(t_philo **data, t_philo_heart **philo)
 	size_t			now_time;
 
 	str = NULL;
-	(*data)->state = TO_EAT;
-
-	ft_actualize_wand((t_philo_heart**)&(*philo)->prev, EAT_LEFT);
-	ft_actualize_wand((t_philo_heart**)&((*philo)->next), EAT_RIGHT);
-//	((t_wand*)(*philo)->prev->data)->wand_state = EAT_LEFT;
-//	((t_wand*)(*philo)->next->data)->wand_state = EAT_RIGHT;
-//	ft_print_wand((*philo)->prev);
-//	ft_print_wand((*philo)->next);
-	ft_actualize((*data)->capsule, "MANGE", X_STATE, Y_STATE);
-	ft_sprintf(&str, "%zi", EAT_T);
-	ft_actualize((*data)->capsule, str, X_TIME, Y_TIME);
-	ft_strdel(&str);
+	ft_eat_begin_actualize(philo);
 	time( (time_t*)&begin_time );
 	now_time = begin_time;
-	while (now_time < begin_time + EAT_T)
+	while (now_time <= begin_time + EAT_T)
 	{
 		usleep(1000000);
 		time( (time_t*)&now_time );
@@ -165,16 +118,7 @@ int		ft_eat(t_philo **data, t_philo_heart **philo)
 		ft_actualize((*data)->capsule, str, X_TIME, Y_TIME);
 		ft_strdel(&str);
 	}
-	pthread_mutex_unlock(&((t_wand*)(*philo)->prev->data)->mutex);
-	pthread_mutex_unlock(&((t_wand*)(*philo)->next->data)->mutex);
-	wand = (t_wand*)(*philo)->next->data;
-	wand->wand_state = EAT_LEFT;
-	wand = (t_wand*)(*philo)->prev->data;
-	wand->wand_state = EAT_RIGHT;
-//	oo
-	(*data)->life = MAX_LIFE;
-	ft_sprintf(&str, "%d", MAX_LIFE);
-	ft_actualize((*data)->capsule, str, X_LIFE, Y_LIFE);
+	ft_eat_end_actualize(philo);
 	return (0);
 }
 
@@ -185,15 +129,24 @@ int		ft_think(int ret, t_philo_heart **philo, t_philo **data)
 	char *str;
 	t_wand	*wand;
 
+	/*
 	if (ret == LEFT)
+	{
 		pthread_mutex_unlock(&((t_wand*)(*philo)->prev->data)->mutex);
+		ft_actualize_wand((t_philo_heart**)&(*philo)->prev, THINK_LEFT);
+	}
 	else if (ret == RIGHT)
+	{
 		pthread_mutex_unlock(&((t_wand*)(*philo)->next->data)->mutex);
-	time( (time_t*)&begin_time );
-	now_time = begin_time;
+		ft_actualize_wand((t_philo_heart**)&(*philo)->prev, THINK_RIGHT);
+	}
 	ft_actualize((*data)->capsule, "REFLECHIS", X_STATE, Y_STATE);
 	ft_sprintf(&str, "%zi", THINK_T);
 	ft_actualize((*data)->capsule, str, X_TIME, Y_TIME);
+	*/
+	ft_think_begin_actualize(philo, ret);
+	time( (time_t*)&begin_time );
+	now_time = begin_time;
 	while (now_time < begin_time + THINK_T)
 	{
 		usleep(1000000);
@@ -456,7 +409,6 @@ int main (void)
 	ft_init_curses();
 	while (++count < NB_PHILO)
 		ft_create_wand(&philo_heart, wand_locate[count]);
-	//while(1);
 	while (--count >= 0)
 		ft_create_thread(&philo_heart, philo_name[count], philo_locate[count]);
 	while (++count < NB_PHILO * 2)
