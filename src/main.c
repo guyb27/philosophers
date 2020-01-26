@@ -107,8 +107,7 @@ int		ft_eat(t_philo **data, t_philo_heart **philo)
 	size_t			now_time;
 
 	str = NULL;
-	ft_eat_begin_actualize(philo);
-	time( (time_t*)&begin_time );
+	begin_time = ft_eat_begin_actualize(philo);
 	now_time = begin_time;
 	while (now_time <= begin_time + EAT_T)
 	{
@@ -129,23 +128,7 @@ int		ft_think(int ret, t_philo_heart **philo, t_philo **data)
 	char *str;
 	t_wand	*wand;
 
-	/*
-	if (ret == LEFT)
-	{
-		pthread_mutex_unlock(&((t_wand*)(*philo)->prev->data)->mutex);
-		ft_actualize_wand((t_philo_heart**)&(*philo)->prev, THINK_LEFT);
-	}
-	else if (ret == RIGHT)
-	{
-		pthread_mutex_unlock(&((t_wand*)(*philo)->next->data)->mutex);
-		ft_actualize_wand((t_philo_heart**)&(*philo)->prev, THINK_RIGHT);
-	}
-	ft_actualize((*data)->capsule, "REFLECHIS", X_STATE, Y_STATE);
-	ft_sprintf(&str, "%zi", THINK_T);
-	ft_actualize((*data)->capsule, str, X_TIME, Y_TIME);
-	*/
-	ft_think_begin_actualize(philo, ret);
-	time( (time_t*)&begin_time );
+	begin_time = ft_think_begin_actualize(philo, ret);
 	now_time = begin_time;
 	while (now_time < begin_time + THINK_T)
 	{
@@ -188,12 +171,7 @@ int		ft_rest(t_philo_heart **philo, t_philo **data)
 	size_t			now_time;
 
 	str = NULL;
-	(*data)->state = TO_REST;
-	ft_actualize((*data)->capsule, "SE REPOSE", X_STATE, Y_STATE);
-	ft_sprintf(&str, "%d", REST_T);
-	ft_actualize((*data)->capsule, str, X_TIME, Y_TIME);
-	ft_strdel(&str);
-	time( (time_t*)&begin_time );
+	begin_time = ft_rest_begin_actualize(philo);
 	now_time = begin_time;
 	while (now_time < begin_time + REST_T)
 	{

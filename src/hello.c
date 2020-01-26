@@ -89,9 +89,10 @@ void		ft_actualize_wand(t_philo_heart **heart, e_wand_state new_state)
 	}
 }
 
-void	ft_eat_begin_actualize(t_philo_heart **philo)
+size_t	ft_eat_begin_actualize(t_philo_heart **philo)
 {
 	char	*str;
+	size_t	now_time;
 
 	str = NULL;
 	((t_philo*)(*philo)->data)->state = TO_EAT;
@@ -101,6 +102,8 @@ void	ft_eat_begin_actualize(t_philo_heart **philo)
 	ft_sprintf(&str, "%zi", EAT_T);
 	ft_actualize(((t_philo*)(*philo)->data)->capsule, str, X_TIME, Y_TIME);
 	ft_strdel(&str);
+	time((time_t*)&now_time);
+	return (now_time);
 }
 
 void	ft_eat_end_actualize(t_philo_heart **philo)
@@ -118,10 +121,10 @@ void	ft_eat_end_actualize(t_philo_heart **philo)
 	pthread_mutex_unlock(&((t_wand*)(*philo)->next->data)->mutex);
 }
 
-void	ft_think_begin_actualize(t_philo_heart **philo, int wand)
-//FAUDRAI QUE LA FONCTION RENVOIE UN SIZE_T QUI CONTIENT L HEURE ACTUELLE (BEGIN_TIME)
+size_t	ft_think_begin_actualize(t_philo_heart **philo, int wand)
 {
 	char	*str;
+	size_t	now_time;
 
 	str = NULL;
 	if (wand == LEFT)
@@ -138,10 +141,13 @@ void	ft_think_begin_actualize(t_philo_heart **philo, int wand)
 	ft_sprintf(&str, "%zi", THINK_T);
 	ft_actualize(((t_philo*)(*philo)->data)->capsule, str, X_TIME, Y_TIME);
 	ft_strdel(&str);
+	time((time_t*)&now_time);
+	return (now_time);
 }
 
 void	ft_think_end_actualize(t_philo_heart **philo, int wand)
 {
+	//Remettre la baguette au milieu si ell n'a pas etait prise entre deux.
 	if (wand == LEFT)
 	{
 	}
@@ -150,6 +156,21 @@ void	ft_think_end_actualize(t_philo_heart **philo, int wand)
 	}
 }
 
+size_t	ft_rest_begin_actualize(t_philo_heart **philo)
+{
+	char	*str;
+	size_t	now_time;
+
+	str = NULL;
+	now_time = 0;
+	((t_philo*)(*philo)->data)->state = TO_REST;
+	ft_actualize(((t_philo*)(*philo)->data)->capsule, "SE REPOSE", X_STATE, Y_STATE);
+	ft_sprintf(&str, "%d", REST_T);
+	ft_actualize(((t_philo*)(*philo)->data)->capsule, str, X_TIME, Y_TIME);
+	ft_strdel(&str);
+	time((time_t*)&now_time);
+	return (now_time);
+}
 void	ft_print_wand(t_philo_heart **philo_heart)//Faire une fonction plus propre qui utilise ft_actualize
 {
 	t_wand	*wand;
