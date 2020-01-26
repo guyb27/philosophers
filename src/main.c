@@ -113,8 +113,11 @@ int		ft_eat(t_philo **data, t_philo_heart **philo)
 	{
 		usleep(1000000);
 		time( (time_t*)&now_time );
-		ft_sprintf(&str, "%zi", (begin_time + EAT_T) - now_time);
+		ft_sprintf(&str, "%zi", (int)((begin_time + EAT_T) - now_time) > 0 ?
+		(begin_time + EAT_T) - now_time : 0);
+		pthread_mutex_lock(&g_mut);
 		ft_actualize((*data)->capsule, str, X_TIME, Y_TIME);
+		pthread_mutex_unlock(&g_mut);
 		ft_strdel(&str);
 	}
 	ft_eat_end_actualize(philo);
@@ -125,23 +128,27 @@ int		ft_think(int ret, t_philo_heart **philo, t_philo **data)
 {
 	size_t			begin_time;
 	size_t			now_time;
-	char *str;
+	char *str[2];
 	t_wand	*wand;
 
 	begin_time = ft_think_begin_actualize(philo, ret);
 	now_time = begin_time;
-	while (now_time < begin_time + THINK_T)
+	while (now_time <= begin_time + THINK_T)
 	{
 		usleep(1000000);
 		(*data)->life--;
-		ft_sprintf(&str, "%d", (*data)->life);
-		ft_actualize((*data)->capsule, str, X_LIFE, Y_LIFE);
+		time((time_t*)&now_time);
+		ft_sprintf(&str[0], "%zi", (int)((begin_time + THINK_T) - now_time) > 0 ?
+		(begin_time + THINK_T) - now_time : 0);
+		ft_sprintf(&str[1], "%d", (*data)->life);
+		pthread_mutex_lock(&g_mut);
+		ft_actualize((*data)->capsule, str[0], X_TIME, Y_TIME);
+		ft_actualize((*data)->capsule, str[1], X_LIFE, Y_LIFE);
+		pthread_mutex_unlock(&g_mut);
+		ft_strdel(&str[0]);
+		ft_strdel(&str[1]);
 		if (!(size_t)((t_philo*)(*philo)->data)->life)
 			return (1);
-		time( (time_t*)&now_time );
-		ft_sprintf(&str, "%zi", (begin_time + THINK_T) - now_time);
-		ft_actualize((*data)->capsule, str, X_TIME, Y_TIME);
-		ft_strdel(&str);
 	}
 	ft_think_end_actualize(philo, ret);
 	return (0);
@@ -160,56 +167,46 @@ int		ft_eat_or_think(t_philo_heart **philo, t_philo **data)
 		ft_eat(data, philo);
 	else if (ret == LEFT || ret == RIGHT)
 		ft_think(ret, philo, data);
-	//A FAIRE:Prend une baguette qui peut etre prise par un philosophe qui veut manger
 	return (0);
 }
 
 int		ft_rest(t_philo_heart **philo, t_philo **data)
 {
-	char *str;
+	char *str[2];
 	size_t			begin_time;
 	size_t			now_time;
+	int test = 0;
 
-	str = NULL;
+	str[0] = NULL;
+	str[1] = NULL;
 	begin_time = ft_rest_begin_actualize(philo);
 	now_time = begin_time;
-	while (now_time < begin_time + REST_T)
+	while (now_time <= begin_time + REST_T)
 	{
-		(*data)->life = (*data)->life - 1;
 		usleep(1000000);
-		ft_sprintf(&str, "%d", (*data)->life);
-		ft_actualize((*data)->capsule, str, X_LIFE, Y_LIFE);
-		time( (time_t*)&now_time );
-		ft_sprintf(&str, "%d", (int)((REST_T + begin_time) - now_time));
-		ft_actualize((*data)->capsule, str, X_TIME, Y_TIME);
-		ft_strdel(&str);
+		(*data)->life = (*data)->life - 1;
+		time((time_t*)&now_time);
+		ft_sprintf(&str[0], "%d", (*data)->life);
+		test = ((REST_T + begin_time) - now_time);
+		test = test < 0 ? 0 : test;
+		//ft_sprintf(&str[1], "%zi", test);
+		ft_sprintf(&str[1], "%zi", (int)((REST_T + begin_time) - now_time) > 0 ?
+		(REST_T + begin_time) - now_time : 0);
+		pthread_mutex_lock(&g_mut);
+		ft_actualize((*data)->capsule, str[0], X_LIFE, Y_LIFE);
+		ft_actualize((*data)->capsule, str[1], X_TIME, Y_TIME);
+		pthread_mutex_unlock(&g_mut);
+		ft_strdel(&str[0]);
+		ft_strdel(&str[1]);
 		if (!(*data)->life)
 		{
+			pthread_mutex_lock(&g_mut);
 			ft_actualize((*data)->capsule, "IS DEAD", X_STATE, Y_STATE);
+			pthread_mutex_unlock(&g_mut);
 			return (1);
 		}
 	}
 	return (0);
-}
-
-void	ft_print_baguette(t_philo_heart *heart)
-{
-	t_philo *philo;
-	t_wand *wand;
-	char	*str = NULL;
-
-static int i = 0;
-	wand = heart->data;
-	philo = heart->prev->data;
-	ft_sprintf(&str, "%s%sMID:[|]%s%s%s",
-	philo->name,
-	ft_strlen(philo->name) ? ":[ ], " : "",
-	heart->next->type == PHILO ? ", " : "",
-	heart->next->type == PHILO ? ((t_philo*)heart->next->data)->name : "",
-	heart->next->type == PHILO ? ":[ ]" : "");
-	ft_actualize(((t_wand*)heart->data)->capsule, str, 0, 0);
-	ft_strdel(&str);
-	i++;
 }
 
 void	*ft_philo(void *arg)
@@ -222,12 +219,12 @@ void	*ft_philo(void *arg)
 	data = philo->data;
 	while ((size_t)((t_philo*)philo->data)->life)
 	{
-		if ((e_philo_state)((t_philo*)philo->data)->state == TO_REST)
+//		if ((e_philo_state)((t_philo*)philo->data)->state == TO_REST)
 			//PEUT SOIT MANGER SOIT REFLECHIR, MAIS MANGER EST UNE PRIORITE
-			ft_eat_or_think(&philo, &data);
-		else if ((e_philo_state)((t_philo*)philo->data)->state == TO_EAT)
+//			ft_eat_or_think(&philo, &data);
+		if ((e_philo_state)((t_philo*)philo->data)->state == TO_EAT)
 			ft_rest(&philo, &data);
-		else if ((e_philo_state)((t_philo*)philo->data)->state == TO_THINK)
+		else// if ((e_philo_state)((t_philo*)philo->data)->state == TO_THINK)
 			//PEUT SOIT MANGER SOIT REFLECHIR, MAIS MANGER EST UNE PRIORITE
 			ft_eat_or_think(&philo, &data);
 	}
@@ -258,8 +255,6 @@ void	ft_create_thread(t_philo_heart **philo_heart, char *str, t_philo_location l
 			new_philo_heart->prev = (*philo_heart)->prev;
 			(*philo_heart)->prev->next = new_philo_heart;
 			(*philo_heart)->prev = new_philo_heart;
-		//	if ((*philo_heart)->prev->type == PHILO && (*philo_heart)->prev->prev->type == WAND)
-		//		ft_print_baguette((*philo_heart)->prev->prev);
 			break ;
 		}
 		*philo_heart = (*philo_heart)->next;
@@ -347,7 +342,9 @@ void	ft_waiting_to_twerk(void)
 		usleep(1000000);
 		time( (time_t*)&now_time );
 		ft_sprintf(&str, "%zi", TIMEOUT - (now_time - begin_time));
+		pthread_mutex_lock(&g_mut);
 		ft_actualize(base, str, X_TIMEOUT, Y_TIMEOUT);
+		pthread_mutex_unlock(&g_mut);
 		ft_strdel(&str);
 	}
 	pthread_mutex_lock(&g_mut);

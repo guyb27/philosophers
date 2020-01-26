@@ -29,12 +29,12 @@ void ft_init_curses(void)
 
 void		ft_actualize(WINDOW *capsule, char *data, int x, int y)
 {
-	pthread_mutex_lock(&g_mut);
+//	pthread_mutex_lock(&g_mut);
 	wmove(capsule, x, y);
 	wclrtoeol(capsule);
 	wprintw(capsule, data);
 	wrefresh(capsule);
-	pthread_mutex_unlock(&g_mut);
+//	pthread_mutex_unlock(&g_mut);
 }
 WINDOW	*ft_create_philo_window(t_philo *philo)
 {
@@ -68,7 +68,7 @@ void		ft_actualize_wand(t_philo_heart **heart, e_wand_state new_state)
 	if ((*heart)->type == WAND && (*heart)->prev->type == PHILO && (*heart)->prev->type == PHILO)
 	{
 		wand = ((t_wand*)(*heart)->data);
-		pthread_mutex_lock(&g_mut);
+//		pthread_mutex_lock(&g_mut);
 		if (wand->wand_state == THINK_LEFT || wand->wand_state == EAT_LEFT)
 			y = wand->locate->y_before;
 		else
@@ -76,7 +76,7 @@ void		ft_actualize_wand(t_philo_heart **heart, e_wand_state new_state)
 		wmove(wand->capsule, 0, y);
 		wprintw(wand->capsule, " ");
 		wrefresh(wand->capsule);
-		sleep(1);
+//		sleep(1);
 		wand->wand_state = new_state;
 		if (wand->wand_state == THINK_LEFT || wand->wand_state == EAT_LEFT)
 			y = wand->locate->y_before;
@@ -85,7 +85,7 @@ void		ft_actualize_wand(t_philo_heart **heart, e_wand_state new_state)
 		wmove(wand->capsule, 0, y);
 		wprintw(wand->capsule, "|");
 		wrefresh(wand->capsule);
-		pthread_mutex_unlock(&g_mut);
+//		pthread_mutex_unlock(&g_mut);
 	}
 }
 
@@ -95,12 +95,14 @@ size_t	ft_eat_begin_actualize(t_philo_heart **philo)
 	size_t	now_time;
 
 	str = NULL;
+	ft_sprintf(&str, "%zi", EAT_T);
 	((t_philo*)(*philo)->data)->state = TO_EAT;
+	pthread_mutex_lock(&g_mut);
 	ft_actualize_wand((t_philo_heart**)&(*philo)->prev, EAT_RIGHT);
 	ft_actualize_wand((t_philo_heart**)&(*philo)->next, EAT_LEFT);
 	ft_actualize(((t_philo*)(*philo)->data)->capsule, "MANGE", X_STATE, Y_STATE);
-	ft_sprintf(&str, "%zi", EAT_T);
 	ft_actualize(((t_philo*)(*philo)->data)->capsule, str, X_TIME, Y_TIME);
+	pthread_mutex_unlock(&g_mut);
 	ft_strdel(&str);
 	time((time_t*)&now_time);
 	return (now_time);
@@ -111,11 +113,13 @@ void	ft_eat_end_actualize(t_philo_heart **philo)
 	char	*str;
 
 	str = NULL;
+	ft_sprintf(&str, "%d", MAX_LIFE);
 	((t_philo*)(*philo)->data)->life = MAX_LIFE;
+	pthread_mutex_lock(&g_mut);
 	ft_actualize_wand(&(*philo)->prev, FREE);
 	ft_actualize_wand(&(*philo)->next, FREE);
-	ft_sprintf(&str, "%d", MAX_LIFE);
 	ft_actualize((((t_philo*)(*philo)->data)->capsule), str, X_LIFE, Y_LIFE);
+	pthread_mutex_unlock(&g_mut);
 	ft_strdel(&str);
 	pthread_mutex_unlock(&((t_wand*)(*philo)->prev->data)->mutex);
 	pthread_mutex_unlock(&((t_wand*)(*philo)->next->data)->mutex);
@@ -124,52 +128,60 @@ void	ft_eat_end_actualize(t_philo_heart **philo)
 size_t	ft_think_begin_actualize(t_philo_heart **philo, int wand)
 {
 	char	*str;
-	size_t	now_time;
 
 	str = NULL;
 	if (wand == LEFT)
 	{
 		pthread_mutex_unlock(&((t_wand*)(*philo)->prev->data)->mutex);
+		pthread_mutex_lock(&g_mut);
 		ft_actualize_wand((t_philo_heart**)&(*philo)->prev, THINK_RIGHT);
 	}
-	else if (wand == RIGHT)
+	else// if (wand == RIGHT)
 	{
 		pthread_mutex_unlock(&((t_wand*)(*philo)->next->data)->mutex);
+		pthread_mutex_lock(&g_mut);
 		ft_actualize_wand((t_philo_heart**)&(*philo)->next, THINK_LEFT);
 	}
 	ft_actualize(((t_philo*)(*philo)->data)->capsule, "REFLECHIS", X_STATE, Y_STATE);
 	ft_sprintf(&str, "%zi", THINK_T);
 	ft_actualize(((t_philo*)(*philo)->data)->capsule, str, X_TIME, Y_TIME);
+	pthread_mutex_unlock(&g_mut);
 	ft_strdel(&str);
-	time((time_t*)&now_time);
-	return (now_time);
+	return (time(NULL));
 }
 
 void	ft_think_end_actualize(t_philo_heart **philo, int wand)
 {
 	//Remettre la baguette au milieu si ell n'a pas etait prise entre deux.
-	if (wand == LEFT)
+	if (wand == LEFT && ((t_wand*)(*philo)->prev->data)->wand_state == THINK_LEFT)
 	{
+		((t_wand*)(*philo)->prev->data)->wand_state = FREE;
+		pthread_mutex_lock(&g_mut);
+		ft_actualize_wand((t_philo_heart**)&(*philo)->prev, FREE);
+		pthread_mutex_unlock(&g_mut);
 	}
-	else if (wand == RIGHT)
+	else if (wand == RIGHT && ((t_wand*)(*philo)->next->data)->wand_state == THINK_RIGHT)
 	{
+		((t_wand*)(*philo)->next->data)->wand_state = FREE;
+		pthread_mutex_lock(&g_mut);
+		ft_actualize_wand((t_philo_heart**)&(*philo)->next, FREE);
+		pthread_mutex_unlock(&g_mut);
 	}
 }
 
 size_t	ft_rest_begin_actualize(t_philo_heart **philo)
 {
 	char	*str;
-	size_t	now_time;
 
 	str = NULL;
-	now_time = 0;
 	((t_philo*)(*philo)->data)->state = TO_REST;
-	ft_actualize(((t_philo*)(*philo)->data)->capsule, "SE REPOSE", X_STATE, Y_STATE);
 	ft_sprintf(&str, "%d", REST_T);
+	pthread_mutex_lock(&g_mut);
+	ft_actualize(((t_philo*)(*philo)->data)->capsule, "SE REPOSE", X_STATE, Y_STATE);
 	ft_actualize(((t_philo*)(*philo)->data)->capsule, str, X_TIME, Y_TIME);
+	pthread_mutex_unlock(&g_mut);
 	ft_strdel(&str);
-	time((time_t*)&now_time);
-	return (now_time);
+	return(time(NULL));
 }
 void	ft_print_wand(t_philo_heart **philo_heart)//Faire une fonction plus propre qui utilise ft_actualize
 {
@@ -195,26 +207,6 @@ void	ft_print_wand(t_philo_heart **philo_heart)//Faire une fonction plus propre 
 		wand->locate->y_after = wand->locate->y_mid + 6 + ft_strlen(((t_philo*)(*philo_heart)->next->data)->name);
 		wprintw(wand->capsule, str);
 		wrefresh(wand->capsule);
-		ft_dprintf(2, "%d:[%s]\n",
-		wand->locate->number,
-		str
-		);
-		ft_dprintf(2, "%d:y_before(%d) = prev_philo_name(%d) + 3\n",
-		wand->locate->number,
-		wand->locate->y_before,
-		ft_strlen(((t_philo*)(*philo_heart)->prev->data)->name)
-		);
-		ft_dprintf(2, "%d:y_mid(%d) = y_before(%d) + 9\n",
-		wand->locate->number,
-		wand->locate->y_mid,
-		wand->locate->y_before
-		);
-		ft_dprintf(2, "%d:y_after(%d) = y_mid(%d) + 6 + next_philo_name()\n",
-		wand->locate->number,
-		wand->locate->y_after,
-		wand->locate->y_mid,
-		ft_strlen(((t_philo*)(*philo_heart)->next->data)->name)
-		);
 		ft_strdel(&str);
 		pthread_mutex_unlock(&g_mut);
 	}
