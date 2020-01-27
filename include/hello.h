@@ -22,7 +22,7 @@
 #define EAT_T 6
 #define REST_T 4
 #define THINK_T 3
-#define TIMEOUT 300
+#define TIMEOUT 30
 
 #define NB_PHILO 7
 
@@ -35,7 +35,10 @@
 #define X_TIMEOUT 4
 #define Y_TIMEOUT 11
 
+#define SEC 1000000
+
 pthread_mutex_t g_mut;
+bool g_all_in_life;
 
 typedef enum	s_ret_status
 {
@@ -111,17 +114,15 @@ typedef struct				s_philo_heart
 	struct s_philo_heart	*prev;
 }							t_philo_heart;
 
-//void Hello(void);
-
 void ft_init_curses(void);
 void ft_actualize(WINDOW *capsule, char *data, int x, int y);
 WINDOW *ft_create_philo_window(t_philo *philo);
 void	ft_print_wand(t_philo_heart **philo_heart);
-//void	ft_actualize_wand(t_philo_heart **heart, e_wand_state new_state);
 size_t	ft_eat_begin_actualize(t_philo_heart **philo);//FAUDRAIT QUE LA FONCTION REVOIT LE BEGIN_TIME
 void	ft_eat_end_actualize(t_philo_heart **philo);
 size_t	ft_think_begin_actualize(t_philo_heart **philo, int wand);//FAUDRAIT QUE LA FONCTION REVOIT LE BEGIN_TIME
 void	ft_think_end_actualize(t_philo_heart **philo, int wand);
 size_t	ft_rest_begin_actualize(t_philo_heart **philo);
+void	ft_main_loop(void);
 
 #endif
