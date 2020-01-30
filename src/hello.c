@@ -5,7 +5,6 @@
 
 void ft_init_curses(void)
 {
-	//	g_mut = PTHREAD_MUTEX_INITIALIZER;
 	pthread_mutex_lock(&g_mut);
 	initscr();
 	start_color();
@@ -26,12 +25,10 @@ void ft_init_curses(void)
 
 void		ft_actualize(WINDOW *capsule, char *data, int x, int y)
 {
-//	pthread_mutex_lock(&g_mut);
 	wmove(capsule, x, y);
 	wclrtoeol(capsule);
 	wprintw(capsule, data);
 	wrefresh(capsule);
-//	pthread_mutex_unlock(&g_mut);
 }
 WINDOW	*ft_create_philo_window(t_philo *philo)
 {
@@ -185,6 +182,7 @@ size_t	ft_rest_begin_actualize(t_philo_heart **philo)
 	ft_strdel(&str);
 	return(time(NULL));
 }
+
 void	ft_print_wand(t_philo_heart **philo_heart)//Faire une fonction plus propre qui utilise ft_actualize
 {
 	t_wand	*wand;
