@@ -21,7 +21,7 @@
 #define MAX_LIFE 50
 #define EAT_T 10
 #define REST_T 5
-#define THINK_T 11
+#define THINK_T 7
 #define TIMEOUT 130
 
 #define NB_PHILO 7

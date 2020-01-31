@@ -62,6 +62,7 @@ void		ft_actualize_wand(t_philo_heart **heart, e_wand_state new_state)
 	if ((*heart)->type == WAND && (*heart)->prev->type == PHILO && (*heart)->prev->type == PHILO)
 	{
 		wand = ((t_wand*)(*heart)->data);
+		/* GROS BEUG POURTANT JE PREFERE CAR C EST PLUS PROPRE ! ! !
 		if (wand->wand_state == THINK_LEFT || wand->wand_state == EAT_LEFT)
 			y = wand->locate->y_before;
 		else
@@ -70,7 +71,30 @@ void		ft_actualize_wand(t_philo_heart **heart, e_wand_state new_state)
 		{
 			wmove(wand->capsule, 0, y);
 			wprintw(wand->capsule, " ");
+			wand->wand_state = new_state;
+			if (wand->wand_state == THINK_LEFT || wand->wand_state == EAT_LEFT)
+				y = wand->locate->y_before;
+			else
+				y = wand->wand_state == FREE ? wand->locate->y_mid : wand->locate->y_after;
+			wmove(wand->capsule, 0, y);
+			wprintw(wand->capsule, "|");
 			wrefresh(wand->capsule);
+		}
+		else
+			wand->wand_state = new_state;//Oui pour le tout debut ! A ne pas effacer !
+		*/
+		/**/
+		if (wand->locate->init)
+		{
+			y = wand->locate->y_before;
+			wmove(wand->capsule, 0, y);
+			wprintw(wand->capsule, " ");
+			y = wand->locate->y_mid;
+			wmove(wand->capsule, 0, y);
+			wprintw(wand->capsule, " ");
+			y = wand->locate->y_after;
+			wmove(wand->capsule, 0, y);
+			wprintw(wand->capsule, " ");
 			wand->wand_state = new_state;
 			if (wand->wand_state == THINK_LEFT || wand->wand_state == EAT_LEFT)
 				y = wand->locate->y_before;
@@ -82,6 +106,10 @@ void		ft_actualize_wand(t_philo_heart **heart, e_wand_state new_state)
 		}
 		else
 			wand->wand_state = new_state;
+			//Oui pour le tout debut,
+			//en attendant que tout les philos se creer !
+			//A ne pas effacer !
+		/**/
 	}
 }
 
@@ -131,24 +159,24 @@ size_t	ft_think_begin_actualize(t_philo_heart **philo, int wand)
 	str = NULL;
 	if (wand == LEFT)
 	{
-		pthread_mutex_unlock(&((t_wand*)(*philo)->prev->data)->mutex);
 		pthread_mutex_lock(&g_mut);
-		if (((t_wand*)(*philo)->prev->data)->wand_state == FREE ||
-		((t_wand*)(*philo)->prev->data)->wand_state == THINK_RIGHT)
+		if (((t_wand*)(*philo)->prev->data)->wand_state == FREE)
 		{
 			//dprintf(2, "ACT_NAME: [%s] take left", ((t_philo*)(*philo)->data)->name);
 			ft_actualize_wand((t_philo_heart**)&(*philo)->prev, THINK_RIGHT);
 		}
 		else
 			dprintf(2, "NACT_NAME: [%s] take left\n", ((t_philo*)(*philo)->data)->name);
+		pthread_mutex_unlock(&((t_wand*)(*philo)->prev->data)->mutex);
 	}
 	else// if (wand == RIGHT)
 	{
-		pthread_mutex_unlock(&((t_wand*)(*philo)->next->data)->mutex);
 		pthread_mutex_lock(&g_mut);
-		if (((t_wand*)(*philo)->next->data)->wand_state == FREE ||
-		((t_wand*)(*philo)->next->data)->wand_state == THINK_LEFT)
+		if (((t_wand*)(*philo)->next->data)->wand_state == FREE)
 			ft_actualize_wand((t_philo_heart**)&(*philo)->next, THINK_LEFT);
+		else
+			dprintf(2, "NACT_NAME: [%s] take right\n", ((t_philo*)(*philo)->data)->name);
+		pthread_mutex_unlock(&((t_wand*)(*philo)->next->data)->mutex);
 	}
 	ft_actualize(((t_philo*)(*philo)->data)->capsule, "REFLECHIS", X_STATE, Y_STATE);
 	ft_sprintf(&str, "%zi", THINK_T);

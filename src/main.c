@@ -98,6 +98,7 @@ char	*ft_get_name(void)
 	str_ret = NULL;
 	tmp_str = ft_store_philo_name();
 	philo_names = ft_strsplit(tmp_str, ';');
+	pthread_mutex_lock(&g_mut);
 	while (++i < NB_PHILO)
 		if (already_taken[i] == 0)
 		{
@@ -105,6 +106,7 @@ char	*ft_get_name(void)
 			str_ret = ft_strdup(philo_names[i]);
 			i = NB_PHILO;
 		}
+	pthread_mutex_unlock(&g_mut);
 	free(tmp_str);
 	ft_tabdel(&philo_names);
 	return (str_ret);
@@ -244,7 +246,7 @@ void	*ft_philo(void *arg)
 		if ((e_philo_state)((t_philo*)philo->data)->state == TO_EAT)
 			ft_rest(&philo, &data);
 		else
-			if (ft_eat_or_think(&philo, &data))
+			if (ft_eat_or_think(&philo, (t_philo**)&philo->data))
 			{
 				usleep(SEC);
 				data->life = data->life - 1;
