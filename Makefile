@@ -31,7 +31,8 @@ LIB_PATH = ./libft/
 SRCS_NAME =	\
 			hello.c \
 			main.c \
-			ft_main_thread.c
+			ft_main_thread.c \
+			management_error.c
 
 OBJS_NAME = $(SRCS_NAME:.c=.o)
 

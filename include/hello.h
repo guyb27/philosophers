@@ -19,10 +19,10 @@
 	do { perror(msg); exit(EXIT_FAILURE); } while (0)
 
 #define MAX_LIFE 50
-#define EAT_T 6
-#define REST_T 4
-#define THINK_T 3
-#define TIMEOUT 30
+#define EAT_T 10
+#define REST_T 5
+#define THINK_T 11
+#define TIMEOUT 130
 
 #define NB_PHILO 7
 
@@ -39,6 +39,9 @@
 
 pthread_mutex_t g_mut;
 bool g_all_in_life;
+
+/*POUR DEBUG*/
+bool g_pause;
 
 typedef enum	s_ret_status
 {
@@ -63,6 +66,13 @@ typedef enum	s_wand_state
 	EAT_RIGHT
 }				e_wand_state;
 
+typedef enum	s_handle_static_function
+{
+	INIT,
+	ACTUALIZE,
+	GET_INFOS
+}				e_handle_static_function;
+
 typedef struct			s_wand_location
 {
 	int					x_window;
@@ -71,6 +81,7 @@ typedef struct			s_wand_location
 	int					y_mid;
 	int					y_after;
 	int					number;
+	bool				init;
 }						t_wand_location;
 
 typedef struct			s_wand
@@ -97,7 +108,7 @@ typedef struct			s_philo_location
 
 typedef struct			s_philo
 {
-	char				name[25];
+	char				*name;
 	size_t				life;
 	size_t				time;
 	e_philo_state		state;
@@ -114,15 +125,25 @@ typedef struct				s_philo_heart
 	struct s_philo_heart	*prev;
 }							t_philo_heart;
 
-void ft_init_curses(void);
-void ft_actualize(WINDOW *capsule, char *data, int x, int y);
-WINDOW *ft_create_philo_window(t_philo *philo);
-void	ft_print_wand(t_philo_heart **philo_heart);
-size_t	ft_eat_begin_actualize(t_philo_heart **philo);//FAUDRAIT QUE LA FONCTION REVOIT LE BEGIN_TIME
-void	ft_eat_end_actualize(t_philo_heart **philo);
-size_t	ft_think_begin_actualize(t_philo_heart **philo, int wand);//FAUDRAIT QUE LA FONCTION REVOIT LE BEGIN_TIME
-void	ft_think_end_actualize(t_philo_heart **philo, int wand);
-size_t	ft_rest_begin_actualize(t_philo_heart **philo);
-void	ft_main_loop(void);
+typedef struct				s_screen_size
+{
+	int						x;
+	int						y;
+}							t_screen_size;
+
+void			ft_init_curses(void);
+void			ft_actualize(WINDOW *capsule, char *data, int x, int y);
+WINDOW			*ft_create_philo_window(t_philo *philo);
+int				ft_print_wand(t_philo_heart **philo_heart);
+size_t			ft_eat_begin_actualize(t_philo_heart **philo);
+void			ft_eat_end_actualize(t_philo_heart **philo);
+size_t			ft_think_begin_actualize(t_philo_heart **philo, int wand);
+void			ft_think_end_actualize(t_philo_heart **philo, int wand);
+size_t			ft_rest_begin_actualize(t_philo_heart **philo);
+void			ft_main_loop(void);
+void			ft_free_philo_heart(t_philo_heart **philo);
+int				ft_get_err_define_size(void);
+int				ft_catch_error(int ac, char **av);
+//t_screen_size	*ft_get_screen_size(t_screen_size ss, e_handle_static_function hsf);
 
 #endif
