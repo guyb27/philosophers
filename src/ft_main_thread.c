@@ -73,7 +73,6 @@ void	ft_main_loop(void)
 	size_t			begin_time;
 	size_t			now_time;
 	char			*str;
-	int				key = 0;
 	WINDOW			*base;
 
 	str = NULL;
@@ -82,17 +81,6 @@ void	ft_main_loop(void)
 	now_time = begin_time;
 	while (now_time < begin_time + TIMEOUT && g_all_in_life)
 	{
-		key = getch();
-		if (key == 27)
-		{
-			g_pause = true;
-			while (key != 10)
-			{
-				key = getch();
-				usleep(SEC);
-			}
-			g_pause = false;
-		}
 		usleep(SEC);
 		time( (time_t*)&now_time );
 		ft_sprintf(&str, "%zi", TIMEOUT - (now_time - begin_time));

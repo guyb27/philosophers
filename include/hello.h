@@ -40,8 +40,6 @@
 pthread_mutex_t g_mut;
 bool g_all_in_life;
 
-/*POUR DEBUG*/
-bool g_pause;
 
 typedef enum	s_ret_status
 {
@@ -72,6 +70,16 @@ typedef enum	s_handle_static_function
 	ACTUALIZE,
 	GET_INFOS
 }				e_handle_static_function;
+
+typedef enum	s_define_type
+{
+	LIFE,
+	EAT,
+	REST,
+	THINK,
+	TIME,
+	NBPHILO
+}				e_define_type;
 
 typedef struct			s_wand_location
 {
@@ -144,6 +152,7 @@ void			ft_main_loop(void);
 void			ft_free_philo_heart(t_philo_heart **philo);
 int				ft_get_err_define_size(void);
 int				ft_catch_error(int ac, char **av);
+int				ft_handle_define(e_handle_static_function h, e_define_type d, int value);
 //t_screen_size	*ft_get_screen_size(t_screen_size ss, e_handle_static_function hsf);
 
 #endif

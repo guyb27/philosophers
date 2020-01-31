@@ -140,7 +140,6 @@ int		ft_eat(t_philo **data, t_philo_heart **philo)
 	now_time = begin_time;
 	while (now_time <= begin_time + EAT_T && g_all_in_life)
 	{
-		while (g_pause);
 		usleep(SEC);
 		time( (time_t*)&now_time );
 		ft_sprintf(&str, "%zi", (int)((begin_time + EAT_T) - now_time) > 0 ?
@@ -166,7 +165,6 @@ int		ft_think(int ret, t_philo_heart **philo, t_philo **data)
 	now_time = begin_time;
 	while (now_time <= begin_time + THINK_T && g_all_in_life)
 	{
-		while (g_pause);
 		usleep(SEC);
 		(*data)->life--;
 		time((time_t*)&now_time);
@@ -212,7 +210,6 @@ int		ft_rest(t_philo_heart **philo, t_philo **data)
 	now_time = begin_time;
 	while (now_time <= begin_time + REST_T && g_all_in_life)
 	{
-		while (g_pause);
 		usleep(SEC);
 		(*data)->life = (*data)->life - 1;
 		ft_sprintf(&str[0], "%d", (*data)->life);
@@ -340,7 +337,6 @@ int main (int ac, char **av)
 	t_wand_location		wand_locate[7];
 	t_screen_size		ss;
 
-g_pause = false;
 	if (ft_catch_error(ac, av))
 		return (1);
 	g_all_in_life = true;
