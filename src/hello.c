@@ -1,8 +1,5 @@
 #include "../include/hello.h"
 
-#define ENTER 10
-#define ESCAPE 27
-
 void ft_init_curses(void)
 {
 	pthread_mutex_lock(&g_mut);
@@ -119,7 +116,8 @@ size_t	ft_eat_begin_actualize(t_philo_heart **philo)
 	size_t	now_time;
 
 	str = NULL;
-	ft_sprintf(&str, "%zi", EAT_T);
+	//ft_sprintf(&str, "%zi", EAT_T);
+	ft_sprintf(&str, "%zi", ft_handle_define(GET_INFOS, EAT, 0));
 	((t_philo*)(*philo)->data)->state = TO_EAT;
 	pthread_mutex_lock(&g_mut);
 	ft_actualize_wand((t_philo_heart**)&(*philo)->prev, EAT_RIGHT);
@@ -139,8 +137,10 @@ void	ft_eat_end_actualize(t_philo_heart **philo)
 	str = NULL;
 	if (g_all_in_life)
 	{
-		ft_sprintf(&str, "%d", MAX_LIFE);
-		((t_philo*)(*philo)->data)->life = MAX_LIFE;
+		ft_sprintf(&str, "%d", ft_handle_define(GET_INFOS, LIFE, 0));
+		((t_philo*)(*philo)->data)->life = ft_handle_define(GET_INFOS, LIFE, 0);
+		//ft_sprintf(&str, "%d", MAX_LIFE);
+		//((t_philo*)(*philo)->data)->life = MAX_LIFE;
 		pthread_mutex_lock(&g_mut);
 		ft_actualize_wand(&(*philo)->prev, FREE);
 		ft_actualize_wand(&(*philo)->next, FREE);
@@ -161,12 +161,7 @@ size_t	ft_think_begin_actualize(t_philo_heart **philo, int wand)
 	{
 		pthread_mutex_lock(&g_mut);
 		if (((t_wand*)(*philo)->prev->data)->wand_state == FREE)
-		{
-			//dprintf(2, "ACT_NAME: [%s] take left", ((t_philo*)(*philo)->data)->name);
 			ft_actualize_wand((t_philo_heart**)&(*philo)->prev, THINK_RIGHT);
-		}
-		else
-			dprintf(2, "NACT_NAME: [%s] take left\n", ((t_philo*)(*philo)->data)->name);
 		pthread_mutex_unlock(&((t_wand*)(*philo)->prev->data)->mutex);
 	}
 	else// if (wand == RIGHT)
@@ -174,12 +169,11 @@ size_t	ft_think_begin_actualize(t_philo_heart **philo, int wand)
 		pthread_mutex_lock(&g_mut);
 		if (((t_wand*)(*philo)->next->data)->wand_state == FREE)
 			ft_actualize_wand((t_philo_heart**)&(*philo)->next, THINK_LEFT);
-		else
-			dprintf(2, "NACT_NAME: [%s] take right\n", ((t_philo*)(*philo)->data)->name);
 		pthread_mutex_unlock(&((t_wand*)(*philo)->next->data)->mutex);
 	}
 	ft_actualize(((t_philo*)(*philo)->data)->capsule, "REFLECHIS", X_STATE, Y_STATE);
-	ft_sprintf(&str, "%zi", THINK_T);
+	//ft_sprintf(&str, "%zi", THINK_T);
+	ft_sprintf(&str, "%zi", ft_handle_define(GET_INFOS, THINK, 0));
 	ft_actualize(((t_philo*)(*philo)->data)->capsule, str, X_TIME, Y_TIME);
 	pthread_mutex_unlock(&g_mut);
 	ft_strdel(&str);
@@ -188,7 +182,8 @@ size_t	ft_think_begin_actualize(t_philo_heart **philo, int wand)
 
 void	ft_think_end_actualize(t_philo_heart **philo, int wand)
 {
-	if (wand == LEFT && ((t_wand*)(*philo)->prev->data)->wand_state == THINK_LEFT)
+	if (wand == LEFT &&
+					((t_wand*)(*philo)->prev->data)->wand_state == THINK_LEFT)
 	{
 		((t_wand*)(*philo)->prev->data)->wand_state = FREE;
 		if (g_all_in_life)
@@ -198,7 +193,8 @@ void	ft_think_end_actualize(t_philo_heart **philo, int wand)
 			pthread_mutex_unlock(&g_mut);
 		}
 	}
-	else if (wand == RIGHT && ((t_wand*)(*philo)->next->data)->wand_state == THINK_RIGHT)
+	else if (wand == RIGHT &&
+					((t_wand*)(*philo)->next->data)->wand_state == THINK_RIGHT)
 	{
 		((t_wand*)(*philo)->next->data)->wand_state = FREE;
 		if (g_all_in_life)
@@ -216,7 +212,8 @@ size_t	ft_rest_begin_actualize(t_philo_heart **philo)
 
 	str = NULL;
 	((t_philo*)(*philo)->data)->state = TO_REST;
-	ft_sprintf(&str, "%d", REST_T);
+	//ft_sprintf(&str, "%d", REST_T);
+	ft_sprintf(&str, "%d", ft_handle_define(GET_INFOS, REST, 0));
 	pthread_mutex_lock(&g_mut);
 	ft_actualize(((t_philo*)(*philo)->data)->capsule, "SE REPOSE", X_STATE,
 																	Y_STATE);
@@ -264,21 +261,20 @@ int		ft_print_wand(t_philo_heart **philo_heart)//Faire une fonction plus propre 
 
 void	ft_close_window(t_philo_heart *philo)
 {
-	int ret = 0;
-		if (philo->type == PHILO)
-		{
-			ret = delwin(((t_philo*)philo->data)->capsule);
-			((t_philo*)philo->data)->capsule = NULL;
-			free(((t_philo*)philo->data)->locate);
-			((t_philo*)philo->data)->locate = NULL;
-		}
-		else
-		{
-			delwin(((t_wand*)philo->data)->capsule);
-			((t_wand*)philo->data)->capsule = NULL;
-			free(((t_wand*)philo->data)->locate);
-			((t_wand*)philo->data)->locate = NULL;
-		}
+	if (philo->type == PHILO)
+	{
+		delwin(((t_philo*)philo->data)->capsule);
+		((t_philo*)philo->data)->capsule = NULL;
+		free(((t_philo*)philo->data)->locate);
+		((t_philo*)philo->data)->locate = NULL;
+	}
+	else
+	{
+		delwin(((t_wand*)philo->data)->capsule);
+		((t_wand*)philo->data)->capsule = NULL;
+		free(((t_wand*)philo->data)->locate);
+		((t_wand*)philo->data)->locate = NULL;
+	}
 }
 
 void	ft_free_philo_heart(t_philo_heart **philo)

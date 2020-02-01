@@ -37,6 +37,9 @@
 
 #define SEC 1000000
 
+#define ENTER 10
+#define ESCAPE 27
+
 pthread_mutex_t g_mut;
 bool g_all_in_life;
 
@@ -153,6 +156,7 @@ void			ft_free_philo_heart(t_philo_heart **philo);
 int				ft_get_err_define_size(void);
 int				ft_catch_error(int ac, char **av);
 int				ft_handle_define(e_handle_static_function h, e_define_type d, int value);
+void			ft_menu(int xmax, int ymax);
 //t_screen_size	*ft_get_screen_size(t_screen_size ss, e_handle_static_function hsf);
 
 #endif

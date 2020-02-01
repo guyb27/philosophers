@@ -50,19 +50,24 @@ WINDOW	*ft_print_game_var(void)
 	wbkgd(base, COLOR_PAIR(2));
 	wmove(base, 0, 0);
 	wprintw(base, "MAX_LIFE: ");
-	wprintw(base, ft_itoa(MAX_LIFE));
+	//wprintw(base, ft_itoa(MAX_LIFE));
+	wprintw(base, ft_itoa(ft_handle_define(GET_INFOS, LIFE, 0)));
 	wmove(base, 1, 0);
 	wprintw(base, "EAT_TIME: ");
-	wprintw(base, ft_itoa(EAT_T));
+	//wprintw(base, ft_itoa(EAT_T));
+	wprintw(base, ft_itoa(ft_handle_define(GET_INFOS, EAT, 0)));
 	wmove(base, 2, 0);
 	wprintw(base, "REST_TIME: ");
-	wprintw(base, ft_itoa(REST_T));
+	wprintw(base, ft_itoa(ft_handle_define(GET_INFOS, REST, 0)));
+	//wprintw(base, ft_itoa(REST_T));
 	wmove(base, 3, 0);
 	wprintw(base, "THINK_TIME: ");
-	wprintw(base, ft_itoa(THINK_T));
+	wprintw(base, ft_itoa(ft_handle_define(GET_INFOS, THINK, 0)));
+	//wprintw(base, ft_itoa(THINK_T));
 	wmove(base, 4, 0);
 	wprintw(base, "TIME LEFT: ");
-	wprintw(base, ft_itoa(TIMEOUT));
+	//wprintw(base, ft_itoa(TIMEOUT));
+	wprintw(base, ft_itoa(ft_handle_define(GET_INFOS, TIME, 0)));
 	wrefresh(base);
 	pthread_mutex_unlock(&g_mut);
 	return (base);
@@ -74,16 +79,20 @@ void	ft_main_loop(void)
 	size_t			now_time;
 	char			*str;
 	WINDOW			*base;
+	int				timeout;
 
+	timeout = ft_handle_define(GET_INFOS, TIME, 0);
 	str = NULL;
 	base = ft_print_game_var();
 	time( (time_t*)&begin_time );
 	now_time = begin_time;
-	while (now_time < begin_time + TIMEOUT && g_all_in_life)
+	//while (now_time < begin_time + TIMEOUT && g_all_in_life)
+	while (now_time < begin_time + timeout && g_all_in_life)
 	{
 		usleep(SEC);
 		time( (time_t*)&now_time );
-		ft_sprintf(&str, "%zi", TIMEOUT - (now_time - begin_time));
+		ft_sprintf(&str, "%zi", timeout - (now_time - begin_time));
+		//ft_sprintf(&str, "%zi", TIMEOUT - (now_time - begin_time));
 		pthread_mutex_lock(&g_mut);
 		ft_actualize(base, str, X_TIMEOUT, Y_TIMEOUT);
 		pthread_mutex_unlock(&g_mut);

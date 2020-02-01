@@ -134,16 +134,18 @@ int		ft_eat(t_philo **data, t_philo_heart **philo)
 	char			*str;
 	size_t			begin_time;
 	size_t			now_time;
+	int				eat_t;
 
+	eat_t = ft_handle_define(GET_INFOS, EAT, 0);
 	str = NULL;
 	begin_time = ft_eat_begin_actualize(philo);
 	now_time = begin_time;
-	while (now_time <= begin_time + EAT_T && g_all_in_life)
+	while (now_time <= begin_time + eat_t && g_all_in_life)
 	{
 		usleep(SEC);
 		time( (time_t*)&now_time );
-		ft_sprintf(&str, "%zi", (int)((begin_time + EAT_T) - now_time) > 0 ?
-		(begin_time + EAT_T) - now_time : 0);
+		ft_sprintf(&str, "%zi", (int)((begin_time + eat_t) - now_time) > 0 ?
+		(begin_time + eat_t) - now_time : 0);
 		pthread_mutex_lock(&g_mut);
 		ft_actualize((*data)->capsule, str, X_TIME, Y_TIME);
 		pthread_mutex_unlock(&g_mut);
@@ -160,16 +162,21 @@ int		ft_think(int ret, t_philo_heart **philo, t_philo **data)
 	size_t			begin_time;
 	size_t			now_time;
 	char			*str[2];
+	int				think_t;
 
+	think_t = ft_handle_define(GET_INFOS, THINK, 0);
 	begin_time = ft_think_begin_actualize(philo, ret);
 	now_time = begin_time;
-	while (now_time <= begin_time + THINK_T && g_all_in_life)
+	//while (now_time <= begin_time + THINK_T && g_all_in_life)
+	while (now_time <= begin_time + think_t && g_all_in_life)
 	{
 		usleep(SEC);
 		(*data)->life--;
 		time((time_t*)&now_time);
-		ft_sprintf(&str[0], "%zi", (int)((begin_time + THINK_T) - now_time) >
-		0 ? (begin_time + THINK_T) - now_time : 0);
+		//ft_sprintf(&str[0], "%zi", (int)((begin_time + THINK_T) - now_time) >
+		ft_sprintf(&str[0], "%zi", (int)((begin_time + think_t) - now_time) >
+		//0 ? (begin_time + THINK_T) - now_time : 0);
+		0 ? (begin_time + think_t) - now_time : 0);
 		ft_sprintf(&str[1], "%d", (*data)->life);
 		pthread_mutex_lock(&g_mut);
 		ft_actualize((*data)->capsule, str[0], X_TIME, Y_TIME);
@@ -203,19 +210,24 @@ int		ft_rest(t_philo_heart **philo, t_philo **data)
 	char			*str[2];
 	size_t			begin_time;
 	size_t			now_time;
+	int				rest_t;
 
+	rest_t = ft_handle_define(GET_INFOS, REST, 0);
 	str[0] = NULL;
 	str[1] = NULL;
 	begin_time = ft_rest_begin_actualize(philo);
 	now_time = begin_time;
-	while (now_time <= begin_time + REST_T && g_all_in_life)
+	//while (now_time <= begin_time + REST_T && g_all_in_life)
+	while (now_time <= begin_time + rest_t && g_all_in_life)
 	{
 		usleep(SEC);
 		(*data)->life = (*data)->life - 1;
 		ft_sprintf(&str[0], "%d", (*data)->life);
 		time((time_t*)&now_time);
-		ft_sprintf(&str[1], "%zi", (int)((REST_T + begin_time) - now_time) > 0 ?
-		(REST_T + begin_time) - now_time : 0);
+		//ft_sprintf(&str[1], "%zi", (int)((REST_T + begin_time) - now_time) > 0 ?
+		ft_sprintf(&str[1], "%zi", (int)((rest_t + begin_time) - now_time) > 0 ?
+		//(REST_T + begin_time) - now_time : 0);
+		(rest_t + begin_time) - now_time : 0);
 		pthread_mutex_lock(&g_mut);
 		ft_actualize((*data)->capsule, str[0], X_LIFE, Y_LIFE);
 		ft_actualize((*data)->capsule, str[1], X_TIME, Y_TIME);
@@ -268,7 +280,8 @@ void	ft_create_thread(t_philo_heart **philo_heart, t_philo_location locate, t_sc
 	philo = ft_memalloc(sizeof(t_philo));
 //	philo->name = get_name();
 	philo->state = TO_REST;
-	philo->life = MAX_LIFE;
+//	philo->life = MAX_LIFE;
+	philo->life = ft_handle_define(GET_INFOS, LIFE, 0);
 	new_philo_heart->type = PHILO;
 	new_philo_heart->data = philo;
 	while (1)
@@ -339,10 +352,11 @@ int main (int ac, char **av)
 
 	if (ft_catch_error(ac, av))
 		return (1);
-	g_all_in_life = true;
 	pthread_mutex_init(&g_mut, NULL);
 	ft_init_curses();
 	getmaxyx(stdscr, ss.y, ss.x);
+	ft_menu(ss.x, ss.y);
+	g_all_in_life = true;
 	ft_bzero(&philo_locate, sizeof(philo_locate));
 	ft_bzero(&wand_locate, sizeof(wand_locate));
 	ft_get_locate(wand_locate, ss.x, ss.y);

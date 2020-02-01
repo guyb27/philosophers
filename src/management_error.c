@@ -2,8 +2,14 @@
 
 int		ft_get_err_define_size(void)
 {
-	if (MAX_LIFE < 0 || EAT_T < 0 || REST_T < 0 || THINK_T < 0 || TIMEOUT < 0 ||
-		NB_PHILO < 2)
+	//if (MAX_LIFE < 0 || EAT_T < 0 || REST_T < 0 || THINK_T < 0 || TIMEOUT < 0 ||
+	//	NB_PHILO < 2)
+	if (ft_handle_define(GET_INFOS, LIFE, 0) < 0 ||
+									ft_handle_define(GET_INFOS, EAT, 0) < 0 ||
+									ft_handle_define(GET_INFOS, REST, 0) < 0 ||
+									ft_handle_define(GET_INFOS, THINK, 0) < 0 ||
+									ft_handle_define(GET_INFOS, TIME, 0) < 0 ||
+									ft_handle_define(GET_INFOS, NBPHILO, 0) < 2)
 		return (1);
 	return (0);
 }
