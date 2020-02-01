@@ -69,6 +69,7 @@ int i;
 				exit(endwin());//CREER UNE FONCTION FT_EXIT();
 		}
 		else if ((key == KEY_RIGHT || key == KEY_LEFT) && !(selected + 1 >= 7))
+		//PRENDRE AU CAS PAR CAS ET SE REFERER A LA FONCTION ft_get_err_define_size();
 		{
 			int value = ft_handle_define(GET_INFOS, selected, 0);
 			if (key == KEY_LEFT && value > 0)
