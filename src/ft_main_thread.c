@@ -157,13 +157,11 @@ void	ft_main_loop(void)
 	base = ft_print_game_var();
 	time( (time_t*)&begin_time );
 	now_time = begin_time;
-	//while (now_time < begin_time + TIMEOUT && g_all_in_life)
 	while (now_time < begin_time + timeout && g_all_in_life)
 	{
 		usleep(SEC);
 		time( (time_t*)&now_time );
 		ft_sprintf(&str, "%zi", timeout - (now_time - begin_time));
-		//ft_sprintf(&str, "%zi", TIMEOUT - (now_time - begin_time));
 		pthread_mutex_lock(&g_mut);
 		ft_actualize(base, str, X_TIMEOUT, Y_TIMEOUT);
 		pthread_mutex_unlock(&g_mut);

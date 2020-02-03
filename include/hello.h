@@ -125,7 +125,7 @@ typedef struct			s_philo
 	size_t				time;
 	e_philo_state		state;
 	t_philo_location	*locate;
-	pthread_t			thread;
+	pthread_t			thread;//A supprimer
 	WINDOW				*capsule;
 }						t_philo;
 

@@ -269,27 +269,16 @@ void	*ft_philo(void *arg)
 	return ((void*)0);
 }
 
-void	ft_create_thread(t_philo_heart **philo_heart, t_philo_location locate, t_screen_size ss)
+void	ft_create_philo(t_philo_heart **philo_heart, t_philo_location locate, t_screen_size ss)
 {
-	pthread_t		thread;
 	t_philo_heart	*new_philo_heart;
-	t_philo			*philo;
-	t_wand			*wand;
 
 	new_philo_heart = ft_memalloc(sizeof(t_philo_heart));
-	philo = ft_memalloc(sizeof(t_philo));
-//	philo->name = get_name();
-	philo->state = TO_REST;
-//	philo->life = MAX_LIFE;
-	philo->life = ft_handle_define(GET_INFOS, LIFE, 0);
 	new_philo_heart->type = PHILO;
-	new_philo_heart->data = philo;
 	while (1)
 	{
 		if ((*philo_heart)->type == WAND && (*philo_heart)->prev->type == WAND)
 		{
-			philo->locate = ft_get_philo_locate(((t_wand*)(*philo_heart)->prev->data)->locate->number, ss.x, ss.y);
-			//philo->capsule = ft_create_philo_window(philo);
 			new_philo_heart->next = *philo_heart;
 			new_philo_heart->prev = (*philo_heart)->prev;
 			(*philo_heart)->prev->next = new_philo_heart;
@@ -298,8 +287,6 @@ void	ft_create_thread(t_philo_heart **philo_heart, t_philo_location locate, t_sc
 		}
 		*philo_heart = (*philo_heart)->next;
 	}
-	pthread_create (&thread, NULL, ft_philo, new_philo_heart);
-	philo->thread = thread;
 }
 
 void	ft_create_wand(t_philo_heart **philo_heart, t_wand_location wand_locate)
@@ -309,29 +296,16 @@ void	ft_create_wand(t_philo_heart **philo_heart, t_wand_location wand_locate)
 	t_wand_location *locate;
 
 	new_philo_heart = ft_memalloc(sizeof(t_philo_heart));
-	locate = ft_memalloc(sizeof(t_wand_location));
-	locate->x_window = wand_locate.x_window;
-	locate->y_window = wand_locate.y_window;
-	locate->number = wand_locate.number;
-	locate->init = false;
-	wand = ft_memalloc(sizeof(t_wand));
 	new_philo_heart->type = WAND;
 	wand->wand_state = FREE;
 	wand->mutex = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;
-	new_philo_heart->data = wand;
-	wand->locate = locate;
-	wand->wand_state = FREE;
-	pthread_mutex_lock(&g_mut);
-	wand->capsule=subwin(stdscr, 1, 40, locate->x_window, locate->y_window);
-	wbkgd(wand->capsule, COLOR_PAIR(2));
-	pthread_mutex_unlock(&g_mut);
 	if (!*philo_heart)
 	{
 		*philo_heart = new_philo_heart;
 		new_philo_heart->prev = new_philo_heart;
 		new_philo_heart->next = new_philo_heart;
 	}
-	else if (new_philo_heart->type == WAND)
+	else
 	{
 		new_philo_heart->next = *philo_heart;
 		new_philo_heart->prev = (*philo_heart)->prev;
@@ -341,13 +315,34 @@ void	ft_create_wand(t_philo_heart **philo_heart, t_wand_location wand_locate)
 	}
 }
 
+void	ft_init_and_begin_game(t_philo_heart **philo_heart, t_screen_size ss)
+{
+	int count;
+	t_wand_location		wand_locate[7];
+	t_philo_location	philo_locate[7];
+
+	count = -1;
+	ft_get_locate(wand_locate, ss.x, ss.y);
+	while (++count < NB_PHILO)
+		ft_create_wand(philo_heart, wand_locate[count]);
+	while (--count >= 0)
+		ft_create_philo(philo_heart, philo_locate[count], ss);
+	count = 0;
+	while (count < NB_PHILO)
+	{
+		if ((*philo_heart)->type == WAND)
+			count += ft_print_wand(philo_heart);
+		*philo_heart = (*philo_heart)->next;
+	}
+	ft_main_loop();
+	ft_free_philo_heart(philo_heart);
+}
+
 int main (int ac, char **av)
 {
 	t_philo_heart		*philo_heart;
 	int					count;
 	t_philo				philo;
-	t_philo_location	philo_locate[7];
-	t_wand_location		wand_locate[7];
 	t_screen_size		ss;
 
 	if (ft_catch_error(ac, av))
@@ -357,23 +352,7 @@ int main (int ac, char **av)
 	getmaxyx(stdscr, ss.y, ss.x);
 	ft_menu(ss.x, ss.y);
 	g_all_in_life = true;
-	ft_bzero(&philo_locate, sizeof(philo_locate));
-	ft_bzero(&wand_locate, sizeof(wand_locate));
-	ft_get_locate(wand_locate, ss.x, ss.y);
-	count = -1;
 	philo_heart = NULL;
-	while (++count < NB_PHILO)
-		ft_create_wand(&philo_heart, wand_locate[count]);
-	while (--count >= 0)
-		ft_create_thread(&philo_heart, philo_locate[count], ss);
-	count = 0;
-	while (count < NB_PHILO)
-	{
-		if (philo_heart->type == WAND)
-			count += ft_print_wand(&philo_heart);
-		philo_heart = philo_heart->next;
-	}
-	ft_main_loop();
-	ft_free_philo_heart(&philo_heart);
+	ft_init_and_begin_game(&philo_heart, ss);
 	return 0;
 }
