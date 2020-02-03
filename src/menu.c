@@ -20,74 +20,97 @@ void	ft_print_define(WINDOW *win, int i)
 		wprintw(win,"Quit");
 }
 
+void	ft_create_menu(WINDOW ***items, int xmax, int ymax)
+{
+	int i;
+
+	*items = (WINDOW**)malloc(9 * sizeof(WINDOW*));
+	**items = newwin(10,20,(ymax / 2) - 5, (xmax / 2) - 10);
+	wbkgd(**items, COLOR_PAIR(1));
+	i = 0;
+	while (++i < 7)
+	{
+		(*items)[i] = subwin(**items,1, 20,(ymax / 2) - 5 +  i - 1, (xmax / 2) - 10);
+		ft_print_define((*items)[i], i);
+	}
+	while (i < 9)
+	{
+		(*items)[i] = subwin(**items,1, 20,(ymax / 2) - 5 +  i + 1, (xmax / 2) - 10);
+		ft_print_define((*items)[i], i);
+		i++;
+	}
+	wbkgd((*items)[1], COLOR_PAIR(2));
+	wrefresh(**items);
+}
+
+void	ft_vertical_key(WINDOW ***items, int *selected, int key)
+{
+	wbkgd((*items)[*selected + 1],COLOR_PAIR(1));
+	wnoutrefresh((*items)[*selected + 1]);
+	if (key == KEY_DOWN)
+		*selected = (*selected + 1) % 8;
+	else
+		*selected = (*selected - 1 + 8) % 8;
+	wbkgd((*items)[*selected + 1],COLOR_PAIR(2));
+	wnoutrefresh((*items)[*selected + 1]);
+	doupdate();
+}
+
+int		ft_enter_key(WINDOW ***items, int selected)
+{
+	for (int i = 0;i < 9;i++)
+		delwin((*items)[i]);
+	free(*items);
+	touchwin(stdscr);
+	refresh();
+	if (selected + 1 == 7)
+		return (1);
+	else
+		exit(endwin());//CREER UNE FONCTION FT_EXIT();
+}
+
+void	ft_horizontal_keys(WINDOW ***items, int key, int selected)
+{
+	int value;
+
+	value = ft_handle_define(GET_INFOS, selected, 0);
+	if (key == KEY_LEFT && value > 0)
+	{
+		value = ft_handle_define(ACTUALIZE, selected, value - 1);
+		wmove((*items)[selected + 1], 0, 0);
+		wclrtoeol((*items)[selected + 1]);
+		ft_print_define((*items)[selected + 1], selected + 1);
+		wrefresh((*items)[selected + 1]);
+	}
+	else if (key == KEY_RIGHT && value < 2147483647)
+	{
+		value = ft_handle_define(ACTUALIZE, selected, value + 1);
+		wmove((*items)[selected + 1], 0, 0);
+		wclrtoeol((*items)[selected + 1]);
+		ft_print_define((*items)[selected + 1], selected + 1);
+		wrefresh((*items)[selected + 1]);
+	}
+}
+
 void	ft_menu(int xmax, int ymax)
 {
-int i;
 	WINDOW **items;
-	items = (WINDOW**)malloc(9 * sizeof(WINDOW*));
-	items[0] = newwin(10,20,(ymax / 2) - 5, (xmax / 2) - 10);
-	wbkgd(items[0], COLOR_PAIR(1));
-	items[1] = subwin(items[0],1, 20,(ymax / 2) - 5 + 0, (xmax / 2) - 10);
-	items[2] = subwin(items[0],1, 20, (ymax / 2) - 5 + 1, (xmax / 2) - 10);
-	items[3] = subwin(items[0],1, 20, (ymax / 2) - 5 + 2, (xmax / 2) - 10);
-	items[4] = subwin(items[0],1, 20, (ymax / 2) - 5 + 3, (xmax / 2) - 10);
-	items[5] = subwin(items[0],1, 20, (ymax / 2) - 5 + 4, (xmax / 2) - 10);
-	items[6] = subwin(items[0],1, 20, (ymax / 2) - 5 + 5, (xmax / 2) - 10);
-	items[7] = subwin(items[0],1, 20, (ymax / 2) - 5 + 8, (xmax / 2) - 10);
-	items[8] = subwin(items[0],1, 20, (ymax / 2) - 5 + 9, (xmax / 2) - 10);
-	for (i = 1;i < 9; i++)
-		ft_print_define(items[i], i);
-	wbkgd(items[1], COLOR_PAIR(2));
-	wrefresh(items[0]);
 	int key = 0;
 	int selected = 0;
+
+	ft_create_menu(&items, xmax, ymax);
 	while (1)
 	{
 		key = getch();
 		if (key == KEY_DOWN || key == KEY_UP)
-		{
-			wbkgd(items[selected + 1],COLOR_PAIR(1));
-			wnoutrefresh(items[selected + 1]);
-			if (key == KEY_DOWN)
-				selected = (selected + 1) % 8;
-			else
-				selected = (selected - 1 + 8) % 8;
-			wbkgd(items[selected + 1],COLOR_PAIR(2));
-			wnoutrefresh(items[selected + 1]);
-			doupdate();
-		}
+			ft_vertical_key(&items, &selected, key);
 		else if ((key == ENTER || key == KEY_RIGHT) && selected + 1 >= 7)
 		{
-			for (int i = 0;i < 9;i++)
-				delwin(items[i]);
-			free(items);
-			touchwin(stdscr);
-			refresh();
-			if (selected + 1 == 7)
+			if (ft_enter_key(&items, selected))
 				break ;
-			else
-				exit(endwin());//CREER UNE FONCTION FT_EXIT();
 		}
 		else if ((key == KEY_RIGHT || key == KEY_LEFT) && !(selected + 1 >= 7))
-		//PRENDRE AU CAS PAR CAS ET SE REFERER A LA FONCTION ft_get_err_define_size();
-		{
-			int value = ft_handle_define(GET_INFOS, selected, 0);
-			if (key == KEY_LEFT && value > 0)
-			{
-				value = ft_handle_define(ACTUALIZE, selected, value - 1);
-				wmove(items[selected + 1], 0, 0);
-				wclrtoeol(items[selected + 1]);
-				ft_print_define(items[selected + 1], selected + 1);
-				wrefresh(items[selected + 1]);
-			}
-			else if (key == KEY_RIGHT && value < 2147483647)
-			{
-				value = ft_handle_define(ACTUALIZE, selected, value + 1);
-				wmove(items[selected + 1], 0, 0);
-				wclrtoeol(items[selected + 1]);
-				ft_print_define(items[selected + 1], selected + 1);
-				wrefresh(items[selected + 1]);
-			}
-		}
+			//PRENDRE AU CAS PAR CAS ET SE REFERER A LA FONCTION ft_get_err_define_size();
+			ft_horizontal_keys(&items, key, selected);
 	}
 }

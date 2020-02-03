@@ -22,7 +22,7 @@
 #define EAT_T 10
 #define REST_T 5
 #define THINK_T 7
-#define TIMEOUT 130
+#define TIMEOUT 2
 
 #define NB_PHILO 7
 
@@ -39,6 +39,7 @@
 
 #define ENTER 10
 #define ESCAPE 27
+#define SPACE 32
 
 pthread_mutex_t g_mut;
 bool g_all_in_life;

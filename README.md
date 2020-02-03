@@ -6,7 +6,7 @@ Comment gérer l’accès concurrentiel de plusieurs processus à des ressources
 
 Bonus:
 [] Menu de depart
+[] Menu de fin
 [] Pouvoir changer le nombre de philosophes [1-7]
-[] Fichier de log
-[] On peut changer les couleurs via le menu de depart
+[] Fichier de log ou fenetre de log (Dzonda feature)
 [] On peut changer les valeurs des attributs(TIMEOUT, MAX LIFE etc...) via le menu de depart

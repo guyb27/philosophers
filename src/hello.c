@@ -11,6 +11,8 @@ void ft_init_curses(void)
 	init_pair(4,COLOR_BLUE,COLOR_WHITE);
 	init_pair(5,COLOR_RED,COLOR_BLACK);
 	init_pair(6,COLOR_GREEN,COLOR_BLACK);
+	init_pair(7,COLOR_BLACK,COLOR_GREEN);
+	init_pair(8,COLOR_BLACK,COLOR_RED);
 	curs_set(0);
 	noecho();
 	nodelay(stdscr, true);
@@ -139,8 +141,6 @@ void	ft_eat_end_actualize(t_philo_heart **philo)
 	{
 		ft_sprintf(&str, "%d", ft_handle_define(GET_INFOS, LIFE, 0));
 		((t_philo*)(*philo)->data)->life = ft_handle_define(GET_INFOS, LIFE, 0);
-		//ft_sprintf(&str, "%d", MAX_LIFE);
-		//((t_philo*)(*philo)->data)->life = MAX_LIFE;
 		pthread_mutex_lock(&g_mut);
 		ft_actualize_wand(&(*philo)->prev, FREE);
 		ft_actualize_wand(&(*philo)->next, FREE);
@@ -172,7 +172,6 @@ size_t	ft_think_begin_actualize(t_philo_heart **philo, int wand)
 		pthread_mutex_unlock(&((t_wand*)(*philo)->next->data)->mutex);
 	}
 	ft_actualize(((t_philo*)(*philo)->data)->capsule, "REFLECHIS", X_STATE, Y_STATE);
-	//ft_sprintf(&str, "%zi", THINK_T);
 	ft_sprintf(&str, "%zi", ft_handle_define(GET_INFOS, THINK, 0));
 	ft_actualize(((t_philo*)(*philo)->data)->capsule, str, X_TIME, Y_TIME);
 	pthread_mutex_unlock(&g_mut);

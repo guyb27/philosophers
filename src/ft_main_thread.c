@@ -1,22 +1,85 @@
 #include "../include/hello.h"
 
-void	ft_a_philo_is_dead(void)//AFFICHER 'A PHILOPHER IS DEAD' EN DESSOUS D UNE COULEUR VOYANTE
+void	ft_creat_menu(WINDOW ***menu, int x, int y, int color)
 {
-	int			key, x, y;
-	WINDOW		*end_window;
+	int		i;
+
+	i = 0;
+	*menu = (WINDOW**)malloc(sizeof(WINDOW*) * 5);
+	(*menu)[0] = newwin(6, 20, (y / 2) - 2, (x / 2) - 10);
+	wbkgd((*menu)[0], COLOR_PAIR(color == 7 ? 6 : 5));
+	box((*menu)[0], '|', '-');
+	while(++i < 5)
+		(*menu)[i] = subwin((*menu)[0], 1, 18, (y / 2) - (2 - i), (x / 2) - (10 - 1));
+	wbkgd((*menu)[1], COLOR_PAIR(color));
+	wprintw((*menu)[1], "Try again");
+	wprintw((*menu)[2], "Main menu");
+	wprintw((*menu)[3], "Cancel");
+	wprintw((*menu)[4], "Quit");
+	wrefresh((*menu)[0]);
+}
+
+void	ft_cancel(WINDOW ***menu)
+{
+	for (int i = 0;i<5;i++)
+		delwin((*menu)[i]);
+	free(*menu);
+	touchwin(stdscr);
+	refresh();
+}
+
+void	ft_vertical_keys(WINDOW ***menu, int *selected, int key, int color)
+{
+			wbkgd((*menu)[*selected + 1], COLOR_PAIR(color == 7 ? 6 : 5));
+			wnoutrefresh((*menu)[*selected + 1]);
+			if (key == KEY_DOWN)
+				*selected = (*selected + 1) % 4;
+			else
+				*selected = (*selected - 1 + 4) % 4;
+			wbkgd((*menu)[*selected + 1], COLOR_PAIR(color));
+			wnoutrefresh((*menu)[*selected + 1]);
+			doupdate();
+}
+
+void	ft_end_menu(int x, int y, int color)
+{
+	WINDOW **menu;
+	int		key;
+	int selected = 0;
 
 	key = 0;
-	getmaxyx(stdscr, y, x);
-	end_window = subwin(stdscr, 1, y - 1, 0, x - 1);
-	wbkgd(end_window, COLOR_PAIR(5));
-	wmove(end_window, 0, 0);
-	wprintw(end_window, "A PHILO IS DEAD !!!");
-	wrefresh(end_window);
-	while (key != 27)
+	ft_creat_menu(&menu, x, y, color);
+	while (1)
 	{
 		key = getch();
+		if (key == ENTER || key == ESCAPE)
+		{
+			if (selected + 1 == 1 && !(key == ESCAPE))
+			{
+				//RECOMMENCER
+			}
+			else if (selected + 1 == 2 && !(key == ESCAPE))
+			{
+				//MENU PRINCIPAL
+			}
+			else if (selected + 1 == 3 && !(key == ESCAPE))
+			{
+				ft_cancel(&menu);
+				break ;
+			}
+			else if (selected + 1 == 4 || key == ESCAPE)
+			{
+				for (int i = 0;i<5;i++)
+					delwin(menu[i]);
+				free(menu);
+				endwin();
+				exit(0);
+			}
+			//ft_exit();
+		}
+		else if (key == KEY_DOWN || key == KEY_UP)
+			ft_vertical_keys(&menu, &selected, key, color);
 	}
-	delwin(end_window);
 }
 
 void	ft_end_game(char *str)//AFFICHER 'NOW IT S TIME TO DANCE' EN DESSOUS D UNE COULEUR VOYANTE
@@ -24,18 +87,26 @@ void	ft_end_game(char *str)//AFFICHER 'NOW IT S TIME TO DANCE' EN DESSOUS D UNE 
 	int			i;
 	int			x, y;
 	int			key;
+	int			color;
 	WINDOW		*end_window;
 
+	color = g_all_in_life ? 7 : 8;
 	getmaxyx(stdscr, y, x);
 	end_window = subwin(stdscr, 1, x, y - 1, 0);
 	wbkgd(end_window, COLOR_PAIR(g_all_in_life ? 6 : 5));
+	g_all_in_life = false;
 	wmove(end_window, 0, (x / 2) - (ft_strlen(str) / 2));
 	wprintw(end_window, str);
 	wrefresh(end_window);
 	key = 0;
-	g_all_in_life = false;
-	while (key != 27)
+	while (1)
+	{
 		key = getch();
+		if (key == ENTER || key == SPACE)
+			break ;
+		else if (key == ESCAPE)
+			ft_end_menu(x, y, color);
+	}
 	delwin(end_window);
 }
 
@@ -100,5 +171,5 @@ void	ft_main_loop(void)
 	}
 	usleep(SEC / 2);
 	ft_end_game(g_all_in_life ? "Now, it is time... To DAAAAAAAANCE ! ! !" :
-												"A philosopher is dead !!!");
+			"A philosopher is dead !!!");
 }
