@@ -159,5 +159,6 @@ int				ft_catch_error(int ac, char **av);
 int				ft_handle_define(e_handle_static_function h, e_define_type d, int value);
 void			ft_menu(int xmax, int ymax);
 //t_screen_size	*ft_get_screen_size(t_screen_size ss, e_handle_static_function hsf);
+void			ft_handle_wand_location(t_wand_location **locate, e_handle_static_function h, t_screen_size ss);
 
 #endif

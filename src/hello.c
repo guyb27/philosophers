@@ -29,12 +29,14 @@ void		ft_actualize(WINDOW *capsule, char *data, int x, int y)
 	wprintw(capsule, data);
 	wrefresh(capsule);
 }
+
 WINDOW	*ft_create_philo_window(t_philo *philo)
 {
 	WINDOW *capsule;
 
 	pthread_mutex_lock(&g_mut);
 	capsule = subwin(stdscr, 4, 20, philo->locate->x_capsule, philo->locate->y_capsule);
+	dprintf(2, "00\n");
 	wbkgd(capsule, COLOR_PAIR(3));
 	wmove(capsule, 0, 0);
 	wprintw(capsule, "NAME: ");
