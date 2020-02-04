@@ -1,53 +1,60 @@
 #include "../include/hello.h"
 
-t_philo_location	*ft_get_philo_locate(int wand_number, int x, int y, t_philo_location **locate)
+t_philo_location	*ft_get_philo_locate(int wand_number, int x, int y)
 {
-//	t_philo_location *locate;
+	t_philo_location *locate;
 
-	//locate = ft_memalloc(sizeof(t_philo_location));
+	locate = ft_memalloc(sizeof(t_philo_location));
 	if (wand_number == 0)
 	{
-		(*locate)->x_capsule = 2;
+		//ft_dprintf(2, "[0]\n");
+		locate->x_capsule = 2;
 		//locate->x_capsule = 2 + (y - 30 >= 8 ? (y - 30) / 8 : 0);
-		(*locate)->y_capsule = (int)(x * 0.5) - 10;
+		locate->y_capsule = (int)(x * 0.5) - 10;
 	}
 	else if (wand_number == 6)
 	{
-		(*locate)->x_capsule = 9;
+		//ft_dprintf(2, "[6]\n");
+		locate->x_capsule = 9;
 		//locate->x_capsule = 9 + (y - 30 >= 8 ? (y - 30) / 8 : 0);
-		(*locate)->y_capsule = (int)(x * 0.25) - 10;
+		locate->y_capsule = (int)(x * 0.25) - 10;
 	}
 	else if (wand_number == 1)
 	{
-		(*locate)->x_capsule = 9;
+		//ft_dprintf(2, "[1]\n");
+		locate->x_capsule = 9;
 		//locate->x_capsule = 9 + (y - 30 >= 8 ? (y - 30) / 8 : 0);
-		(*locate)->y_capsule = (int)(x * 0.75) - 10;
+		locate->y_capsule = (int)(x * 0.75) - 10;
 	}
 	else if (wand_number == 5)
 	{
-		(*locate)->x_capsule = 16;
+		//ft_dprintf(2, "[5]\n");
+		locate->x_capsule = 16;
 		//locate->x_capsule = 16 + (y - 30 >= 8 ? (y - 30) / 8 : 0);
-		(*locate)->y_capsule = (int)(x * 0.25) - 10;
+		locate->y_capsule = (int)(x * 0.25) - 10;
 	}
 	else if (wand_number == 2)
 	{
-		(*locate)->x_capsule = 16;
+		//ft_dprintf(2, "[2]\n");
+		locate->x_capsule = 16;
 		//locate->x_capsule = 16 + (y - 30 >= 8 ? (y - 30) / 8 : 0);
-		(*locate)->y_capsule = (int)(x * 0.75) - 10;
+		locate->y_capsule = (int)(x * 0.75) - 10;
 	}
 	else if (wand_number == 4)
 	{
-		(*locate)->x_capsule = 23;
+		//ft_dprintf(2, "[4]\n");
+		locate->x_capsule = 23;
 		//locate->x_capsule = 23 + (y - 30 >= 8 ? (y - 30) / 8 : 0);
-		(*locate)->y_capsule = (int)(x * 0.30) - 10;
+		locate->y_capsule = (int)(x * 0.30) - 10;
 	}
 	else if (wand_number == 3)
 	{
-		(*locate)->x_capsule = 23;
+		//ft_dprintf(2, "[3]\n");
+		locate->x_capsule = 23;
 		//locate->x_capsule = 23 + (y - 30 >= 8 ? (y - 30) / 8 : 0);
-		(*locate)->y_capsule = (int)(x * 0.70) - 10;
+		locate->y_capsule = (int)(x * 0.70) - 10;
 	}
-	return *locate;
+	return (locate);
 }
 
 char *ft_store_philo_name(void)//OBSOLETE !!!
@@ -215,26 +222,28 @@ int		ft_rest(t_philo_heart **philo, t_philo **data)
 	return (0);
 }
 
-void	ft_init_philo(void *arg, t_philo_heart **philo)
+void	ft_init_philo(void **arg, t_philo_heart **philo)
 {
 	t_screen_size		ss;
 
 	getmaxyx(stdscr, ss.y, ss.x);
 	//while (((t_philo_heart*)arg)->type != PHILO && !((t_philo*)((t_philo_heart*)arg)->data)->name)
 	ft_dprintf(2, "BUG\n");
+	*philo = ((t_philo_heart*)(void*)arg);
+
 	while (1)
 	{
-		if (((t_philo_heart*)arg)->type == PHILO && !((t_philo*)((t_philo_heart*)arg)->data)->name)
-			break ;
-			arg = ((t_philo_heart*)arg)->next;
+		if (philo && (*philo)->type == PHILO)
+			ft_dprintf(2, "PHILO\n");
+		else
+			ft_dprintf(2, "WAND\n");
+			
+		*philo = ((*philo))->next;
 	}
 	ft_dprintf(2, "NAME:[]\n");
-	*philo = ((t_philo_heart*)arg);
 	((t_philo*)(*philo)->data)->name = ft_get_name();
 	ft_dprintf(2, "NAME:[%s]\n", ((t_philo*)(*philo)->data)->name);
 	//((t_philo*)(*philo)->data)->locate = ft_get_philo_locate(((t_wand*)(*philo)->prev->data)->locate->number, ss.x, ss.y);
-	((t_philo*)(*philo)->data)->locate = ft_memalloc(sizeof(t_philo_location));
-	((t_philo*)(*philo)->data)->locate = ft_get_philo_locate(((t_wand*)(*philo)->prev->data)->locate->number, ss.x, ss.y, &((t_philo*)(*philo)->data)->locate);
 	ft_dprintf(2, "x: [%d], y: [%d]\n", ((t_philo*)(*philo)->data)->locate->x_capsule
 		, ((t_philo*)(*philo)->data)->locate->y_capsule
 	);
@@ -249,29 +258,44 @@ void	*ft_philo(void *arg)
 	char			*str;
 
 //	philo = (t_philo_heart*)arg;
-	ft_init_philo(arg, &philo);
-	while (1);
-	
-	while (((t_philo_heart*)arg)->type == PHILO && !((t_philo*)((t_philo_heart*)arg)->data)->name)
-		arg = ((t_philo_heart*)arg)->next;
-	philo = ((t_philo_heart*)arg);
-	((t_philo*)philo->data)->name = ft_get_name();
-	((t_philo*)philo->data)->state = TO_REST;
-	((t_philo*)philo->data)->life = ft_handle_define(GET_INFOS, LIFE, 0);
-	data = philo->data;
+	philo = NULL;
+	//ft_init_philo(&arg, &philo);
+	//while (1);
+	philo = (t_philo_heart*)arg;
+//	while (((*philo)->type == PHILO && !((t_philo*)(*philo)->data)->name) || (*philo)->type == WAND)
+	while (1)
+	{
+		if ((philo)->type == PHILO && ((t_philo*)philo->data)->name == NULL)
+		{
+			((t_philo*)(philo)->data)->name = ft_get_name();
+			ft_dprintf(2, "IT's GOOD:[%s]\n", ((t_philo*)(philo)->data)->name);
+			break ;
+		}
+		else
+			ft_dprintf(2, "NOT_GOOD\n");
+		philo = philo->next;
+		ft_dprintf(2, "NEXT\n");
+	}
+		ft_dprintf(2, "FINISH\n");
+	ft_dprintf(2, "ADDR_ARG:[%p], PHILO:[%p], FT_PHILO_LOCATE: [%p], is_philo: [%d]\n", &arg, &(*philo), &((t_philo*)(philo)->data)->locate, (philo)->type == PHILO ? 1 : 0);
+	((t_philo*)(philo)->data)->name = ft_get_name();
+	((t_philo*)(philo)->data)->state = TO_REST;
+	((t_philo*)(philo)->data)->life = ft_handle_define(GET_INFOS, LIFE, 0);
+	//data = (*philo)->data;
 //	data->name = ft_get_name();
-	ft_dprintf(2, "x: [%d], y: [%d]\n", ((t_philo*)(philo)->data)->locate->x_capsule
+	ft_dprintf(2, "111x: [%d], y: [%d]\n", ((t_philo*)(philo)->data)->locate->x_capsule
 		, ((t_philo*)(philo)->data)->locate->y_capsule
 	);
+	while (1);
 	//ft_dprintf(2, "LOCATE: [%d], x: [%d]\n", data->locate ? 1 : 0, data->locate->x_capsule);
 	while(1);
 	data->capsule = ft_create_philo_window(data);
-	while ((size_t)((t_philo*)philo->data)->life && g_all_in_life)
+	while ((size_t)((t_philo*)(philo)->data)->life && g_all_in_life)
 	{
-		if ((e_philo_state)((t_philo*)philo->data)->state == TO_EAT)
+		if ((e_philo_state)((t_philo*)(philo)->data)->state == TO_EAT)
 			ft_rest(&philo, &data);
 		else
-			if (ft_eat_or_think(&philo, (t_philo**)&philo->data))
+			if (ft_eat_or_think(&philo, (t_philo**)&(philo)->data))
 			{
 				usleep(SEC);
 				data->life = data->life - 1;
@@ -285,42 +309,35 @@ void	*ft_philo(void *arg)
 	return ((void*)0);
 }
 
-void	ft_create_philos(t_philo_heart **philo_heart, t_screen_size ss)
+void	ft_create_philo(t_philo_heart **philo_heart, t_screen_size ss)
 {
 	t_philo_heart	*new_philo_heart;
-	int				i;
 
-	i = -1;
-	while (++i < ft_handle_define(GET_INFOS, NBPHILO, 0))
+	new_philo_heart = ft_memalloc(sizeof(t_philo_heart));
+	new_philo_heart->type = PHILO;
+	new_philo_heart->data = ft_memalloc(sizeof(t_philo));
+	//((t_philo*)new_philo_heart->data)->name = ft_get_name();
+	//((t_philo*)new_philo_heart->data)->state = TO_REST;
+	//((t_philo*)new_philo_heart->data)->life = ft_handle_define(GET_INFOS,
+	//															LIFE, 0);
+	while (1)
+	//while ((*philo_heart)->prev->prev == new_philo_heart)
 	{
-		new_philo_heart = ft_memalloc(sizeof(t_philo_heart));
-		new_philo_heart->type = PHILO;
-		new_philo_heart->data = ft_memalloc(sizeof(t_philo));
-		//((t_philo*)new_philo_heart->data)->name = ft_get_name();
-		//((t_philo*)new_philo_heart->data)->state = TO_REST;
-		//((t_philo*)new_philo_heart->data)->life = ft_handle_define(GET_INFOS,
-		//															LIFE, 0);
-		while (1)
-		//while ((*philo_heart)->prev->prev == new_philo_heart)
+		if ((*philo_heart)->type == WAND &&
+										(*philo_heart)->prev->type == WAND)
 		{
-			if ((*philo_heart)->type == WAND &&
-											(*philo_heart)->prev->type == WAND)
-			{
-				//((t_philo*)new_philo_heart->data)->locate = ft_get_philo_locate(((t_wand*)(*philo_heart)->prev->data)->locate->number, ss.x, ss.y);
-//				ft_dprintf(2, "x: [%d], y: [%d]", ((t_philo*)new_philo_heart->data)->locate->x_capsule
-//				, ((t_philo*)new_philo_heart->data)->locate->y_capsule
-//				);
-				new_philo_heart->next = *philo_heart;
-				new_philo_heart->prev = (*philo_heart)->prev;
-				(*philo_heart)->prev->next = new_philo_heart;
-				(*philo_heart)->prev = new_philo_heart;
-//				ft_dprintf(2, "x: [%d], y: [%d]\n", ((t_philo*)(*philo_heart)->prev->data)->locate->x_capsule
-//				, ((t_philo*)(*philo_heart)->prev->data)->locate->y_capsule
-//				);
-				break ;
-			}
-			*philo_heart = (*philo_heart)->next;
+			((t_philo*)new_philo_heart->data)->locate = ft_get_philo_locate(((t_wand*)(*philo_heart)->prev->data)->locate->number, ss.x, ss.y);
+		//	ft_dprintf(2, "LOCATE_CREATE: [%p]\n", ((t_philo*)new_philo_heart->data)->locate);
+			new_philo_heart->next = *philo_heart;
+			new_philo_heart->prev = (*philo_heart)->prev;
+			(*philo_heart)->prev->next = new_philo_heart;
+			(*philo_heart)->prev = new_philo_heart;
+//			ft_dprintf(2, "x: [%d], y: [%d]\n", ((t_philo*)(*philo_heart)->prev->data)->locate->x_capsule
+//			, ((t_philo*)(*philo_heart)->prev->data)->locate->y_capsule
+//			);
+			break ;
 		}
+		*philo_heart = (*philo_heart)->next;
 	}
 }
 
@@ -361,37 +378,53 @@ void	ft_create_wand(t_philo_heart **philo_heart, t_screen_size ss)
 }
 
 
-void	ft_init_and_begin_game(t_philo_heart **philo_heart, t_screen_size ss)
+void	ft_init_and_begin_game(t_philo_heart **philo_hear, t_screen_size ss)
 {
 	int count;
 //	t_wand_location		wand_locate[7];
 //	t_philo_location	philo_locate[7];
 	pthread_t	thread;
+	t_philo_heart		*philo_heart;
 
 	count = -1;
 	g_all_in_life = true;
+	philo_heart = NULL;
 //	ft_get_locate(wand_locate, ss.x, ss.y);
 	while (++count < ft_handle_define(GET_INFOS, NBPHILO, 0))
-		ft_create_wand(philo_heart, ss);
-	ft_create_philos(philo_heart, ss);
-	//			ft_dprintf(2, "0x: [%d], y: [%d]\n", ((t_philo*)(*philo_heart)->prev->data)->locate->x_capsule
-	//, ((t_philo*)(*philo_heart)->prev->data)->locate->y_capsule
-	//			);
+		ft_create_wand(&philo_heart, ss);
 	while (--count >= 0)
-		;
+		ft_create_philo(&philo_heart, ss);
+//				ft_dprintf(2, "0x: [%d], y: [%d]\n", ((t_philo*)(philo_heart)->prev->data)->locate->x_capsule
+//	, ((t_philo*)(philo_heart)->prev->data)->locate->y_capsule
+//				);
+	while (++count < ft_handle_define(GET_INFOS, NBPHILO, 0) * 2)
+	{
+		if (philo_heart->type == PHILO)
+			pthread_create(&thread, NULL, ft_philo, philo_heart);
+		philo_heart = philo_heart->next;
+	}
+	/*while (1)
+	{
+		if ((philo_heart)->type == PHILO)
+			dprintf(2, "PHILO\n");
+		else
+			dprintf(2, "WAND\n");
+		(philo_heart) = (philo_heart)->next;
+	}*/
+	while (1);
 	while (++count < ft_handle_define(GET_INFOS, NBPHILO, 0))
-		pthread_create(&thread, NULL, ft_philo, philo_heart);
+		pthread_create(&thread, NULL, ft_philo, &philo_heart);
 	count = 0;
 	while (count > 0)
 	//while (count < NB_PHILO)
 	{
-		if ((*philo_heart)->type == WAND)
+		if ((philo_heart)->type == WAND)
 		//RAJOUTER DES CONDITIONS DANS CE IF POUR DECHARGER LE IF DE FT_PRINT_WAND
-			count -= ft_print_wand(philo_heart);
-		*philo_heart = (*philo_heart)->next;
+			count -= ft_print_wand(&philo_heart);
+		philo_heart = (philo_heart)->next;
 	}
 	ft_main_loop();
-	ft_free_philo_heart(philo_heart);
+	ft_free_philo_heart(&philo_heart);
 }
 
 void	ft_init_and_begin_main_menu(void)
