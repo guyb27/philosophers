@@ -36,7 +36,6 @@ WINDOW	*ft_create_philo_window(t_philo *philo)
 
 	pthread_mutex_lock(&g_mut);
 	capsule = subwin(stdscr, 4, 20, philo->locate->x_capsule, philo->locate->y_capsule);
-	dprintf(2, "00\n");
 	wbkgd(capsule, COLOR_PAIR(3));
 	wmove(capsule, 0, 0);
 	wprintw(capsule, "NAME: ");
@@ -53,65 +52,6 @@ WINDOW	*ft_create_philo_window(t_philo *philo)
 	wrefresh(capsule);
 	pthread_mutex_unlock(&g_mut);
 	return (capsule);
-}
-
-void		ft_actualize_wand(t_philo_heart **heart, e_wand_state new_state)
-{
-	t_wand	*wand;
-	int		y;
-
-	if ((*heart)->type == WAND && (*heart)->prev->type == PHILO && (*heart)->prev->type == PHILO)
-	{
-		wand = ((t_wand*)(*heart)->data);
-		/* GROS BEUG POURTANT JE PREFERE CAR C EST PLUS PROPRE ! ! !
-		if (wand->wand_state == THINK_LEFT || wand->wand_state == EAT_LEFT)
-			y = wand->locate->y_before;
-		else
-			y = wand->wand_state == FREE ? wand->locate->y_mid : wand->locate->y_after;
-		if (wand->locate->init)
-		{
-			wmove(wand->capsule, 0, y);
-			wprintw(wand->capsule, " ");
-			wand->wand_state = new_state;
-			if (wand->wand_state == THINK_LEFT || wand->wand_state == EAT_LEFT)
-				y = wand->locate->y_before;
-			else
-				y = wand->wand_state == FREE ? wand->locate->y_mid : wand->locate->y_after;
-			wmove(wand->capsule, 0, y);
-			wprintw(wand->capsule, "|");
-			wrefresh(wand->capsule);
-		}
-		else
-			wand->wand_state = new_state;//Oui pour le tout debut ! A ne pas effacer !
-		*/
-		/**/
-		if (wand->locate->init)
-		{
-			y = wand->locate->y_before;
-			wmove(wand->capsule, 0, y);
-			wprintw(wand->capsule, " ");
-			y = wand->locate->y_mid;
-			wmove(wand->capsule, 0, y);
-			wprintw(wand->capsule, " ");
-			y = wand->locate->y_after;
-			wmove(wand->capsule, 0, y);
-			wprintw(wand->capsule, " ");
-			wand->wand_state = new_state;
-			if (wand->wand_state == THINK_LEFT || wand->wand_state == EAT_LEFT)
-				y = wand->locate->y_before;
-			else
-				y = wand->wand_state == FREE ? wand->locate->y_mid : wand->locate->y_after;
-			wmove(wand->capsule, 0, y);
-			wprintw(wand->capsule, "|");
-			wrefresh(wand->capsule);
-		}
-		else
-			wand->wand_state = new_state;
-			//Oui pour le tout debut,
-			//en attendant que tout les philos se creer !
-			//A ne pas effacer !
-		/**/
-	}
 }
 
 size_t	ft_eat_begin_actualize(t_philo_heart **philo)
@@ -224,54 +164,24 @@ size_t	ft_rest_begin_actualize(t_philo_heart **philo)
 	return(time(NULL));
 }
 
-int		ft_print_wand(t_philo_heart **philo_heart)//Faire une fonction plus propre qui utilise ft_actualize
-{
-	t_wand	*wand;
-	char *str = NULL;
-
-	if ((*philo_heart)->type == WAND && !((t_wand*)(*philo_heart)->data)->locate->init &&
-	(*philo_heart)->prev->type == PHILO && (*philo_heart)->next->type == PHILO && ((t_philo*)(*philo_heart)->prev->data)->name && ((t_philo*)(*philo_heart)->next->data)->name)
-	{
-		pthread_mutex_lock(&g_mut);
-		wand = (*philo_heart)->data;
-		wmove(wand->capsule, 0, 0);
-		wclrtoeol(wand->capsule);
-		ft_sprintf(&str, "%d%s:[%s], MID:[%s], %s:[%s]",
-		wand->locate->number,
-		((t_philo*)(*philo_heart)->prev->data)->name,
-		wand->wand_state == THINK_LEFT || wand->wand_state == EAT_LEFT ? "|" :
-		" ",
-		wand->wand_state == FREE ? "|" : " ",
-		((t_philo*)(*philo_heart)->next->data)->name,
-		wand->wand_state == THINK_RIGHT || wand->wand_state == EAT_RIGHT ? "|"
-		: " ");
-		wand->locate->y_before =
-					ft_strlen(((t_philo*)(*philo_heart)->prev->data)->name) + 3;
-		wand->locate->y_mid = wand->locate->y_before + 9;
-		wand->locate->y_after = wand->locate->y_mid + 6 +
-						ft_strlen(((t_philo*)(*philo_heart)->next->data)->name);
-		wand->locate->init = true;
-		wprintw(wand->capsule, str);
-		wrefresh(wand->capsule);
-		ft_strdel(&str);
-		pthread_mutex_unlock(&g_mut);
-		return (1);
-	}
-	return (0);
-}
-
 void	ft_close_window(t_philo_heart *philo)
 {
 	if (philo->type == PHILO)
 	{
-		delwin(((t_philo*)philo->data)->capsule);
+		free(((t_philo*)philo->data)->capsule);
+		touchwin(stdscr);
+		refresh();
+		ft_dprintf(2, "DEL_PHILO: [%s]\n", ((t_philo*)philo->data)->name);
 		((t_philo*)philo->data)->capsule = NULL;
 		free(((t_philo*)philo->data)->locate);
 		((t_philo*)philo->data)->locate = NULL;
 	}
 	else
 	{
-		delwin(((t_wand*)philo->data)->capsule);
+		free(((t_wand*)philo->data)->capsule);
+		touchwin(stdscr);
+		refresh();
+		ft_dprintf(2, "DEL_WAND: [%d]\n", ((t_wand*)philo->data)->locate->number);
 		((t_wand*)philo->data)->capsule = NULL;
 		free(((t_wand*)philo->data)->locate);
 		((t_wand*)philo->data)->locate = NULL;
@@ -293,7 +203,11 @@ void	ft_free_philo_heart(t_philo_heart **philo)
 		*philo = (*philo)->next;
 		free(tmp);
 	}
-	endwin();
+	//touchwin(stdscr);
+	//refresh();
+	//endwin();
+
+
 }
 /*
 t_screen_size	*ft_get_screen_size(t_screen_size ss, e_handle_static_function hsf)

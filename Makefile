@@ -35,7 +35,8 @@ SRCS_NAME =	\
 			management_error.c \
 			handle_define.c \
 			menu.c \
-			wand_locate.c
+			wand_locate.c \
+			manage_wand.c
 
 OBJS_NAME = $(SRCS_NAME:.c=.o)
 
