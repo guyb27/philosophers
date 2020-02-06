@@ -116,6 +116,7 @@ typedef struct			s_philo_location
 {
 	int					x_capsule;
 	int					y_capsule;
+	bool				init;
 }						t_philo_location;
 
 typedef struct			s_philo
@@ -140,6 +141,7 @@ typedef struct				s_philo_heart
 typedef struct				s_philo_mother
 {
 	t_philo_heart	*heart;
+	WINDOW			*win;
 	pthread_mutex_t g_mut;
 	bool g_all_in_life;
 }							t_philo_mother;
@@ -153,7 +155,7 @@ typedef struct				s_screen_size
 void			ft_init_curses(void);
 void			ft_actualize(WINDOW *capsule, char *data, int x, int y);
 void			ft_actualize_wand(t_philo_heart **heart, e_wand_state new_state);
-WINDOW			*ft_create_philo_window(t_philo *philo);
+WINDOW			*ft_create_philo_window(t_philo *philo, t_philo_mother *mother);
 int				ft_print_wand(t_philo_heart *philo_heart);
 size_t			ft_eat_begin_actualize(t_philo_heart **philo);
 void			ft_eat_end_actualize(t_philo_heart **philo);

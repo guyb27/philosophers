@@ -4,6 +4,7 @@ t_philo_location	*ft_get_philo_locate(int wand_number, int x, int y)
 {
 	t_philo_location *locate;
 
+	ft_dprintf(2, "%sWAND_NUMBER: [%d]%s\n", GREEN, wand_number, STOP);
 	locate = ft_memalloc(sizeof(t_philo_location));
 	if (wand_number == 0)
 	{
@@ -47,6 +48,9 @@ t_philo_location	*ft_get_philo_locate(int wand_number, int x, int y)
 		//locate->x_capsule = 23 + (y - 30 >= 8 ? (y - 30) / 8 : 0);
 		locate->y_capsule = (int)(x * 0.70) - 10;
 	}
+	locate->init = false;
+//	else
+//		ft_dprintf(2, "%sPROBLEME GET_PHILO_LOCATE%s\n", RED, STOP);
 	return (locate);
 }
 
@@ -233,11 +237,12 @@ void	*ft_philo(void *arg)
 	char			*str;
 
 	//ft_init_philo(&arg, &philo);
-	philo = (t_philo_heart*)arg;
+	philo = ((t_philo_mother*)arg)->heart;
 	((t_philo*)(philo)->data)->name = ft_get_name();
 	((t_philo*)(philo)->data)->state = TO_REST;
 	((t_philo*)(philo)->data)->life = ft_handle_define(GET_INFOS, LIFE, 0);
-	((t_philo*)philo->data)->capsule = ft_create_philo_window(philo->data);
+	((t_philo*)philo->data)->capsule = ft_create_philo_window(philo->data, arg);
+	while (1);
 	while ((size_t)((t_philo*)(philo)->data)->life && g_all_in_life)
 	{
 		if ((e_philo_state)((t_philo*)(philo)->data)->state == TO_EAT)
@@ -321,16 +326,33 @@ void	ft_init_and_begin_game(t_screen_size ss)
 	g_all_in_life = true;
 	philo_heart = NULL;
 	mother = ft_memalloc(sizeof(t_philo_mother));
+	mother->win = newwin(ss.y, ss.x, 0, 0);
+	wbkgd(mother->win, COLOR_PAIR(9));
 	while (++count < ft_handle_define(GET_INFOS, NBPHILO, 0))
 		ft_create_wand(&philo_heart, ss);
 	while (--count >= 0)
 		ft_create_philo(&philo_heart, ss);
+	mother->heart = philo_heart;
+	for(int i = 0;i< NB_PHILO * 2;i++)
+	{
+		if (mother->heart->type == PHILO)
+		{
+			ft_dprintf(2, "PHILO: x[%d], y:[%d]\n",
+			((t_philo*)mother->heart->data)->locate->x_capsule,
+			((t_philo*)mother->heart->data)->locate->y_capsule,
+			((t_philo*)mother->heart->data)->locate->init
+			);
+		}
+		mother->heart = mother->heart->next;
+	}
 	while (++count < ft_handle_define(GET_INFOS, NBPHILO, 0) * 2)
 	{
-		if (philo_heart->type == PHILO)
-			pthread_create(&thread, NULL, ft_philo, philo_heart);
-		philo_heart = philo_heart->next;
+		if (mother->heart->type == PHILO)
+			pthread_create(&thread, NULL, ft_philo, mother);
+		mother->heart = mother->heart->next;
 	}
+	while (1);
+	wrefresh(mother->win);
 	count = 0;
 	while (count < ft_handle_define(GET_INFOS, NBPHILO, 0))
 	{

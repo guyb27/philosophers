@@ -13,6 +13,8 @@ void ft_init_curses(void)
 	init_pair(6,COLOR_GREEN,COLOR_BLACK);
 	init_pair(7,COLOR_BLACK,COLOR_GREEN);
 	init_pair(8,COLOR_BLACK,COLOR_RED);
+	//debug
+	init_pair(9, COLOR_CYAN,COLOR_MAGENTA);
 	curs_set(0);
 	noecho();
 	nodelay(stdscr, true);
@@ -30,12 +32,24 @@ void		ft_actualize(WINDOW *capsule, char *data, int x, int y)
 	wrefresh(capsule);
 }
 
-WINDOW	*ft_create_philo_window(t_philo *philo)
+WINDOW	*ft_create_philo_window(t_philo *philo, t_philo_mother *mother)
 {
 	WINDOW *capsule;
 
+	//ft_dprintf(2, "LOCATE[%d]\n", philo->locate ? 1 : 0);
+	if (!philo->locate)
+		return (ft_create_philo_window(philo, mother));
+	if (philo->locate->init)
+		return (NULL);
+	ft_dprintf(2, "WAIT:[%s]\n", philo->name);
 	pthread_mutex_lock(&g_mut);
-	capsule = subwin(stdscr, 4, 20, philo->locate->x_capsule, philo->locate->y_capsule);
+	ft_dprintf(2, "INIT:[%s], x:[%d], y:[%d]\n", philo->name, philo->locate->x_capsule, philo->locate->y_capsule);
+	philo->locate->init = true;
+	//ft_dprintf(2, "LOCK[%s]\n", philo->name);
+	//ft_dprintf(2, "x:[%d], y:[%d]\n", philo->locate->x_capsule, philo->locate->y_capsule);
+	capsule = subwin(mother->win, 4, 20, philo->locate->x_capsule, philo->locate->y_capsule);
+	ft_dprintf(2, "SUBWIN:[%s], ret:[%d]\n", philo->name, philo->capsule ? 1 : 0);
+	//ft_dprintf(2, "BUG ?[%s]\n", philo->name);
 	wbkgd(capsule, COLOR_PAIR(3));
 	wmove(capsule, 0, 0);
 	wprintw(capsule, "NAME: ");
@@ -50,7 +64,10 @@ WINDOW	*ft_create_philo_window(t_philo *philo)
 	wprintw(capsule, "TIME: ");
 	wprintw(capsule, ft_itoa(philo->time));
 	wrefresh(capsule);
+	//wrefresh(mother->win);
+	sleep(2);
 	pthread_mutex_unlock(&g_mut);
+	ft_dprintf(2, "FINISH[%s]\n", philo->name);
 	return (capsule);
 }
 
