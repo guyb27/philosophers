@@ -77,7 +77,7 @@ char	*ft_get_name(void)
 	str_ret = NULL;
 	tmp_str = ft_store_philo_name();
 	philo_names = ft_strsplit(tmp_str, ';');
-	pthread_mutex_lock(&g_mut);
+//	pthread_mutex_lock(&g_mut);
 	while (++i < NB_PHILO)
 		if (already_taken[i] == 0)
 		{
@@ -85,7 +85,7 @@ char	*ft_get_name(void)
 			str_ret = ft_strdup(philo_names[i]);
 			i = NB_PHILO;
 		}
-	pthread_mutex_unlock(&g_mut);
+//	pthread_mutex_unlock(&g_mut);
 	free(tmp_str);
 	ft_tabdel(&philo_names);
 	return (str_ret);
@@ -236,21 +236,15 @@ void	*ft_philo(void *arg)
 	t_philo_heart	*philo;
 	char			*str;
 
-	//ft_init_philo(&arg, &philo);
-	//while (1);
-		pthread_mutex_lock(&g_mut);
-	if ((*(t_philo_mother**)arg)->heart->type == PHILO)
-		philo = (*(t_philo_mother**)arg)->heart;
-	else
-		philo = (*(t_philo_mother**)arg)->heart->next;
+	philo = (*(t_philo_mother**)arg)->heart;
+	pthread_mutex_lock(&g_mut);
 	while ((philo->type == PHILO && ((t_philo*)philo->data)->name) || philo->type == WAND)
-		philo = philo->next;
+			philo = philo->next;
 	((t_philo*)(philo)->data)->name = ft_get_name();
-		pthread_mutex_unlock(&g_mut);
+	pthread_mutex_unlock(&g_mut);
 	((t_philo*)(philo)->data)->state = TO_REST;
 	((t_philo*)(philo)->data)->life = ft_handle_define(GET_INFOS, LIFE, 0);
 	((t_philo*)philo->data)->capsule = ft_create_philo_window(philo->data, arg);
-	while (1);
 	while ((size_t)((t_philo*)(philo)->data)->life && g_all_in_life)
 	{
 		if ((e_philo_state)((t_philo*)(philo)->data)->state == TO_EAT)
@@ -336,7 +330,7 @@ void	ft_init_and_begin_game(t_screen_size ss)
 	mother = ft_memalloc(sizeof(t_philo_mother));
 	mother->win = ft_memalloc(sizeof(t_philo_mother));
 	mother->win = newwin(ss.y, ss.x, 0, 0);
-	wbkgd(mother->win, COLOR_PAIR(9));
+	wbkgd(mother->win, COLOR_PAIR(1));
 	while (++count < ft_handle_define(GET_INFOS, NBPHILO, 0))
 		ft_create_wand(&philo_heart, ss);
 	while (--count >= 0)
@@ -344,18 +338,17 @@ void	ft_init_and_begin_game(t_screen_size ss)
 	mother->heart = philo_heart;
 	for(int i = 0;i< NB_PHILO * 2;i++)
 	{
-		if (mother->heart->type == PHILO)
+	/*	if (mother->heart->type == PHILO)
 		{
 			ft_dprintf(2, "PHILO: x[%d], y:[%d]\n",
 			((t_philo*)mother->heart->data)->locate->x_capsule,
 			((t_philo*)mother->heart->data)->locate->y_capsule
 			);
-		}
+		}*/
 		mother->heart = mother->heart->next;
 	}
 	while (++count < ft_handle_define(GET_INFOS, NBPHILO, 0))
 		pthread_create(&thread, NULL, ft_philo, &mother);
-	while (1);
 	wrefresh(mother->win);
 	count = 0;
 	while (count < ft_handle_define(GET_INFOS, NBPHILO, 0))
