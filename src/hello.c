@@ -212,7 +212,7 @@ void	ft_close_window(t_philo_heart *philo)
 	}
 }
 
-void	ft_free_philo_heart(t_philo_heart **philo)
+void	ft_free_philo_heart(t_philo_heart *philo)
 {
 	int		i;
 	t_philo_heart	*tmp;
@@ -220,11 +220,11 @@ void	ft_free_philo_heart(t_philo_heart **philo)
 	i = -1;
 	while (++i < NB_PHILO * 2)
 	{
-		tmp = *philo;
-		ft_close_window(*philo);
-		if ((*philo)->type == PHILO)
-			free(((t_philo*)(*philo)->data)->name);
-		*philo = (*philo)->next;
+		tmp = philo;
+		ft_close_window(philo);
+		if (philo->type == PHILO)
+			free(((t_philo*)philo->data)->name);
+		philo = philo->next;
 		free(tmp);
 	}
 	//touchwin(stdscr);

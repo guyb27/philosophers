@@ -65,9 +65,9 @@ char *ft_store_philo_name(void)//OBSOLETE !!!
 	return (ret);
 }
 
-char	*ft_get_name(void)
+char	*ft_get_name(e_handle_static_function h)
 {
-	static int	already_taken[NB_PHILO] = {0};
+	static int	already_taken[NB_PHILO] = {0};//A REMPLACER PAR LA FONCTION
 	char		*tmp_str;
 	char		**philo_names;
 	int			i;
@@ -75,6 +75,11 @@ char	*ft_get_name(void)
 
 	i = -1;
 	str_ret = NULL;
+	if (h == INIT)
+	{
+		ft_bzero(already_taken, sizeof(already_taken));
+		return (NULL);
+	}
 	tmp_str = ft_store_philo_name();
 	philo_names = ft_strsplit(tmp_str, ';');
 //	pthread_mutex_lock(&g_mut);
@@ -226,7 +231,7 @@ void	ft_init_philo(void **arg, t_philo_heart **philo)
 	getmaxyx(stdscr, ss.y, ss.x);
 	//while (((t_philo_heart*)arg)->type != PHILO && !((t_philo*)((t_philo_heart*)arg)->data)->name)
 	*philo = ((t_philo_heart*)(void*)arg);
-	((t_philo*)(*philo)->data)->name = ft_get_name();
+	((t_philo*)(*philo)->data)->name = ft_get_name(GET_INFOS);
 	((t_philo*)(*philo)->data)->state = TO_REST;
 	((t_philo*)(*philo)->data)->life = ft_handle_define(GET_INFOS, LIFE, 0);
 }
@@ -240,7 +245,7 @@ void	*ft_philo(void *arg)
 	pthread_mutex_lock(&g_mut);
 	while ((philo->type == PHILO && ((t_philo*)philo->data)->name) || philo->type == WAND)
 			philo = philo->next;
-	((t_philo*)(philo)->data)->name = ft_get_name();
+	((t_philo*)(philo)->data)->name = ft_get_name(GET_INFOS);
 	pthread_mutex_unlock(&g_mut);
 	((t_philo*)(philo)->data)->state = TO_REST;
 	((t_philo*)(philo)->data)->life = ft_handle_define(GET_INFOS, LIFE, 0);
@@ -316,10 +321,10 @@ void	ft_create_wand(t_philo_heart **philo_heart, t_screen_size ss)
 	}
 }
 
-void	ft_init_and_begin_game(t_screen_size ss)
+void	ft_init_and_begin_game(void)
 {
-	int count;
-	pthread_t	thread;
+	int					count;
+	pthread_t			thread;
 	t_philo_heart		*philo_heart;
 	t_philo_mother		*mother;
 	WINDOW				*win;
@@ -328,25 +333,17 @@ void	ft_init_and_begin_game(t_screen_size ss)
 	g_all_in_life = true;
 	philo_heart = NULL;
 	mother = ft_memalloc(sizeof(t_philo_mother));
+	getmaxyx(stdscr, mother->ss.y, mother->ss.x);
+	ft_get_name(INIT);
+	ft_handle_wand_location(NULL, INIT, mother->ss);
 	mother->win = ft_memalloc(sizeof(t_philo_mother));
-	mother->win = newwin(ss.y, ss.x, 0, 0);
+	mother->win = newwin(mother->ss.y, mother->ss.x, 0, 0);
 	wbkgd(mother->win, COLOR_PAIR(1));
 	while (++count < ft_handle_define(GET_INFOS, NBPHILO, 0))
-		ft_create_wand(&philo_heart, ss);
+		ft_create_wand(&philo_heart, mother->ss);
 	while (--count >= 0)
-		ft_create_philo(&philo_heart, ss);
+		ft_create_philo(&philo_heart, mother->ss);
 	mother->heart = philo_heart;
-	for(int i = 0;i< NB_PHILO * 2;i++)
-	{
-	/*	if (mother->heart->type == PHILO)
-		{
-			ft_dprintf(2, "PHILO: x[%d], y:[%d]\n",
-			((t_philo*)mother->heart->data)->locate->x_capsule,
-			((t_philo*)mother->heart->data)->locate->y_capsule
-			);
-		}*/
-		mother->heart = mother->heart->next;
-	}
 	while (++count < ft_handle_define(GET_INFOS, NBPHILO, 0))
 		pthread_create(&thread, NULL, ft_philo, &mother);
 	wrefresh(mother->win);
@@ -354,20 +351,20 @@ void	ft_init_and_begin_game(t_screen_size ss)
 	while (count < ft_handle_define(GET_INFOS, NBPHILO, 0))
 	{
 		if (philo_heart->type == WAND && !((t_wand*)philo_heart->data)->locate->init)
-			count += ft_print_wand(philo_heart);
+			count += ft_print_wand(philo_heart, mother);
 		philo_heart = (philo_heart)->next;
 	}
-	ft_main_loop(ft_print_game_var(ss), ss, &philo_heart);
-	ft_print_game_var(ss);
+	mother->win_game_var = ft_print_game_var(mother->ss, mother);
+	ft_main_loop(mother->ss, &philo_heart, mother);
 }
 
 void	ft_init_and_begin_main_menu(void)
 {
-	t_screen_size		ss;
+	t_screen_size		ss;//A RETIRER
 
 	getmaxyx(stdscr, ss.y, ss.x);
 	ft_menu(ss.x, ss.y);
-	ft_init_and_begin_game(ss);
+	ft_init_and_begin_game();
 }
 
 int main (int ac, char **av)

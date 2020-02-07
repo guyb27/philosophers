@@ -1,13 +1,13 @@
 #include "../include/hello.h"
 
-int		ft_print_wand(t_philo_heart *philo_heart)//Faire une fonction plus propre qui utilise ft_actualize
+int		ft_print_wand(t_philo_heart *philo_heart, t_philo_mother *mother)//Faire une fonction plus propre qui utilise ft_actualize
 {
 	t_wand	*wand;
 	char *str = NULL;
 
 	if (((t_philo*)philo_heart->prev->data)->name && ((t_philo*)philo_heart->next->data)->name)
 	{
-		((t_wand*)philo_heart->data)->capsule = subwin(stdscr, 1, 40,
+		((t_wand*)philo_heart->data)->capsule = subwin(mother->win, 1, 40,
 		((t_wand*)philo_heart->data)->locate->x_window,
 		((t_wand*)philo_heart->data)->locate->y_window);
 		wbkgd(((t_wand*)philo_heart->data)->capsule, COLOR_PAIR(2));

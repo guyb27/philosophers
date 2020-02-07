@@ -60,4 +60,6 @@ void		ft_handle_wand_location(t_wand_location **locate, e_handle_static_function
 
 	if (h == GET_INFOS)
 		ft_get_locate(locate, ss.x, ss.y, &n_time);
+	else if (h == INIT)
+		n_time = 0;
 }

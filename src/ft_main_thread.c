@@ -62,6 +62,8 @@ int		ft_end_menu(int x, int y, int color)
 			}
 			else if (selected + 1 == 2 && !(key == ESCAPE))
 			{
+				ft_cancel(&menu);
+				return (2);
 				//MENU PRINCIPAL
 			}
 			else if (selected + 1 == 3 || key == ESCAPE)
@@ -85,19 +87,18 @@ int		ft_end_menu(int x, int y, int color)
 	return (0);
 }
 
-void	ft_end_game(char *str, t_screen_size ss, t_philo_heart **philo, WINDOW *base)
+void	ft_end_game(char *str, t_philo_mother *mother)
 {
 	int			key;
-	WINDOW		*end_window;
 	int			ret;
 
 	ret = 0;
-	end_window = subwin(stdscr, 1, ss.x, ss.y - 1, 0);
-	wbkgd(end_window, COLOR_PAIR(g_all_in_life ? 6 : 5));
+	mother->end_game_menu = subwin(mother->win, 1, mother->ss.x, mother->ss.y - 1, 0);
+	wbkgd(mother->end_game_menu, COLOR_PAIR(g_all_in_life ? 6 : 5));
 	g_all_in_life = false;
-	wmove(end_window, 0, (ss.x / 2) - (ft_strlen(str) / 2));
-	wprintw(end_window, str);
-	wrefresh(end_window);
+	wmove(mother->end_game_menu, 0, (mother->ss.x / 2) - (ft_strlen(str) / 2));
+	wprintw(mother->end_game_menu, str);
+	wrefresh(mother->end_game_menu);
 	key = 0;
 	while (1)
 	{
@@ -105,29 +106,25 @@ void	ft_end_game(char *str, t_screen_size ss, t_philo_heart **philo, WINDOW *bas
 		if (key == ENTER || key == SPACE)
 			break ;
 		else if (key == ESCAPE)
-			if ((ret = ft_end_menu(ss.x, ss.y, g_all_in_life ? 7 : 8)) > 0)
+			if ((ret = ft_end_menu(mother->ss.x, mother->ss.y, g_all_in_life ? 7 : 8)) > 0)
 				break ;
 	}
-//	delwin(end_window);
-//	free(end_window);
-	free(base);
-	ft_free_philo_heart(philo);
+	delwin(mother->win_game_var);
+	free(mother->win);
+	ft_free_philo_heart(mother->heart);
 	touchwin(stdscr);
 	refresh();
-	while (1);
 	if (ret == 1)
-	{
-		g_all_in_life = true;
-		//ft_init_and_begin_game(ss);
+		ft_init_and_begin_game();
+	else if (ret == 2)
 		ft_init_and_begin_main_menu();
-	}
 }
 
-WINDOW	*ft_print_game_var(t_screen_size ss)
+WINDOW	*ft_print_game_var(t_screen_size ss, t_philo_mother *mother)
 {
 	WINDOW			*base;
 
-	base = subwin(stdscr, 5, 25, 1, ss.x - 26);
+	base = subwin(mother->win, 5, 25, 1, ss.x - 26);
 	wbkgd(base, COLOR_PAIR(2));
 	wmove(base, 0, 0);
 	wprintw(base, "MAX_LIFE: ");
@@ -150,7 +147,7 @@ WINDOW	*ft_print_game_var(t_screen_size ss)
 	return (base);
 }
 
-void	ft_main_loop(WINDOW *base, t_screen_size ss, t_philo_heart **philo)
+void	ft_main_loop(t_screen_size ss, t_philo_heart **philo, t_philo_mother *mother)
 {
 	size_t			begin_time;
 	size_t			now_time;
@@ -167,11 +164,10 @@ void	ft_main_loop(WINDOW *base, t_screen_size ss, t_philo_heart **philo)
 		time( (time_t*)&now_time );
 		ft_sprintf(&str, "%zi", timeout - (now_time - begin_time));
 		pthread_mutex_lock(&g_mut);
-		ft_actualize(base, str, X_TIMEOUT, Y_TIMEOUT);
+		ft_actualize(mother->win_game_var, str, X_TIMEOUT, Y_TIMEOUT);
 		pthread_mutex_unlock(&g_mut);
 		ft_strdel(&str);
 	}
-	usleep(SEC / 2);
 	ft_end_game(g_all_in_life ? "Now, it is time... To DAAAAAAAANCE ! ! !" :
-			"A philosopher is dead !!!", ss, philo, base);
+			"A philosopher is dead !!!", mother);
 }
