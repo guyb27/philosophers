@@ -113,7 +113,7 @@ e_ret_status	ft_can_you_do_eat(t_wand *left, t_wand *right, t_philo *data)
 		return (ALL);
 }
 
-int		ft_eat(t_philo **data, t_philo_heart **philo)
+int		ft_eat(t_philo **data, t_philo_heart **philo, t_philo_mother **mother)
 {
 	char			*str;
 	size_t			begin_time;
@@ -122,7 +122,7 @@ int		ft_eat(t_philo **data, t_philo_heart **philo)
 
 	eat_t = ft_handle_define(GET_INFOS, EAT, 0);
 	str = NULL;
-	begin_time = ft_eat_begin_actualize(philo);
+	begin_time = ft_eat_begin_actualize(philo, mother);
 	now_time = begin_time;
 	while (now_time <= begin_time + eat_t && g_all_in_life)
 	{
@@ -130,18 +130,20 @@ int		ft_eat(t_philo **data, t_philo_heart **philo)
 		time( (time_t*)&now_time );
 		ft_sprintf(&str, "%zi", (int)((begin_time + eat_t) - now_time) > 0 ?
 		(begin_time + eat_t) - now_time : 0);
-		pthread_mutex_lock(&g_mut);
+		pthread_mutex_lock(&(*mother)->mutex);
+		//pthread_mutex_lock(&g_mut);
 		ft_actualize((*data)->capsule, str, X_TIME, Y_TIME);
-		pthread_mutex_unlock(&g_mut);
+		pthread_mutex_unlock(&(*mother)->mutex);
+		//pthread_mutex_unlock(&g_mut);
 		ft_strdel(&str);
 		if (!(size_t)((t_philo*)(*philo)->data)->life)
 			g_all_in_life = false;
 	}
-	ft_eat_end_actualize(philo);
+	ft_eat_end_actualize(philo, mother);
 	return (0);
 }
 
-int		ft_think(int ret, t_philo_heart **philo, t_philo **data)
+int		ft_think(int ret, t_philo_heart **philo, t_philo **data, t_philo_mother **mother)
 {
 	size_t			begin_time;
 	size_t			now_time;
@@ -149,7 +151,7 @@ int		ft_think(int ret, t_philo_heart **philo, t_philo **data)
 	int				think_t;
 
 	think_t = ft_handle_define(GET_INFOS, THINK, 0);
-	begin_time = ft_think_begin_actualize(philo, ret);
+	begin_time = ft_think_begin_actualize(philo, ret, mother);
 	now_time = begin_time;
 	//while (now_time <= begin_time + THINK_T && g_all_in_life)
 	while (now_time <= begin_time + think_t && g_all_in_life)
@@ -162,28 +164,30 @@ int		ft_think(int ret, t_philo_heart **philo, t_philo **data)
 		//0 ? (begin_time + THINK_T) - now_time : 0);
 		0 ? (begin_time + think_t) - now_time : 0);
 		ft_sprintf(&str[1], "%d", (*data)->life);
-		pthread_mutex_lock(&g_mut);
+		//pthread_mutex_lock(&g_mut);
+		pthread_mutex_lock(&(*mother)->mutex);
 		ft_actualize((*data)->capsule, str[0], X_TIME, Y_TIME);
 		ft_actualize((*data)->capsule, str[1], X_LIFE, Y_LIFE);
-		pthread_mutex_unlock(&g_mut);
+		pthread_mutex_unlock(&(*mother)->mutex);
+	//	pthread_mutex_unlock(&g_mut);
 		ft_strdel(&str[0]);
 		ft_strdel(&str[1]);
 		if (!(size_t)((t_philo*)(*philo)->data)->life)
 			g_all_in_life = false;
 	}
-	ft_think_end_actualize(philo, ret);
+	ft_think_end_actualize(philo, ret, mother);
 	return (0);
 }
 
-int		ft_eat_or_think(t_philo_heart **philo, t_philo **data)
+int		ft_eat_or_think(t_philo_heart **philo, t_philo **data, t_philo_mother **mother)
 {
 	int ret;
 
 	if ((ret = ft_can_you_do_eat((*philo)->prev->data, (*philo)->next->data,
 	(*philo)->data)) == ALL)
-		ft_eat(data, philo);
+		ft_eat(data, philo, mother);
 	else if (ret == LEFT || ret == RIGHT)
-		ft_think(ret, philo, data);
+		ft_think(ret, philo, data, mother);
 	else
 		return (1);
 	return (0);
@@ -199,7 +203,7 @@ int		ft_rest(t_philo_heart **philo, t_philo **data, t_philo_mother **mother)
 	rest_t = ft_handle_define(GET_INFOS, REST, 0);
 	str[0] = NULL;
 	str[1] = NULL;
-	begin_time = ft_rest_begin_actualize(philo);
+	begin_time = ft_rest_begin_actualize(philo, mother);
 	now_time = begin_time;
 	while (now_time <= begin_time + rest_t && g_all_in_life)
 	{
@@ -246,9 +250,9 @@ void	*ft_philo(void *arg)
 	while ((size_t)((t_philo*)(philo)->data)->life && g_all_in_life)
 	{
 		if ((e_philo_state)((t_philo*)(philo)->data)->state == TO_EAT)
-			ft_rest(&philo, (t_philo**)&philo->data, (t_philo_mother**)arg);
+			ft_rest(&philo, (t_philo**)&philo->data, arg);
 		else
-			if (ft_eat_or_think(&philo, (t_philo**)&(philo)->data))
+			if (ft_eat_or_think(&philo, (t_philo**)&(philo)->data, arg))
 			{
 				usleep(SEC);
 				((t_philo*)philo->data)->life = ((t_philo*)philo->data)->life - 1;
@@ -351,7 +355,7 @@ void	ft_init_and_begin_game(void)
 		philo_heart = (philo_heart)->next;
 	}
 	ft_print_game_var(mother);
-	ft_main_loop(mother->ss, &philo_heart, mother);
+	ft_main_loop(mother->ss, &philo_heart, &mother);
 }
 
 void	ft_init_and_begin_main_menu(void)

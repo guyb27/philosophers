@@ -30,9 +30,11 @@ int		ft_print_wand(t_philo_heart *philo_heart, t_philo_mother *mother)//Faire un
 						ft_strlen(((t_philo*)philo_heart->next->data)->name);
 		wand->locate->init = true;
 		wprintw(wand->capsule, str);
-		pthread_mutex_lock(&g_mut);
+		//pthread_mutex_lock(&g_mut);
+		pthread_mutex_lock(&mother->mutex);
 		wrefresh(wand->capsule);
-		pthread_mutex_unlock(&g_mut);
+		pthread_mutex_unlock(&mother->mutex);
+		//pthread_mutex_unlock(&g_mut);
 		ft_strdel(&str);
 		return (1);
 	}

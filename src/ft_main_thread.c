@@ -145,12 +145,14 @@ void	ft_print_game_var(t_philo_mother *mother)
 	wmove(mother->win_game_var, 4, 0);
 	wprintw(mother->win_game_var, "TIME LEFT: ");
 	wprintw(mother->win_game_var, ft_itoa(ft_handle_define(GET_INFOS, TIME, 0)));
-	pthread_mutex_lock(&g_mut);
+	//pthread_mutex_lock(&g_mut);
+	pthread_mutex_lock(&mother->mutex);
 	wrefresh(mother->win_game_var);
-	pthread_mutex_unlock(&g_mut);
+	pthread_mutex_unlock(&mother->mutex);
+	//pthread_mutex_unlock(&g_mut);
 }
 
-void	ft_main_loop(t_screen_size ss, t_philo_heart **philo, t_philo_mother *mother)
+void	ft_main_loop(t_screen_size ss, t_philo_heart **philo, t_philo_mother **mother)
 {
 	size_t			begin_time;
 	size_t			now_time;
@@ -166,11 +168,13 @@ void	ft_main_loop(t_screen_size ss, t_philo_heart **philo, t_philo_mother *mothe
 		usleep(SEC);
 		time( (time_t*)&now_time );
 		ft_sprintf(&str, "%zi", timeout - (now_time - begin_time));
-		pthread_mutex_lock(&g_mut);
-		ft_actualize(mother->win_game_var, str, X_TIMEOUT, Y_TIMEOUT);
-		pthread_mutex_unlock(&g_mut);
+		//pthread_mutex_lock(&g_mut);
+		pthread_mutex_lock(&(*mother)->mutex);
+		ft_actualize((*mother)->win_game_var, str, X_TIMEOUT, Y_TIMEOUT);
+		pthread_mutex_unlock(&(*mother)->mutex);
+		//pthread_mutex_unlock(&g_mut);
 		ft_strdel(&str);
 	}
 	ft_end_game(g_all_in_life ? "Now, it is time... To DAAAAAAAANCE ! ! !" :
-			"A philosopher is dead !!!", mother);
+			"A philosopher is dead !!!", *mother);
 }
