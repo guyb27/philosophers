@@ -91,16 +91,18 @@ void	ft_end_game(char *str, t_philo_mother *mother)
 {
 	int			key;
 	int			ret;
+	bool		all_in_life;
 
 	ret = 0;
+	all_in_life = mother->all_in_life;
+	mother->all_in_life = false;
 	mother->end_game_menu = subwin(mother->win, 1, mother->ss.x, mother->ss.y - 1, 0);
-	wbkgd(mother->end_game_menu, COLOR_PAIR(g_all_in_life ? 6 : 5));
-	g_all_in_life = false;
+	wbkgd(mother->end_game_menu, COLOR_PAIR(all_in_life ? 6 : 5));
 	wmove(mother->end_game_menu, 0, (mother->ss.x / 2) - (ft_strlen(str) / 2));
 	wprintw(mother->end_game_menu, str);
-	pthread_mutex_lock(&g_mut);
+	pthread_mutex_lock(&mother->mutex);
 	wrefresh(mother->end_game_menu);
-	pthread_mutex_unlock(&g_mut);
+	pthread_mutex_unlock(&mother->mutex);
 	key = 0;
 	while (1)
 	{
@@ -108,16 +110,16 @@ void	ft_end_game(char *str, t_philo_mother *mother)
 		if (key == ENTER || key == SPACE)
 			break ;
 		else if (key == ESCAPE)
-			if ((ret = ft_end_menu(mother->ss.x, mother->ss.y, g_all_in_life ? 7 : 8)) > 0)
+			if ((ret = ft_end_menu(mother->ss.x, mother->ss.y, all_in_life ? 7 : 8)) > 0)
 				break ;
 	}
 	delwin(mother->win_game_var);
 	free(mother->win);
 	ft_free_philo_heart(mother->heart);
-	pthread_mutex_lock(&g_mut);
+	pthread_mutex_lock(&mother->mutex);
 	touchwin(stdscr);
 	refresh();
-	pthread_mutex_unlock(&g_mut);
+	pthread_mutex_unlock(&mother->mutex);
 	if (ret == 1)
 		ft_init_and_begin_game();
 	else if (ret == 2)
@@ -145,11 +147,9 @@ void	ft_print_game_var(t_philo_mother *mother)
 	wmove(mother->win_game_var, 4, 0);
 	wprintw(mother->win_game_var, "TIME LEFT: ");
 	wprintw(mother->win_game_var, ft_itoa(ft_handle_define(GET_INFOS, TIME, 0)));
-	//pthread_mutex_lock(&g_mut);
 	pthread_mutex_lock(&mother->mutex);
 	wrefresh(mother->win_game_var);
 	pthread_mutex_unlock(&mother->mutex);
-	//pthread_mutex_unlock(&g_mut);
 }
 
 void	ft_main_loop(t_screen_size ss, t_philo_heart **philo, t_philo_mother **mother)
@@ -163,18 +163,16 @@ void	ft_main_loop(t_screen_size ss, t_philo_heart **philo, t_philo_mother **moth
 	str = NULL;
 	time( (time_t*)&begin_time );
 	now_time = begin_time;
-	while (now_time < begin_time + timeout && g_all_in_life)
+	while (now_time < begin_time + timeout && (*mother)->all_in_life)
 	{
 		usleep(SEC);
 		time( (time_t*)&now_time );
 		ft_sprintf(&str, "%zi", timeout - (now_time - begin_time));
-		//pthread_mutex_lock(&g_mut);
 		pthread_mutex_lock(&(*mother)->mutex);
 		ft_actualize((*mother)->win_game_var, str, X_TIMEOUT, Y_TIMEOUT);
 		pthread_mutex_unlock(&(*mother)->mutex);
-		//pthread_mutex_unlock(&g_mut);
 		ft_strdel(&str);
 	}
-	ft_end_game(g_all_in_life ? "Now, it is time... To DAAAAAAAANCE ! ! !" :
+	ft_end_game((*mother)->all_in_life ? "Now, it is time... To DAAAAAAAANCE ! ! !" :
 			"A philosopher is dead !!!", *mother);
 }

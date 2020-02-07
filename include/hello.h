@@ -41,8 +41,7 @@
 #define ESCAPE 27
 #define SPACE 32
 
-pthread_mutex_t g_mut;
-bool g_all_in_life;
+//bool g_all_in_life;
 
 
 typedef enum	s_ret_status
@@ -150,9 +149,10 @@ typedef struct				s_philo_mother
 	WINDOW			*win;
 	WINDOW			*end_game_menu;
 	WINDOW			*win_game_var;
+	WINDOW			*state_game;
 	pthread_mutex_t mutex;
 	t_screen_size	ss;
-	bool g_all_in_life;
+	bool all_in_life;
 }							t_philo_mother;
 
 void			ft_init_curses(void);

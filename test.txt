@@ -6,30 +6,79 @@
 [0;32mWAND_NUMBER: [2][0;m
 [0;32mWAND_NUMBER: [1][0;m
 WAIT:[Platon]
+INIT:[Platon](0x7f85a4607710), x:[2](0x7f85a46070e0), y:[50](0x7f85a46070e4), mother->win:[1](0x7f85a4606a28)
+SUBWIN:[Platon], ret:[0]
+FINISH[Platon]
 WAIT:[Aristote]
-INIT:[Aristote](0x7f828bd00a80), x:[9](0x7f828bd00ac0), y:[20](0x7f828bd00ac4), mother->win:[1](0x7f828bd00008)
+INIT:[Aristote](0x7f85a46055a0), x:[9](0x7f85a46055e0), y:[20](0x7f85a46055e4), mother->win:[1](0x7f85a4606a28)
 SUBWIN:[Aristote], ret:[0]
 FINISH[Aristote]
 WAIT:[Heraclite]
-INIT:[Heraclite](0x7f828bd00af0), x:[16](0x7f828bd00b30), y:[20](0x7f828bd00b34), mother->win:[1](0x7f828bd00008)
+INIT:[Heraclite](0x7f85a46077c0), x:[16](0x7f85a4602680), y:[20](0x7f85a4602684), mother->win:[1](0x7f85a4606a28)
 SUBWIN:[Heraclite], ret:[0]
 FINISH[Heraclite]
-INIT:[Platon](0x7f828bd009e0), x:[2](0x7f828bd00a20), y:[50](0x7f828bd00a24), mother->win:[1](0x7f828bd00008)
-SUBWIN:[Platon], ret:[0]
-FINISH[Platon]
 WAIT:[Epictete]
-INIT:[Epictete](0x7f828bd00b60), x:[23](0x7f828bd00ba0), y:[26](0x7f828bd00ba4), mother->win:[1](0x7f828bd00008)
+INIT:[Epictete](0x7f85a4607820), x:[23](0x7f85a4607860), y:[26](0x7f85a4607864), mother->win:[1](0x7f85a4606a28)
 SUBWIN:[Epictete], ret:[0]
 FINISH[Epictete]
 WAIT:[Marc-Aurele]
 WAIT:[Seneque]
-INIT:[Seneque](0x7f828bd00c40), x:[16](0x7f828bd00c80), y:[80](0x7f828bd00c84), mother->win:[1](0x7f828bd00008)
+WAIT:[Socrate]
+INIT:[Socrate](0x7f85a4607970), x:[9](0x7f85a46079b0), y:[80](0x7f85a46079b4), mother->win:[1](0x7f85a4606a28)
+SUBWIN:[Socrate], ret:[0]
+FINISH[Socrate]
+INIT:[Seneque](0x7f85a4607900), x:[16](0x7f85a4607940), y:[80](0x7f85a4607944), mother->win:[1](0x7f85a4606a28)
 SUBWIN:[Seneque], ret:[0]
 FINISH[Seneque]
-INIT:[Marc-Aurele](0x7f828bd00bd0), x:[23](0x7f828bd00c10), y:[74](0x7f828bd00c14), mother->win:[1](0x7f828bd00008)
+INIT:[Marc-Aurele](0x7f85a4607890), x:[23](0x7f85a46078d0), y:[74](0x7f85a46078d4), mother->win:[1](0x7f85a4606a28)
+SUBWIN:[Marc-Aurele], ret:[0]
+FINISH[Marc-Aurele]
+DEL_WAND: [0]
+DEL_PHILO: [Platon]
+DEL_WAND: [6]
+DEL_PHILO: [Aristote]
+DEL_WAND: [5]
+DEL_PHILO: [Heraclite]
+DEL_WAND: [4]
+DEL_PHILO: [Epictete]
+DEL_WAND: [3]
+DEL_PHILO: [Marc-Aurele]
+DEL_WAND: [2]
+DEL_PHILO: [Seneque]
+DEL_WAND: [1]
+DEL_PHILO: [Socrate]
+[0;32mWAND_NUMBER: [0][0;m
+[0;32mWAND_NUMBER: [6][0;m
+[0;32mWAND_NUMBER: [5][0;m
+[0;32mWAND_NUMBER: [4][0;m
+[0;32mWAND_NUMBER: [3][0;m
+[0;32mWAND_NUMBER: [2][0;m
+[0;32mWAND_NUMBER: [1][0;m
+WAIT:[Platon]
+INIT:[Platon](0x7f85a4500b40), x:[2](0x7f85a45001f0), y:[50](0x7f85a45001f4), mother->win:[1](0x7f85a4500168)
+SUBWIN:[Platon], ret:[0]
+FINISH[Platon]
+WAIT:[Aristote]
+INIT:[Aristote](0x7f85a4500bd0), x:[9](0x7f85a4500220), y:[20](0x7f85a4500224), mother->win:[1](0x7f85a4500168)
+SUBWIN:[Aristote], ret:[0]
+FINISH[Aristote]
+WAIT:[Heraclite]
+WAIT:[Epictete]
+INIT:[Epictete](0x7f85a4500ca0), x:[23](0x7f85a4500ce0), y:[26](0x7f85a4500ce4), mother->win:[1](0x7f85a4500168)
+SUBWIN:[Epictete], ret:[0]
+FINISH[Epictete]
+WAIT:[Marc-Aurele]
+WAIT:[Seneque]
+INIT:[Heraclite](0x7f85a4500c30), x:[16](0x7f85a4500c70), y:[20](0x7f85a4500c74), mother->win:[1](0x7f85a4500168)
+SUBWIN:[Heraclite], ret:[0]
+FINISH[Heraclite]
+INIT:[Marc-Aurele](0x7f85a4500d10), x:[23](0x7f85a4500d50), y:[74](0x7f85a4500d54), mother->win:[1](0x7f85a4500168)
 SUBWIN:[Marc-Aurele], ret:[0]
 FINISH[Marc-Aurele]
 WAIT:[Socrate]
-INIT:[Socrate](0x7f828bd00cb0), x:[9](0x7f828bd00cf0), y:[80](0x7f828bd00cf4), mother->win:[1](0x7f828bd00008)
+INIT:[Socrate](0x7f85a4500df0), x:[9](0x7f85a4500e30), y:[80](0x7f85a4500e34), mother->win:[1](0x7f85a4500168)
 SUBWIN:[Socrate], ret:[0]
 FINISH[Socrate]
+INIT:[Seneque](0x7f85a4500d80), x:[16](0x7f85a4500dc0), y:[80](0x7f85a4500dc4), mother->win:[1](0x7f85a4500168)
+SUBWIN:[Seneque], ret:[0]
+FINISH[Seneque]
