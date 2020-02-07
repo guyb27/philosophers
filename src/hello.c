@@ -37,8 +37,8 @@ WINDOW	*ft_create_philo_window(t_philo *philo, t_philo_mother **mother)
 	WINDOW *capsule;
 
 	//ft_dprintf(2, "LOCATE[%d]\n", philo->locate ? 1 : 0);
-	if (!philo->locate)
-		sleep(1);
+//	if (!philo->locate)
+//		sleep(1);
 	ft_dprintf(2, "WAIT:[%s]\n", philo->name);
 	pthread_mutex_lock(&g_mut);
 	ft_dprintf(2, "INIT:[%s](%p), x:[%d](%p), y:[%d](%p), mother->win:[%d](%p)\n",

@@ -189,7 +189,7 @@ int		ft_eat_or_think(t_philo_heart **philo, t_philo **data)
 	return (0);
 }
 
-int		ft_rest(t_philo_heart **philo, t_philo **data)
+int		ft_rest(t_philo_heart **philo, t_philo **data, t_philo_mother **mother)
 {
 	char			*str[2];
 	size_t			begin_time;
@@ -201,21 +201,20 @@ int		ft_rest(t_philo_heart **philo, t_philo **data)
 	str[1] = NULL;
 	begin_time = ft_rest_begin_actualize(philo);
 	now_time = begin_time;
-	//while (now_time <= begin_time + REST_T && g_all_in_life)
 	while (now_time <= begin_time + rest_t && g_all_in_life)
 	{
 		usleep(SEC);
 		(*data)->life = (*data)->life - 1;
 		ft_sprintf(&str[0], "%d", (*data)->life);
 		time((time_t*)&now_time);
-		//ft_sprintf(&str[1], "%zi", (int)((REST_T + begin_time) - now_time) > 0 ?
 		ft_sprintf(&str[1], "%zi", (int)((rest_t + begin_time) - now_time) > 0 ?
-		//(REST_T + begin_time) - now_time : 0);
 		(rest_t + begin_time) - now_time : 0);
-		pthread_mutex_lock(&g_mut);
+		//pthread_mutex_lock(&g_mut);
+		pthread_mutex_lock(&(*mother)->mutex);
 		ft_actualize((*data)->capsule, str[0], X_LIFE, Y_LIFE);
 		ft_actualize((*data)->capsule, str[1], X_TIME, Y_TIME);
-		pthread_mutex_unlock(&g_mut);
+		pthread_mutex_unlock(&(*mother)->mutex);
+		//pthread_mutex_unlock(&g_mut);
 		ft_strdel(&str[0]);
 		ft_strdel(&str[1]);
 		if (!(*data)->life)
@@ -226,14 +225,6 @@ int		ft_rest(t_philo_heart **philo, t_philo **data)
 
 void	ft_init_philo(void **arg, t_philo_heart **philo)
 {
-	t_screen_size		ss;
-
-	getmaxyx(stdscr, ss.y, ss.x);
-	//while (((t_philo_heart*)arg)->type != PHILO && !((t_philo*)((t_philo_heart*)arg)->data)->name)
-	*philo = ((t_philo_heart*)(void*)arg);
-	((t_philo*)(*philo)->data)->name = ft_get_name(GET_INFOS);
-	((t_philo*)(*philo)->data)->state = TO_REST;
-	((t_philo*)(*philo)->data)->life = ft_handle_define(GET_INFOS, LIFE, 0);
 }
 
 void	*ft_philo(void *arg)
@@ -242,27 +233,31 @@ void	*ft_philo(void *arg)
 	char			*str;
 
 	philo = (*(t_philo_mother**)arg)->heart;
-	pthread_mutex_lock(&g_mut);
+	pthread_mutex_lock(&(*(t_philo_mother**)arg)->mutex);
+	//pthread_mutex_lock(&g_mut);
 	while ((philo->type == PHILO && ((t_philo*)philo->data)->name) || philo->type == WAND)
 			philo = philo->next;
 	((t_philo*)(philo)->data)->name = ft_get_name(GET_INFOS);
-	pthread_mutex_unlock(&g_mut);
+	//pthread_mutex_unlock(&g_mut);
+	pthread_mutex_unlock(&(*(t_philo_mother**)arg)->mutex);
 	((t_philo*)(philo)->data)->state = TO_REST;
 	((t_philo*)(philo)->data)->life = ft_handle_define(GET_INFOS, LIFE, 0);
 	((t_philo*)philo->data)->capsule = ft_create_philo_window(philo->data, arg);
 	while ((size_t)((t_philo*)(philo)->data)->life && g_all_in_life)
 	{
 		if ((e_philo_state)((t_philo*)(philo)->data)->state == TO_EAT)
-			ft_rest(&philo, (t_philo**)&philo->data);
+			ft_rest(&philo, (t_philo**)&philo->data, (t_philo_mother**)arg);
 		else
 			if (ft_eat_or_think(&philo, (t_philo**)&(philo)->data))
 			{
 				usleep(SEC);
 				((t_philo*)philo->data)->life = ((t_philo*)philo->data)->life - 1;
 				ft_sprintf(&str, "%d", ((t_philo*)philo->data)->life);
-				pthread_mutex_lock(&g_mut);
+	pthread_mutex_lock(&(*(t_philo_mother**)arg)->mutex);
+	//			pthread_mutex_lock(&g_mut);
 				ft_actualize(((t_philo*)philo->data)->capsule, str, X_LIFE, Y_LIFE);
-				pthread_mutex_unlock(&g_mut);
+	pthread_mutex_unlock(&(*(t_philo_mother**)arg)->mutex);
+	//			pthread_mutex_unlock(&g_mut);
 				ft_strdel(&str);
 			}
 	}
@@ -334,6 +329,7 @@ void	ft_init_and_begin_game(void)
 	philo_heart = NULL;
 	mother = ft_memalloc(sizeof(t_philo_mother));
 	getmaxyx(stdscr, mother->ss.y, mother->ss.x);
+	pthread_mutex_init(&mother->mutex, NULL);
 	ft_get_name(INIT);
 	ft_handle_wand_location(NULL, INIT, mother->ss);
 	mother->win = ft_memalloc(sizeof(t_philo_mother));
@@ -354,16 +350,13 @@ void	ft_init_and_begin_game(void)
 			count += ft_print_wand(philo_heart, mother);
 		philo_heart = (philo_heart)->next;
 	}
-	mother->win_game_var = ft_print_game_var(mother->ss, mother);
+	ft_print_game_var(mother);
 	ft_main_loop(mother->ss, &philo_heart, mother);
 }
 
 void	ft_init_and_begin_main_menu(void)
 {
-	t_screen_size		ss;//A RETIRER
-
-	getmaxyx(stdscr, ss.y, ss.x);
-	ft_menu(ss.x, ss.y);
+	ft_menu();
 	ft_init_and_begin_game();
 }
 

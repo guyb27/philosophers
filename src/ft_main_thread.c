@@ -98,7 +98,9 @@ void	ft_end_game(char *str, t_philo_mother *mother)
 	g_all_in_life = false;
 	wmove(mother->end_game_menu, 0, (mother->ss.x / 2) - (ft_strlen(str) / 2));
 	wprintw(mother->end_game_menu, str);
+	pthread_mutex_lock(&g_mut);
 	wrefresh(mother->end_game_menu);
+	pthread_mutex_unlock(&g_mut);
 	key = 0;
 	while (1)
 	{
@@ -112,39 +114,40 @@ void	ft_end_game(char *str, t_philo_mother *mother)
 	delwin(mother->win_game_var);
 	free(mother->win);
 	ft_free_philo_heart(mother->heart);
+	pthread_mutex_lock(&g_mut);
 	touchwin(stdscr);
 	refresh();
+	pthread_mutex_unlock(&g_mut);
 	if (ret == 1)
 		ft_init_and_begin_game();
 	else if (ret == 2)
 		ft_init_and_begin_main_menu();
 }
 
-WINDOW	*ft_print_game_var(t_screen_size ss, t_philo_mother *mother)
+void	ft_print_game_var(t_philo_mother *mother)
 {
 	WINDOW			*base;
 
-	base = subwin(mother->win, 5, 25, 1, ss.x - 26);
-	wbkgd(base, COLOR_PAIR(2));
-	wmove(base, 0, 0);
-	wprintw(base, "MAX_LIFE: ");
-	wprintw(base, ft_itoa(ft_handle_define(GET_INFOS, LIFE, 0)));
-	wmove(base, 1, 0);
-	wprintw(base, "EAT_TIME: ");
-	wprintw(base, ft_itoa(ft_handle_define(GET_INFOS, EAT, 0)));
-	wmove(base, 2, 0);
-	wprintw(base, "REST_TIME: ");
-	wprintw(base, ft_itoa(ft_handle_define(GET_INFOS, REST, 0)));
-	wmove(base, 3, 0);
-	wprintw(base, "THINK_TIME: ");
-	wprintw(base, ft_itoa(ft_handle_define(GET_INFOS, THINK, 0)));
-	wmove(base, 4, 0);
-	wprintw(base, "TIME LEFT: ");
-	wprintw(base, ft_itoa(ft_handle_define(GET_INFOS, TIME, 0)));
+	mother->win_game_var = subwin(mother->win, 5, 25, 1, mother->ss.x - 26);
+	wbkgd(mother->win_game_var, COLOR_PAIR(2));
+	wmove(mother->win_game_var, 0, 0);
+	wprintw(mother->win_game_var, "MAX_LIFE: ");
+	wprintw(mother->win_game_var, ft_itoa(ft_handle_define(GET_INFOS, LIFE, 0)));
+	wmove(mother->win_game_var, 1, 0);
+	wprintw(mother->win_game_var, "EAT_TIME: ");
+	wprintw(mother->win_game_var, ft_itoa(ft_handle_define(GET_INFOS, EAT, 0)));
+	wmove(mother->win_game_var, 2, 0);
+	wprintw(mother->win_game_var, "REST_TIME: ");
+	wprintw(mother->win_game_var, ft_itoa(ft_handle_define(GET_INFOS, REST, 0)));
+	wmove(mother->win_game_var, 3, 0);
+	wprintw(mother->win_game_var, "THINK_TIME: ");
+	wprintw(mother->win_game_var, ft_itoa(ft_handle_define(GET_INFOS, THINK, 0)));
+	wmove(mother->win_game_var, 4, 0);
+	wprintw(mother->win_game_var, "TIME LEFT: ");
+	wprintw(mother->win_game_var, ft_itoa(ft_handle_define(GET_INFOS, TIME, 0)));
 	pthread_mutex_lock(&g_mut);
-	wrefresh(base);
+	wrefresh(mother->win_game_var);
 	pthread_mutex_unlock(&g_mut);
-	return (base);
 }
 
 void	ft_main_loop(t_screen_size ss, t_philo_heart **philo, t_philo_mother *mother)
