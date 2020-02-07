@@ -6,7 +6,7 @@
 #    By: dzonda <marvin@le-101.fr>                  +:+   +:    +:    +:+      #
 #                                                  #+#   #+    #+    #+#       #
 #    Created: 2017/11/24 18:33:54 by dzonda       #+#   ##    ##    #+#        #
-#    Updated: 2019/12/22 11:09:17 by gmadec      ###    #+. /#+    ###.fr      #
+#    Updated: 2020/02/07 01:39:48 by gmadec      ###    #+. /#+    ###.fr      #
 #                                                          /                   #
 #                                                         /                    #
 # **************************************************************************** #
@@ -85,7 +85,7 @@ $(OBJS_PATH)%.o: $(SRCS_PATH)%.c
 	@echo -n "$(PERCENT) $@"
 	@printf "\e[0K\n\e[u\e[?25h"
 	@mkdir $(OBJS_PATH) 2> /dev/null || true
-	@$(CC) $(CFLAGS) $(CPPFLAGS) -o $@ -c $<
+	@$(CC) -g3 $(CFLAGS) $(CPPFLAGS) -o $@ -c $<
 
 val: lldb
 	valgrind --leak-check=full --track-origins=yes ./a.out

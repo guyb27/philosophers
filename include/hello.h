@@ -155,7 +155,7 @@ typedef struct				s_screen_size
 void			ft_init_curses(void);
 void			ft_actualize(WINDOW *capsule, char *data, int x, int y);
 void			ft_actualize_wand(t_philo_heart **heart, e_wand_state new_state);
-WINDOW			*ft_create_philo_window(t_philo *philo, t_philo_mother *mother);
+WINDOW			*ft_create_philo_window(t_philo *philo, t_philo_mother **mother);
 int				ft_print_wand(t_philo_heart *philo_heart);
 size_t			ft_eat_begin_actualize(t_philo_heart **philo);
 void			ft_eat_end_actualize(t_philo_heart **philo);

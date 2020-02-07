@@ -1,0 +1,14 @@
+[0;32mWAND_NUMBER: [0][0;m
+[0;32mWAND_NUMBER: [6][0;m
+[0;32mWAND_NUMBER: [5][0;m
+[0;32mWAND_NUMBER: [4][0;m
+[0;32mWAND_NUMBER: [3][0;m
+[0;32mWAND_NUMBER: [2][0;m
+[0;32mWAND_NUMBER: [1][0;m
+PHILO: x[2], y:[50]
+PHILO: x[9], y:[20]
+PHILO: x[16], y:[20]
+PHILO: x[23], y:[26]
+PHILO: x[23], y:[74]
+PHILO: x[16], y:[80]
+PHILO: x[9], y:[80]
