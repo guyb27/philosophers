@@ -3,6 +3,7 @@
 void	ft_get_locate(t_wand_location **locate, int x, int y, int *n_time)
 //FAIRE UN ALGO POUR DEFINIR LA TAILLE
 {
+	(void)y;//A VOIR
 	if (*n_time < ft_handle_define(GET_INFOS, NBPHILO, 0))
 	{
 		*locate = ft_memalloc(sizeof(t_wand_location));

@@ -2,6 +2,7 @@
 
 t_philo_location	*ft_get_philo_locate(int wand_number, int x, int y)
 {
+	(void)y;//A VOIR !
 	t_philo_location *locate;
 
 	locate = ft_memalloc(sizeof(t_philo_location));
@@ -96,6 +97,7 @@ e_ret_status	ft_can_you_do_eat(t_wand *left, t_wand *right, t_philo *data)
 	int		ret_left;
 	int		ret_right;
 
+	(void)data;
 	ret_left = pthread_mutex_trylock(&left->mutex);
 	ret_right = pthread_mutex_trylock(&right->mutex);
 	if (!ret_left && ret_right)
@@ -213,10 +215,6 @@ int		ft_rest(t_philo_heart **philo, t_philo **data, t_philo_mother **mother)
 	return (0);
 }
 
-void	ft_init_philo(void **arg, t_philo_heart **philo)
-{
-}
-
 void	*ft_philo(void *arg)
 {
 	t_philo_heart	*philo;
@@ -277,7 +275,6 @@ void	ft_create_wand(t_philo_heart **philo_heart, t_screen_size ss)
 {
 	t_wand			*wand;
 	t_philo_heart	*new_philo_heart;
-	t_wand_location *locate;
 
 	new_philo_heart = ft_memalloc(sizeof(t_philo_heart));
 	new_philo_heart->type = WAND;
@@ -308,7 +305,6 @@ void	ft_init_and_begin_game(void)
 	pthread_t			thread;
 	t_philo_heart		*philo_heart;
 	t_philo_mother		*mother;
-	WINDOW				*win;
 
 	count = -1;
 	philo_heart = NULL;
@@ -318,7 +314,6 @@ void	ft_init_and_begin_game(void)
 	pthread_mutex_init(&mother->mutex, NULL);
 	ft_get_name(INIT);
 	ft_handle_wand_location(NULL, INIT, mother->ss);
-	mother->win = ft_memalloc(sizeof(t_philo_mother));
 	mother->win = newwin(mother->ss.y, mother->ss.x, 0, 0);
 	wbkgd(mother->win, COLOR_PAIR(1));
 	while (++count < ft_handle_define(GET_INFOS, NBPHILO, 0))
@@ -337,7 +332,7 @@ void	ft_init_and_begin_game(void)
 		philo_heart = (philo_heart)->next;
 	}
 	ft_print_game_var(mother);
-	ft_main_loop(mother->ss, &philo_heart, &mother);
+	ft_main_loop(&mother);
 }
 
 void	ft_init_and_begin_main_menu(void)

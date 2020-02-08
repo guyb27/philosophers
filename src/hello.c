@@ -35,7 +35,6 @@ WINDOW	*ft_create_philo_window(t_philo *philo, t_philo_mother **mother)
 
 	pthread_mutex_lock(&(*mother)->mutex);
 	philo->locate->init = true;
-	capsule = ft_memalloc(sizeof(capsule));
 	capsule = subwin((*mother)->win, 4, 20, philo->locate->x_capsule, philo->locate->y_capsule);
 	wbkgd(capsule, COLOR_PAIR(3));
 	wmove(capsule, 0, 0);
@@ -167,21 +166,16 @@ void	ft_close_window(t_philo_heart *philo)
 {
 	if (philo->type == PHILO)
 	{
-		free(((t_philo*)philo->data)->capsule);
-		touchwin(stdscr);
-		refresh();
-		((t_philo*)philo->data)->capsule = NULL;
+		delwin(((t_philo*)philo->data)->capsule);
 		free(((t_philo*)philo->data)->locate);
-		((t_philo*)philo->data)->locate = NULL;
+		free(((t_philo*)philo->data)->name);
+		free((t_philo*)philo->data);
 	}
 	else
 	{
-		free(((t_wand*)philo->data)->capsule);
-		touchwin(stdscr);
-		refresh();
-		((t_wand*)philo->data)->capsule = NULL;
+		delwin(((t_wand*)philo->data)->capsule);
 		free(((t_wand*)philo->data)->locate);
-		((t_wand*)philo->data)->locate = NULL;
+		free((t_wand*)philo->data);
 	}
 }
 
@@ -191,19 +185,21 @@ void	ft_free_philo_heart(t_philo_heart *philo)
 	t_philo_heart	*tmp;
 
 	i = -1;
-	//while (++i < NB_PHILO * 2)
 	while (++i < ft_handle_define(GET_INFOS, NBPHILO, 0) * 2)
 	{
 		tmp = philo;
 		ft_close_window(philo);
-		if (philo->type == PHILO)
-			free(((t_philo*)philo->data)->name);
 		philo = philo->next;
 		free(tmp);
 	}
-	//touchwin(stdscr);
-	//refresh();
-	//endwin();
+}
 
-
+void	ft_free_philo_mother(t_philo_mother *mother)
+{
+	ft_free_philo_heart(mother->heart);
+	delwin(mother->win_game_var);
+	delwin(mother->state_game);
+	delwin(mother->win);
+	touchwin(stdscr);
+	refresh();
 }
