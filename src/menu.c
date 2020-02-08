@@ -65,10 +65,14 @@ int		ft_enter_key(WINDOW ***items, int selected)
 	free(*items);
 	touchwin(stdscr);
 	refresh();
+	keypad(stdscr, FALSE);
 	if (selected + 1 == 7)
 		return (1);
 	else
-		exit(endwin());//CREER UNE FONCTION FT_EXIT();
+	{
+		endwin();
+		exit(0);
+	}
 }
 
 void	ft_horizontal_keys(WINDOW ***items, int key, int selected)
@@ -106,6 +110,8 @@ void	ft_menu(void)
 	items = NULL;
 	getmaxyx(stdscr, ss.y, ss.x);
 	ft_create_menu(&items, ss);
+	keypad(stdscr, TRUE);
+	while (getch() != -1);
 	while (1)
 	{
 		key = getch();

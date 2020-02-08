@@ -123,7 +123,8 @@ int		ft_eat(t_philo **data, t_philo_heart **philo, t_philo_mother **mother)
 	now_time = begin_time;
 	while (now_time <= begin_time + eat_t && (*mother)->all_in_life)
 	{
-		usleep(SEC);
+		if (eat_t > 0)
+			usleep(SEC);
 		time( (time_t*)&now_time );
 		ft_sprintf(&str, "%zi", (int)((begin_time + eat_t) - now_time) > 0 ?
 				(begin_time + eat_t) - now_time : 0);
@@ -150,8 +151,11 @@ int		ft_think(int ret, t_philo_heart **philo, t_philo **data, t_philo_mother **m
 	now_time = begin_time;
 	while (now_time <= begin_time + think_t && (*mother)->all_in_life)
 	{
-		usleep(SEC);
-		(*data)->life--;
+		if (think_t > 0)
+		{
+			usleep(SEC);
+			(*data)->life--;
+		}
 		time((time_t*)&now_time);
 		ft_sprintf(&str[0], "%zi", (int)((begin_time + think_t) - now_time) >
 				0 ? (begin_time + think_t) - now_time : 0);
@@ -197,8 +201,11 @@ int		ft_rest(t_philo_heart **philo, t_philo **data, t_philo_mother **mother)
 	now_time = begin_time;
 	while (now_time <= begin_time + rest_t && (*mother)->all_in_life)
 	{
-		usleep(SEC);
-		(*data)->life = (*data)->life - 1;
+		if (rest_t > 0)
+		{
+			usleep(SEC);
+			(*data)->life = (*data)->life - 1;
+		}
 		ft_sprintf(&str[0], "%d", (*data)->life);
 		time((time_t*)&now_time);
 		ft_sprintf(&str[1], "%zi", (int)((rest_t + begin_time) - now_time) > 0 ?
@@ -309,13 +316,15 @@ void	ft_init_and_begin_game(void)
 	count = -1;
 	philo_heart = NULL;
 	mother = ft_memalloc(sizeof(t_philo_mother));
-	mother->all_in_life = true;
+	mother->all_in_life = ft_handle_define(GET_INFOS, LIFE, 0) > 0 ? true : false;
+	ft_dprintf(2, "LIFE: [%d]\n", mother->all_in_life ? 1 : 0);
 	getmaxyx(stdscr, mother->ss.y, mother->ss.x);
 	pthread_mutex_init(&mother->mutex, NULL);
 	ft_get_name(INIT);
 	ft_handle_wand_location(NULL, INIT, mother->ss);
 	mother->win = newwin(mother->ss.y, mother->ss.x, 0, 0);
 	wbkgd(mother->win, COLOR_PAIR(1));
+	wrefresh(mother->win);
 	while (++count < ft_handle_define(GET_INFOS, NBPHILO, 0))
 		ft_create_wand(&philo_heart, mother->ss);
 	while (--count >= 0)
@@ -323,7 +332,7 @@ void	ft_init_and_begin_game(void)
 	mother->heart = philo_heart;
 	while (++count < ft_handle_define(GET_INFOS, NBPHILO, 0))
 		pthread_create(&thread, NULL, ft_philo, &mother);
-	wrefresh(mother->win);
+	//wrefresh(mother->win);
 	count = 0;
 	while (count < ft_handle_define(GET_INFOS, NBPHILO, 0))
 	{

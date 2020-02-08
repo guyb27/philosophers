@@ -19,26 +19,28 @@ void	ft_creat_menu(WINDOW ***menu, int x, int y, int color)
 	wrefresh((*menu)[0]);
 }
 
-void	ft_cancel(WINDOW ***menu)
+int		ft_cancel(WINDOW ***menu, int ret)
 {
 	for (int i = 0;i<5;i++)
 		delwin((*menu)[i]);
+	wclear((*menu)[0]);
+	wbkgd((*menu)[0], COLOR_PAIR(1));
+	wrefresh((*menu)[0]);
 	free(*menu);
-	touchwin(stdscr);
-	refresh();
+	return (ret);
 }
 
 void	ft_vertical_keys(WINDOW ***menu, int *selected, int key, int color)
 {
-			wbkgd((*menu)[*selected + 1], COLOR_PAIR(color == 7 ? 6 : 5));
-			wnoutrefresh((*menu)[*selected + 1]);
-			if (key == KEY_DOWN)
-				*selected = (*selected + 1) % 4;
-			else
-				*selected = (*selected - 1 + 4) % 4;
-			wbkgd((*menu)[*selected + 1], COLOR_PAIR(color));
-			wnoutrefresh((*menu)[*selected + 1]);
-			doupdate();
+	wbkgd((*menu)[*selected + 1], COLOR_PAIR(color == 7 ? 6 : 5));
+	wnoutrefresh((*menu)[*selected + 1]);
+	if (key == KEY_DOWN)
+		*selected = (*selected + 1) % 4;
+	else
+		*selected = (*selected - 1 + 4) % 4;
+	wbkgd((*menu)[*selected + 1], COLOR_PAIR(color));
+	wnoutrefresh((*menu)[*selected + 1]);
+	doupdate();
 }
 
 int		ft_end_menu(int x, int y, int color)
@@ -55,31 +57,13 @@ int		ft_end_menu(int x, int y, int color)
 		if (key == ENTER || key == ESCAPE)
 		{
 			if (selected + 1 == 1 && !(key == ESCAPE))
-			{
-				ft_cancel(&menu);
-				return (1);
-				//RECOMMENCER
-			}
+				return (ft_cancel(&menu, 1));
 			else if (selected + 1 == 2 && !(key == ESCAPE))
-			{
-				ft_cancel(&menu);
-				return (2);
-				//MENU PRINCIPAL
-			}
+				return (ft_cancel(&menu, 2));
 			else if (selected + 1 == 3 || key == ESCAPE)
-			{
-				ft_cancel(&menu);
-				return (0);
-			}
+				return (ft_cancel(&menu, 0));
 			else if (selected + 1 == 4 && !(key == ESCAPE))
-			{
-				for (int i = 0;i<5;i++)
-					delwin(menu[i]);
-				free(menu);
-				endwin();
-				exit(0);
-			}
-			//ft_exit();
+				return (ft_cancel(&menu, 3));
 		}
 		else if (key == KEY_DOWN || key == KEY_UP)
 			ft_vertical_keys(&menu, &selected, key, color);
@@ -96,6 +80,7 @@ void	ft_end_game(char *str, t_philo_mother *mother)
 	ret = 0;
 	all_in_life = mother->all_in_life;
 	mother->all_in_life = false;
+	usleep(SEC);
 	mother->state_game = subwin(mother->win, 1, mother->ss.x, mother->ss.y - 1, 0);
 	wbkgd(mother->state_game, COLOR_PAIR(all_in_life ? 6 : 5));
 	wmove(mother->state_game, 0, (mother->ss.x / 2) - (ft_strlen(str) / 2));
@@ -103,6 +88,8 @@ void	ft_end_game(char *str, t_philo_mother *mother)
 	pthread_mutex_lock(&mother->mutex);
 	wrefresh(mother->state_game);
 	pthread_mutex_unlock(&mother->mutex);
+	keypad(stdscr, TRUE);
+	while (getch() != -1);
 	key = 0;
 	while (1)
 	{
@@ -113,9 +100,8 @@ void	ft_end_game(char *str, t_philo_mother *mother)
 			if ((ret = ft_end_menu(mother->ss.x, mother->ss.y, all_in_life ? 7 : 8)) > 0)
 				break ;
 	}
-//	delwin(mother->win_game_var);
-//	delwin(mother->state_game);
-//	free(mother->win);
+	keypad(stdscr, FALSE);
+	refresh();
 	ft_free_philo_mother(mother);
 	pthread_mutex_lock(&mother->mutex);
 	touchwin(stdscr);
@@ -125,6 +111,8 @@ void	ft_end_game(char *str, t_philo_mother *mother)
 		ft_init_and_begin_game();
 	else if (ret == 2)
 		ft_init_and_begin_main_menu();
+	else
+		endwin();
 }
 
 void	ft_print_game_var(t_philo_mother *mother)
@@ -132,20 +120,20 @@ void	ft_print_game_var(t_philo_mother *mother)
 	mother->win_game_var = subwin(mother->win, 5, 25, 1, mother->ss.x - 26);
 	wbkgd(mother->win_game_var, COLOR_PAIR(2));
 	wmove(mother->win_game_var, 0, 0);
-	wprintw(mother->win_game_var, "MAX_LIFE: ");
-	wprintw(mother->win_game_var, ft_itoa(ft_handle_define(GET_INFOS, LIFE, 0)));
+	wprintw(mother->win_game_var, "MAX_LIFE: %d",
+										ft_handle_define(GET_INFOS, LIFE, 0));
 	wmove(mother->win_game_var, 1, 0);
-	wprintw(mother->win_game_var, "EAT_TIME: ");
-	wprintw(mother->win_game_var, ft_itoa(ft_handle_define(GET_INFOS, EAT, 0)));
+	wprintw(mother->win_game_var, "EAT_TIME: %d",
+										ft_handle_define(GET_INFOS, EAT, 0));
 	wmove(mother->win_game_var, 2, 0);
-	wprintw(mother->win_game_var, "REST_TIME: ");
-	wprintw(mother->win_game_var, ft_itoa(ft_handle_define(GET_INFOS, REST, 0)));
+	wprintw(mother->win_game_var, "REST_TIME: %d",
+										ft_handle_define(GET_INFOS, REST, 0));
 	wmove(mother->win_game_var, 3, 0);
-	wprintw(mother->win_game_var, "THINK_TIME: ");
-	wprintw(mother->win_game_var, ft_itoa(ft_handle_define(GET_INFOS, THINK, 0)));
+	wprintw(mother->win_game_var, "THINK_TIME: %d",
+										ft_handle_define(GET_INFOS, THINK, 0));
 	wmove(mother->win_game_var, 4, 0);
-	wprintw(mother->win_game_var, "TIME LEFT: ");
-	wprintw(mother->win_game_var, ft_itoa(ft_handle_define(GET_INFOS, TIME, 0)));
+	wprintw(mother->win_game_var, "TIME LEFT: %d",
+										ft_handle_define(GET_INFOS, TIME, 0));
 	pthread_mutex_lock(&mother->mutex);
 	wrefresh(mother->win_game_var);
 	pthread_mutex_unlock(&mother->mutex);
@@ -166,7 +154,7 @@ void	ft_main_loop(t_philo_mother **mother)
 	{
 		usleep(SEC);
 		time( (time_t*)&now_time );
-		ft_sprintf(&str, "%zi", timeout - (now_time - begin_time));
+		ft_sprintf(&str, "%zi", (timeout - (now_time - begin_time)) < 0 ? 0 : timeout - (now_time - begin_time));
 		pthread_mutex_lock(&(*mother)->mutex);
 		ft_actualize((*mother)->win_game_var, str, X_TIMEOUT, Y_TIMEOUT);
 		pthread_mutex_unlock(&(*mother)->mutex);

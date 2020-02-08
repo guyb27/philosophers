@@ -16,7 +16,7 @@ void ft_init_curses(void)
 	curs_set(0);
 	noecho();
 	nodelay(stdscr, true);
-	keypad(stdscr,TRUE);
+	keypad(stdscr,FALSE);
 	bkgd(COLOR_PAIR(1));
 	refresh();
 }
@@ -42,13 +42,13 @@ WINDOW	*ft_create_philo_window(t_philo *philo, t_philo_mother **mother)
 	wprintw(capsule, philo->name);
 	wmove(capsule, 1, 0);
 	wprintw(capsule, "LIFE POINTS: ");
-	wprintw(capsule, ft_itoa(philo->life));
+	wprintw(capsule, "%d", philo->life);
 	wmove(capsule, 2, 0);
 	wprintw(capsule, "STATE: ");
 	wprintw(capsule, philo->state == TO_REST ? "SE REPOSE" : philo->state == TO_EAT ? "MANGE" : philo->state == TO_THINK ? "PENSE" : "UNKNOW");
 	wmove(capsule, 3, 0);
 	wprintw(capsule, "TIME: ");
-	wprintw(capsule, ft_itoa(philo->time));
+	wprintw(capsule, "%d", philo->time);
 	wrefresh(capsule);
 	pthread_mutex_unlock(&(*mother)->mutex);
 	return (capsule);
@@ -201,5 +201,6 @@ void	ft_free_philo_mother(t_philo_mother *mother)
 	delwin(mother->state_game);
 	delwin(mother->win);
 	touchwin(stdscr);
+	free(mother);
 	refresh();
 }
