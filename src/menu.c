@@ -20,22 +20,24 @@ void	ft_print_define(WINDOW *win, int i)
 		wprintw(win,"Quit");
 }
 
-void	ft_create_menu(WINDOW ***items, int xmax, int ymax)
+void	ft_create_menu(WINDOW ***items, t_screen_size ss)
 {
 	int i;
 
 	*items = (WINDOW**)malloc(9 * sizeof(WINDOW*));
-	**items = newwin(10,20,(ymax / 2) - 5, (xmax / 2) - 10);
+	**items = newwin(10,20,(ss.y / 2) - 5, (ss.x / 2) - 10);
 	wbkgd(**items, COLOR_PAIR(1));
 	i = 0;
 	while (++i < 7)
 	{
-		(*items)[i] = subwin(**items,1, 20,(ymax / 2) - 5 +  i - 1, (xmax / 2) - 10);
+		(*items)[i] = subwin(**items,1, 20, (ss.y/ 2) - 5 +  i - 1,
+															(ss.x / 2) - 10);
 		ft_print_define((*items)[i], i);
 	}
 	while (i < 9)
 	{
-		(*items)[i] = subwin(**items,1, 20,(ymax / 2) - 5 +  i + 1, (xmax / 2) - 10);
+		(*items)[i] = subwin(**items,1, 20,(ss.y / 2) - 5 +  i + 1,
+															(ss.x / 2) - 10);
 		ft_print_define((*items)[i], i);
 		i++;
 	}
@@ -63,10 +65,14 @@ int		ft_enter_key(WINDOW ***items, int selected)
 	free(*items);
 	touchwin(stdscr);
 	refresh();
+	keypad(stdscr, FALSE);
 	if (selected + 1 == 7)
 		return (1);
 	else
-		exit(endwin());//CREER UNE FONCTION FT_EXIT();
+	{
+		endwin();
+		exit(0);
+	}
 }
 
 void	ft_horizontal_keys(WINDOW ***items, int key, int selected)
@@ -92,13 +98,20 @@ void	ft_horizontal_keys(WINDOW ***items, int key, int selected)
 	}
 }
 
-void	ft_menu(int xmax, int ymax)
+void	ft_menu(void)
 {
 	WINDOW **items;
-	int key = 0;
-	int selected = 0;
+	int key;
+	int selected;
+	t_screen_size	ss;
 
-	ft_create_menu(&items, xmax, ymax);
+	key = 0;
+	selected = 0;
+	items = NULL;
+	getmaxyx(stdscr, ss.y, ss.x);
+	ft_create_menu(&items, ss);
+	keypad(stdscr, TRUE);
+	while (getch() != -1);
 	while (1)
 	{
 		key = getch();

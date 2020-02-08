@@ -18,10 +18,10 @@
 #define handle_error(msg) \
 	do { perror(msg); exit(EXIT_FAILURE); } while (0)
 
-#define MAX_LIFE 50
-#define EAT_T 10
-#define REST_T 5
-#define THINK_T 7
+#define MAX_LIFE 150
+#define EAT_T 2
+#define REST_T 3
+#define THINK_T 4
 #define TIMEOUT 2
 
 #define NB_PHILO 7
@@ -41,8 +41,7 @@
 #define ESCAPE 27
 #define SPACE 32
 
-pthread_mutex_t g_mut;
-bool g_all_in_life;
+//bool g_all_in_life;
 
 
 typedef enum	s_ret_status
@@ -116,6 +115,7 @@ typedef struct			s_philo_location
 {
 	int					x_capsule;
 	int					y_capsule;
+	bool				init;
 }						t_philo_location;
 
 typedef struct			s_philo
@@ -125,7 +125,7 @@ typedef struct			s_philo
 	size_t				time;
 	e_philo_state		state;
 	t_philo_location	*locate;
-	pthread_t			thread;
+	pthread_t			thread;//A supprimer
 	WINDOW				*capsule;
 }						t_philo;
 
@@ -143,21 +143,37 @@ typedef struct				s_screen_size
 	int						y;
 }							t_screen_size;
 
+typedef struct				s_philo_mother
+{
+	t_philo_heart	*heart;
+	WINDOW			*win;
+	WINDOW			*win_game_var;
+	WINDOW			*state_game;
+	pthread_mutex_t mutex;
+	t_screen_size	ss;
+	bool all_in_life;
+}							t_philo_mother;
+
 void			ft_init_curses(void);
 void			ft_actualize(WINDOW *capsule, char *data, int x, int y);
-WINDOW			*ft_create_philo_window(t_philo *philo);
-int				ft_print_wand(t_philo_heart **philo_heart);
-size_t			ft_eat_begin_actualize(t_philo_heart **philo);
-void			ft_eat_end_actualize(t_philo_heart **philo);
-size_t			ft_think_begin_actualize(t_philo_heart **philo, int wand);
-void			ft_think_end_actualize(t_philo_heart **philo, int wand);
-size_t			ft_rest_begin_actualize(t_philo_heart **philo);
-void			ft_main_loop(void);
-void			ft_free_philo_heart(t_philo_heart **philo);
+void			ft_actualize_wand(t_philo_heart **heart, e_wand_state new_state);
+WINDOW			*ft_create_philo_window(t_philo *philo, t_philo_mother **mother);
+int				ft_print_wand(t_philo_heart *philo_heart, t_philo_mother *mother);
+size_t			ft_eat_begin_actualize(t_philo_heart **philo, t_philo_mother **mother);
+void			ft_eat_end_actualize(t_philo_heart **philo, t_philo_mother **mother);
+size_t			ft_think_begin_actualize(t_philo_heart **philo, int wand, t_philo_mother **mother);
+void			ft_think_end_actualize(t_philo_heart **philo, int wand, t_philo_mother **mother);
+size_t			ft_rest_begin_actualize(t_philo_heart **philo, t_philo_mother **mother);
+void			ft_print_game_var(t_philo_mother *mother);
+void			ft_main_loop(t_philo_mother **mother);
+void			ft_free_philo_heart(t_philo_heart *philo);
 int				ft_get_err_define_size(void);
 int				ft_catch_error(int ac, char **av);
 int				ft_handle_define(e_handle_static_function h, e_define_type d, int value);
-void			ft_menu(int xmax, int ymax);
-//t_screen_size	*ft_get_screen_size(t_screen_size ss, e_handle_static_function hsf);
+void			ft_menu(void);
+void			ft_handle_wand_location(t_wand_location **locate, e_handle_static_function h, t_screen_size ss);
+void			ft_init_and_begin_game(void);
+void			ft_init_and_begin_main_menu(void);
+void			ft_free_philo_mother(t_philo_mother *mother);
 
 #endif
