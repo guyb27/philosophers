@@ -3,7 +3,7 @@
 int		ft_get_err_define_size(void)
 {
 	if (MAX_LIFE < 0 || EAT_T < 0 || REST_T < 0 || THINK_T < 0 || TIMEOUT < 0 ||
-		NB_PHILO < 2)
+		NB_PHILO < 2 || NB_PHILO > 7)
 		return (1);
 	return (0);
 }

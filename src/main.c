@@ -65,7 +65,7 @@ char *ft_store_philo_name(void)
 
 char	*ft_get_name(e_handle_static_function h)
 {
-	static int	already_taken[NB_PHILO] = {0};//A REMPLACER PAR LA FONCTION
+	static int	already_taken[7] = {0};//A REMPLACER PAR LA FONCTION
 	char		*tmp_str;
 	char		**philo_names;
 	int			i;
@@ -97,9 +97,17 @@ e_ret_status	ft_can_you_do_eat(t_wand *left, t_wand *right, t_philo *data)
 	int		ret_left;
 	int		ret_right;
 
-	(void)data;
-	ret_left = pthread_mutex_trylock(&left->mutex);
-	ret_right = pthread_mutex_trylock(&right->mutex);
+	(void)data;// A DEL
+	if (left->locate->number % 2)
+	{
+		ret_left = pthread_mutex_trylock(&left->mutex);
+		ret_right = pthread_mutex_trylock(&right->mutex);
+	}
+	else
+	{
+		ret_right = pthread_mutex_trylock(&right->mutex);
+		ret_left = pthread_mutex_trylock(&left->mutex);
+	}
 	if (!ret_left && ret_right)
 		return (LEFT);
 	else if (ret_left && !ret_right)
@@ -306,6 +314,17 @@ void	ft_create_wand(t_philo_heart **philo_heart, t_screen_size ss)
 	}
 }
 
+void	*ft_handle_mother_addr(void *mother, e_handle_static_function h)
+{
+	static void	*store_mother = NULL;
+
+	if (h == INIT)
+		store_mother = mother;
+	else if (h == GET_INFOS)
+		return (store_mother);
+	return (NULL);
+}
+
 void	ft_init_and_begin_game(void)
 {
 	int					count;
@@ -316,6 +335,7 @@ void	ft_init_and_begin_game(void)
 	count = -1;
 	philo_heart = NULL;
 	mother = ft_memalloc(sizeof(t_philo_mother));
+	ft_handle_mother_addr(&mother, INIT);
 	mother->all_in_life = ft_handle_define(GET_INFOS, LIFE, 0) > 0 ? true : false;
 	ft_dprintf(2, "LIFE: [%d]\n", mother->all_in_life ? 1 : 0);
 	getmaxyx(stdscr, mother->ss.y, mother->ss.x);
@@ -329,9 +349,13 @@ void	ft_init_and_begin_game(void)
 		ft_create_wand(&philo_heart, mother->ss);
 	while (--count >= 0)
 		ft_create_philo(&philo_heart, mother->ss);
+	mother->thread = ft_memalloc(sizeof(pthread_t) * ft_handle_define(GET_INFOS, NBPHILO, 0));
 	mother->heart = philo_heart;
 	while (++count < ft_handle_define(GET_INFOS, NBPHILO, 0))
+	{
 		pthread_create(&thread, NULL, ft_philo, &mother);
+		pthread_detach(thread);
+	}
 	//wrefresh(mother->win);
 	count = 0;
 	while (count < ft_handle_define(GET_INFOS, NBPHILO, 0))

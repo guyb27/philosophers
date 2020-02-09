@@ -7,6 +7,7 @@ int		ft_print_wand(t_philo_heart *philo_heart, t_philo_mother *mother)//Faire un
 
 	if (((t_philo*)philo_heart->prev->data)->name && ((t_philo*)philo_heart->next->data)->name)
 	{
+		pthread_mutex_lock(&mother->mutex);
 		((t_wand*)philo_heart->data)->capsule = subwin(mother->win, 1, 40,
 		((t_wand*)philo_heart->data)->locate->x_window,
 		((t_wand*)philo_heart->data)->locate->y_window);
@@ -31,7 +32,6 @@ int		ft_print_wand(t_philo_heart *philo_heart, t_philo_mother *mother)//Faire un
 		wand->locate->init = true;
 		wprintw(wand->capsule, str);
 		//pthread_mutex_lock(&g_mut);
-		pthread_mutex_lock(&mother->mutex);
 		wrefresh(wand->capsule);
 		pthread_mutex_unlock(&mother->mutex);
 		//pthread_mutex_unlock(&g_mut);

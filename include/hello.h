@@ -11,12 +11,7 @@
 #include <ctype.h>
 #include <stdbool.h>
 #include <curses.h>
-
-#define handle_error_en(en, msg) \
-	do { errno = en; perror(msg); exit(EXIT_FAILURE); } while (0)
-
-#define handle_error(msg) \
-	do { perror(msg); exit(EXIT_FAILURE); } while (0)
+#include <signal.h>
 
 #define MAX_LIFE 150
 #define EAT_T 2
@@ -125,7 +120,6 @@ typedef struct			s_philo
 	size_t				time;
 	e_philo_state		state;
 	t_philo_location	*locate;
-	pthread_t			thread;//A supprimer
 	WINDOW				*capsule;
 }						t_philo;
 
@@ -175,5 +169,6 @@ void			ft_handle_wand_location(t_wand_location **locate, e_handle_static_functio
 void			ft_init_and_begin_game(void);
 void			ft_init_and_begin_main_menu(void);
 void			ft_free_philo_mother(t_philo_mother *mother);
+void			*ft_handle_mother_addr(void *mother, e_handle_static_function h);
 
 #endif

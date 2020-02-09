@@ -15,7 +15,7 @@ void	ft_print_define(WINDOW *win, int i)
 	else if (i == 6)
 		wprintw(win,"NB_PHILO: %d", ft_handle_define(GET_INFOS, NBPHILO, 0));
 	else if (i == 7)
-		wprintw(win,"Commencer");
+		wprintw(win,"Start");
 	else if (i == 8)
 		wprintw(win,"Quit");
 }
@@ -80,7 +80,7 @@ void	ft_horizontal_keys(WINDOW ***items, int key, int selected)
 	int value;
 
 	value = ft_handle_define(GET_INFOS, selected, 0);
-	if (key == KEY_LEFT && value > 0)
+	if (key == KEY_LEFT && value > 0 && (selected != 5 || value > 2))
 	{
 		value = ft_handle_define(ACTUALIZE, selected, value - 1);
 		wmove((*items)[selected + 1], 0, 0);
@@ -88,7 +88,8 @@ void	ft_horizontal_keys(WINDOW ***items, int key, int selected)
 		ft_print_define((*items)[selected + 1], selected + 1);
 		wrefresh((*items)[selected + 1]);
 	}
-	else if (key == KEY_RIGHT && value < 2147483647)
+	else if (key == KEY_RIGHT && value < 2147483647 &&
+												(selected != 5 || value < 7))
 	{
 		value = ft_handle_define(ACTUALIZE, selected, value + 1);
 		wmove((*items)[selected + 1], 0, 0);
@@ -96,6 +97,27 @@ void	ft_horizontal_keys(WINDOW ***items, int key, int selected)
 		ft_print_define((*items)[selected + 1], selected + 1);
 		wrefresh((*items)[selected + 1]);
 	}
+}
+
+void		*ft_handle_main_menu_addr(void *main_menu, e_handle_static_function h)
+{
+	static void	*store_main_menu = NULL;
+
+	if (h == INIT)
+		store_main_menu = main_menu;
+	else if (h == GET_INFOS)
+		return (store_main_menu);
+	return (NULL);
+}
+
+void		ft_main_menu_resize(int i)
+{
+	void *mother_addr = ft_handle_mother_addr(NULL, GET_INFOS);
+	void *main_menu_addr = ft_handle_main_menu_addr(NULL, GET_INFOS);
+	if (mother_addr)
+		ft_dprintf(2, "GAME: RESIZE: [%d], addr:[%p]\n", i, mother_addr);
+	else
+		ft_dprintf(2, "MAIN_MENU: RESIZE: [%d], addr:[%p]\n", i, main_menu_addr);
 }
 
 void	ft_menu(void)
@@ -108,8 +130,17 @@ void	ft_menu(void)
 	key = 0;
 	selected = 0;
 	items = NULL;
+	ft_handle_main_menu_addr(&items, INIT);
 	getmaxyx(stdscr, ss.y, ss.x);
-	ft_create_menu(&items, ss);
+	if (ss.y > 10 && ss.x > 20)
+		ft_create_menu(&items, ss);
+	else
+	{
+		endwin();
+		ft_dprintf(2, "%sError: Terminal size too small.\%s\n", RED, STOP);
+		exit(1);
+	}
+	signal(SIGWINCH, ft_main_menu_resize);
 	keypad(stdscr, TRUE);
 	while (getch() != -1);
 	while (1)
@@ -126,4 +157,5 @@ void	ft_menu(void)
 			//PRENDRE AU CAS PAR CAS ET SE REFERER A LA FONCTION ft_get_err_define_size();
 			ft_horizontal_keys(&items, key, selected);
 	}
+	ft_handle_main_menu_addr(NULL, INIT);
 }

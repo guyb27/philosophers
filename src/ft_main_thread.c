@@ -81,11 +81,11 @@ void	ft_end_game(char *str, t_philo_mother *mother)
 	all_in_life = mother->all_in_life;
 	mother->all_in_life = false;
 	usleep(SEC);
+	pthread_mutex_lock(&mother->mutex);
 	mother->state_game = subwin(mother->win, 1, mother->ss.x, mother->ss.y - 1, 0);
 	wbkgd(mother->state_game, COLOR_PAIR(all_in_life ? 6 : 5));
 	wmove(mother->state_game, 0, (mother->ss.x / 2) - (ft_strlen(str) / 2));
 	wprintw(mother->state_game, str);
-	pthread_mutex_lock(&mother->mutex);
 	wrefresh(mother->state_game);
 	pthread_mutex_unlock(&mother->mutex);
 	keypad(stdscr, TRUE);
@@ -106,6 +106,7 @@ void	ft_end_game(char *str, t_philo_mother *mother)
 	pthread_mutex_lock(&mother->mutex);
 	touchwin(stdscr);
 	refresh();
+	ft_handle_mother_addr(NULL, INIT);
 	pthread_mutex_unlock(&mother->mutex);
 	if (ret == 1)
 		ft_init_and_begin_game();
@@ -117,6 +118,7 @@ void	ft_end_game(char *str, t_philo_mother *mother)
 
 void	ft_print_game_var(t_philo_mother *mother)
 {
+	pthread_mutex_lock(&mother->mutex);
 	mother->win_game_var = subwin(mother->win, 5, 25, 1, mother->ss.x - 26);
 	wbkgd(mother->win_game_var, COLOR_PAIR(2));
 	wmove(mother->win_game_var, 0, 0);
@@ -134,7 +136,6 @@ void	ft_print_game_var(t_philo_mother *mother)
 	wmove(mother->win_game_var, 4, 0);
 	wprintw(mother->win_game_var, "TIME LEFT: %d",
 										ft_handle_define(GET_INFOS, TIME, 0));
-	pthread_mutex_lock(&mother->mutex);
 	wrefresh(mother->win_game_var);
 	pthread_mutex_unlock(&mother->mutex);
 }
