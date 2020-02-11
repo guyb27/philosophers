@@ -13,12 +13,11 @@
 #include <curses.h>
 #include <signal.h>
 
-#define MAX_LIFE 150
-#define EAT_T 2
-#define REST_T 3
-#define THINK_T 4
-#define TIMEOUT 2
-
+#define MAX_LIFE 10
+#define EAT_T 0
+#define REST_T 0
+#define THINK_T 0
+#define TIMEOUT 50
 #define NB_PHILO 7
 
 #define X_LIFE 1
@@ -182,5 +181,7 @@ void			ft_init_and_begin_game(void);
 void			ft_init_and_begin_main_menu(void);
 void			ft_free_philo_mother(t_philo_mother *mother);
 void			*ft_handle_mother_addr(void *mother, e_handle_static_function h);
+t_main_menu		*ft_handle_main_menu(e_handle_static_function h, int data1, bool lock_mutex, void *data2);
+void			ft_print_define(WINDOW *win, int i);
 
 #endif
