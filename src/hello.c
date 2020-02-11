@@ -33,7 +33,7 @@ WINDOW	*ft_create_philo_window(t_philo *philo, t_philo_mother **mother)
 {
 	WINDOW *capsule;
 
-	pthread_mutex_lock(&(*mother)->mutex);
+	pthread_mutex_lock(&g_gmutex);
 	philo->locate->init = true;
 	capsule = subwin((*mother)->win, 4, 20, philo->locate->x_capsule, philo->locate->y_capsule);
 	wbkgd(capsule, COLOR_PAIR(3));
@@ -50,7 +50,7 @@ WINDOW	*ft_create_philo_window(t_philo *philo, t_philo_mother **mother)
 	wprintw(capsule, "TIME: ");
 	wprintw(capsule, "%d", philo->time);
 	wrefresh(capsule);
-	pthread_mutex_unlock(&(*mother)->mutex);
+	pthread_mutex_unlock(&g_gmutex);
 	return (capsule);
 }
 
@@ -59,15 +59,16 @@ size_t	ft_eat_begin_actualize(t_philo_heart **philo, t_philo_mother **mother)
 	char	*str;
 	size_t	now_time;
 
+	(void)mother;//A DEL
 	str = NULL;
 	ft_sprintf(&str, "%zi", ft_handle_define(GET_INFOS, EAT, 0));
 	((t_philo*)(*philo)->data)->state = TO_EAT;
-	pthread_mutex_lock(&(*mother)->mutex);
+	pthread_mutex_lock(&g_gmutex);
 	ft_actualize_wand((t_philo_heart**)&(*philo)->prev, EAT_RIGHT);
 	ft_actualize_wand((t_philo_heart**)&(*philo)->next, EAT_LEFT);
 	ft_actualize(((t_philo*)(*philo)->data)->capsule, "MANGE", X_STATE, Y_STATE);
 	ft_actualize(((t_philo*)(*philo)->data)->capsule, str, X_TIME, Y_TIME);
-	pthread_mutex_unlock(&(*mother)->mutex);
+	pthread_mutex_unlock(&g_gmutex);
 	ft_strdel(&str);
 	time((time_t*)&now_time);
 	return (now_time);
@@ -82,11 +83,11 @@ void	ft_eat_end_actualize(t_philo_heart **philo, t_philo_mother **mother)
 	{
 		ft_sprintf(&str, "%d", ft_handle_define(GET_INFOS, LIFE, 0));
 		((t_philo*)(*philo)->data)->life = ft_handle_define(GET_INFOS, LIFE, 0);
-	pthread_mutex_lock(&(*mother)->mutex);
+	pthread_mutex_lock(&g_gmutex);
 		ft_actualize_wand(&(*philo)->prev, FREE);
 		ft_actualize_wand(&(*philo)->next, FREE);
 		ft_actualize((((t_philo*)(*philo)->data)->capsule), str, X_LIFE, Y_LIFE);
-	pthread_mutex_unlock(&(*mother)->mutex);
+	pthread_mutex_unlock(&g_gmutex);
 		ft_strdel(&str);
 	}
 	pthread_mutex_unlock(&((t_wand*)(*philo)->prev->data)->mutex);
@@ -98,16 +99,17 @@ size_t	ft_think_begin_actualize(t_philo_heart **philo, int wand, t_philo_mother 
 	char	*str;
 
 	str = NULL;
+	(void)mother;//A DEL
 	if (wand == LEFT)
 	{
-	pthread_mutex_lock(&(*mother)->mutex);
+	pthread_mutex_lock(&g_gmutex);
 		if (((t_wand*)(*philo)->prev->data)->wand_state == FREE)
 			ft_actualize_wand((t_philo_heart**)&(*philo)->prev, THINK_RIGHT);
 		pthread_mutex_unlock(&((t_wand*)(*philo)->prev->data)->mutex);
 	}
 	else// if (wand == RIGHT)
 	{
-	pthread_mutex_lock(&(*mother)->mutex);
+	pthread_mutex_lock(&g_gmutex);
 		if (((t_wand*)(*philo)->next->data)->wand_state == FREE)
 			ft_actualize_wand((t_philo_heart**)&(*philo)->next, THINK_LEFT);
 		pthread_mutex_unlock(&((t_wand*)(*philo)->next->data)->mutex);
@@ -115,7 +117,7 @@ size_t	ft_think_begin_actualize(t_philo_heart **philo, int wand, t_philo_mother 
 	ft_actualize(((t_philo*)(*philo)->data)->capsule, "REFLECHIS", X_STATE, Y_STATE);
 	ft_sprintf(&str, "%zi", ft_handle_define(GET_INFOS, THINK, 0));
 	ft_actualize(((t_philo*)(*philo)->data)->capsule, str, X_TIME, Y_TIME);
-	pthread_mutex_unlock(&(*mother)->mutex);
+	pthread_mutex_unlock(&g_gmutex);
 	ft_strdel(&str);
 	return (time(NULL));
 }
@@ -128,9 +130,9 @@ void	ft_think_end_actualize(t_philo_heart **philo, int wand, t_philo_mother **mo
 		((t_wand*)(*philo)->prev->data)->wand_state = FREE;
 		if ((*mother)->all_in_life)
 		{
-			pthread_mutex_lock(&(*mother)->mutex);
+			pthread_mutex_lock(&g_gmutex);
 			ft_actualize_wand((t_philo_heart**)&(*philo)->prev, FREE);
-			pthread_mutex_unlock(&(*mother)->mutex);
+			pthread_mutex_unlock(&g_gmutex);
 		}
 	}
 	else if (wand == RIGHT &&
@@ -139,9 +141,9 @@ void	ft_think_end_actualize(t_philo_heart **philo, int wand, t_philo_mother **mo
 		((t_wand*)(*philo)->next->data)->wand_state = FREE;
 		if ((*mother)->all_in_life)
 		{
-	pthread_mutex_lock(&(*mother)->mutex);
+	pthread_mutex_lock(&g_gmutex);
 			ft_actualize_wand((t_philo_heart**)&(*philo)->next, FREE);
-	pthread_mutex_unlock(&(*mother)->mutex);
+	pthread_mutex_unlock(&g_gmutex);
 		}
 	}
 }
@@ -150,14 +152,15 @@ size_t	ft_rest_begin_actualize(t_philo_heart **philo, t_philo_mother **mother)
 {
 	char	*str;
 
+	(void)mother;//A DELE
 	str = NULL;
 	((t_philo*)(*philo)->data)->state = TO_REST;
 	ft_sprintf(&str, "%d", ft_handle_define(GET_INFOS, REST, 0));
-	pthread_mutex_lock(&(*mother)->mutex);
+	pthread_mutex_lock(&g_gmutex);
 	ft_actualize(((t_philo*)(*philo)->data)->capsule, "SE REPOSE", X_STATE,
 																	Y_STATE);
 	ft_actualize(((t_philo*)(*philo)->data)->capsule, str, X_TIME, Y_TIME);
-	pthread_mutex_unlock(&(*mother)->mutex);
+	pthread_mutex_unlock(&g_gmutex);
 	ft_strdel(&str);
 	return(time(NULL));
 }

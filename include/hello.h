@@ -37,6 +37,7 @@
 #define SPACE 32
 
 //bool g_all_in_life;
+pthread_mutex_t g_gmutex;
 
 
 typedef enum	s_ret_status
@@ -66,7 +67,11 @@ typedef enum	s_handle_static_function
 {
 	INIT,
 	ACTUALIZE,
-	GET_INFOS
+	GET_INFOS,
+	Y_ACTUALIZE,
+	X_ACTUALIZE,
+	ACTUALIZE_SCREEN,
+	DEL
 }				e_handle_static_function;
 
 typedef enum	s_define_type
@@ -143,10 +148,17 @@ typedef struct				s_philo_mother
 	WINDOW			*win;
 	WINDOW			*win_game_var;
 	WINDOW			*state_game;
-	pthread_mutex_t mutex;
+//	pthread_mutex_t mutex;
 	t_screen_size	ss;
 	bool all_in_life;
 }							t_philo_mother;
+
+typedef struct				s_main_menu
+{
+	WINDOW					**items;
+	int						y_pos;
+	t_screen_size	ss;
+}							t_main_menu;
 
 void			ft_init_curses(void);
 void			ft_actualize(WINDOW *capsule, char *data, int x, int y);

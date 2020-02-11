@@ -81,13 +81,13 @@ void	ft_end_game(char *str, t_philo_mother *mother)
 	all_in_life = mother->all_in_life;
 	mother->all_in_life = false;
 	usleep(SEC);
-	pthread_mutex_lock(&mother->mutex);
+	pthread_mutex_lock(&g_gmutex);
 	mother->state_game = subwin(mother->win, 1, mother->ss.x, mother->ss.y - 1, 0);
 	wbkgd(mother->state_game, COLOR_PAIR(all_in_life ? 6 : 5));
 	wmove(mother->state_game, 0, (mother->ss.x / 2) - (ft_strlen(str) / 2));
 	wprintw(mother->state_game, str);
 	wrefresh(mother->state_game);
-	pthread_mutex_unlock(&mother->mutex);
+	pthread_mutex_unlock(&g_gmutex);
 	keypad(stdscr, TRUE);
 	while (getch() != -1);
 	key = 0;
@@ -103,11 +103,11 @@ void	ft_end_game(char *str, t_philo_mother *mother)
 	keypad(stdscr, FALSE);
 	refresh();
 	ft_free_philo_mother(mother);
-	pthread_mutex_lock(&mother->mutex);
+	pthread_mutex_lock(&g_gmutex);
 	touchwin(stdscr);
 	refresh();
 	ft_handle_mother_addr(NULL, INIT);
-	pthread_mutex_unlock(&mother->mutex);
+	pthread_mutex_unlock(&g_gmutex);
 	if (ret == 1)
 		ft_init_and_begin_game();
 	else if (ret == 2)
@@ -118,7 +118,7 @@ void	ft_end_game(char *str, t_philo_mother *mother)
 
 void	ft_print_game_var(t_philo_mother *mother)
 {
-	pthread_mutex_lock(&mother->mutex);
+	pthread_mutex_lock(&g_gmutex);
 	mother->win_game_var = subwin(mother->win, 5, 25, 1, mother->ss.x - 26);
 	wbkgd(mother->win_game_var, COLOR_PAIR(2));
 	wmove(mother->win_game_var, 0, 0);
@@ -137,7 +137,7 @@ void	ft_print_game_var(t_philo_mother *mother)
 	wprintw(mother->win_game_var, "TIME LEFT: %d",
 										ft_handle_define(GET_INFOS, TIME, 0));
 	wrefresh(mother->win_game_var);
-	pthread_mutex_unlock(&mother->mutex);
+	pthread_mutex_unlock(&g_gmutex);
 }
 
 void	ft_main_loop(t_philo_mother **mother)
@@ -156,9 +156,9 @@ void	ft_main_loop(t_philo_mother **mother)
 		usleep(SEC);
 		time( (time_t*)&now_time );
 		ft_sprintf(&str, "%zi", (timeout - (now_time - begin_time)) < 0 ? 0 : timeout - (now_time - begin_time));
-		pthread_mutex_lock(&(*mother)->mutex);
+		pthread_mutex_lock(&g_gmutex);
 		ft_actualize((*mother)->win_game_var, str, X_TIMEOUT, Y_TIMEOUT);
-		pthread_mutex_unlock(&(*mother)->mutex);
+		pthread_mutex_unlock(&g_gmutex);
 		ft_strdel(&str);
 	}
 	ft_end_game((*mother)->all_in_life ? "Now, it is time... To DAAAAAAAANCE ! ! !" :

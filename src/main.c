@@ -136,9 +136,9 @@ int		ft_eat(t_philo **data, t_philo_heart **philo, t_philo_mother **mother)
 		time( (time_t*)&now_time );
 		ft_sprintf(&str, "%zi", (int)((begin_time + eat_t) - now_time) > 0 ?
 				(begin_time + eat_t) - now_time : 0);
-		pthread_mutex_lock(&(*mother)->mutex);
+		pthread_mutex_lock(&g_gmutex);
 		ft_actualize((*data)->capsule, str, X_TIME, Y_TIME);
-		pthread_mutex_unlock(&(*mother)->mutex);
+		pthread_mutex_unlock(&g_gmutex);
 		ft_strdel(&str);
 		if (!(size_t)((t_philo*)(*philo)->data)->life)
 			(*mother)->all_in_life = false;
@@ -168,10 +168,10 @@ int		ft_think(int ret, t_philo_heart **philo, t_philo **data, t_philo_mother **m
 		ft_sprintf(&str[0], "%zi", (int)((begin_time + think_t) - now_time) >
 				0 ? (begin_time + think_t) - now_time : 0);
 		ft_sprintf(&str[1], "%d", (*data)->life);
-		pthread_mutex_lock(&(*mother)->mutex);
+		pthread_mutex_lock(&g_gmutex);
 		ft_actualize((*data)->capsule, str[0], X_TIME, Y_TIME);
 		ft_actualize((*data)->capsule, str[1], X_LIFE, Y_LIFE);
-		pthread_mutex_unlock(&(*mother)->mutex);
+		pthread_mutex_unlock(&g_gmutex);
 		ft_strdel(&str[0]);
 		ft_strdel(&str[1]);
 		if (!(size_t)((t_philo*)(*philo)->data)->life)
@@ -218,10 +218,10 @@ int		ft_rest(t_philo_heart **philo, t_philo **data, t_philo_mother **mother)
 		time((time_t*)&now_time);
 		ft_sprintf(&str[1], "%zi", (int)((rest_t + begin_time) - now_time) > 0 ?
 				(rest_t + begin_time) - now_time : 0);
-		pthread_mutex_lock(&(*mother)->mutex);
+		pthread_mutex_lock(&g_gmutex);
 		ft_actualize((*data)->capsule, str[0], X_LIFE, Y_LIFE);
 		ft_actualize((*data)->capsule, str[1], X_TIME, Y_TIME);
-		pthread_mutex_unlock(&(*mother)->mutex);
+		pthread_mutex_unlock(&g_gmutex);
 		ft_strdel(&str[0]);
 		ft_strdel(&str[1]);
 		if (!(*data)->life)
@@ -236,11 +236,11 @@ void	*ft_philo(void *arg)
 	char			*str;
 
 	philo = (*(t_philo_mother**)arg)->heart;
-	pthread_mutex_lock(&(*(t_philo_mother**)arg)->mutex);
+	pthread_mutex_lock(&g_gmutex);
 	while ((philo->type == PHILO && ((t_philo*)philo->data)->name) || philo->type == WAND)
 		philo = philo->next;
 	((t_philo*)(philo)->data)->name = ft_get_name(GET_INFOS);
-	pthread_mutex_unlock(&(*(t_philo_mother**)arg)->mutex);
+	pthread_mutex_unlock(&g_gmutex);
 	((t_philo*)(philo)->data)->state = TO_REST;
 	((t_philo*)(philo)->data)->life = ft_handle_define(GET_INFOS, LIFE, 0);
 	((t_philo*)philo->data)->capsule = ft_create_philo_window(philo->data, arg);
@@ -254,13 +254,14 @@ void	*ft_philo(void *arg)
 				usleep(SEC);
 				((t_philo*)philo->data)->life = ((t_philo*)philo->data)->life - 1;
 				ft_sprintf(&str, "%d", ((t_philo*)philo->data)->life);
-				pthread_mutex_lock(&(*(t_philo_mother**)arg)->mutex);
+				pthread_mutex_lock(&g_gmutex);
 				ft_actualize(((t_philo*)philo->data)->capsule, str, X_LIFE, Y_LIFE);
-				pthread_mutex_unlock(&(*(t_philo_mother**)arg)->mutex);
+				pthread_mutex_unlock(&g_gmutex);
 				ft_strdel(&str);
 			}
 	}
-	return ((void*)0);
+	//return ((void*)0);
+	return (__DARWIN_NULL);
 }
 
 void	ft_create_philo(t_philo_heart **philo_heart, t_screen_size ss)
@@ -339,7 +340,7 @@ void	ft_init_and_begin_game(void)
 	mother->all_in_life = ft_handle_define(GET_INFOS, LIFE, 0) > 0 ? true : false;
 	ft_dprintf(2, "LIFE: [%d]\n", mother->all_in_life ? 1 : 0);
 	getmaxyx(stdscr, mother->ss.y, mother->ss.x);
-	pthread_mutex_init(&mother->mutex, NULL);
+	//pthread_mutex_init(&mother->mutex, NULL);
 	ft_get_name(INIT);
 	ft_handle_wand_location(NULL, INIT, mother->ss);
 	mother->win = newwin(mother->ss.y, mother->ss.x, 0, 0);
@@ -349,7 +350,7 @@ void	ft_init_and_begin_game(void)
 		ft_create_wand(&philo_heart, mother->ss);
 	while (--count >= 0)
 		ft_create_philo(&philo_heart, mother->ss);
-	mother->thread = ft_memalloc(sizeof(pthread_t) * ft_handle_define(GET_INFOS, NBPHILO, 0));
+//	mother->thread = ft_memalloc(sizeof(pthread_t) * ft_handle_define(GET_INFOS, NBPHILO, 0));
 	mother->heart = philo_heart;
 	while (++count < ft_handle_define(GET_INFOS, NBPHILO, 0))
 	{
@@ -378,7 +379,9 @@ int main (int ac, char **av)
 {
 	if (ft_catch_error(ac, av))
 		return (1);
+	pthread_mutex_init(&g_gmutex, NULL);
 	ft_init_curses();
 	ft_init_and_begin_main_menu();
+	pthread_mutex_destroy(&g_gmutex);
 	return 0;
 }
