@@ -33,6 +33,8 @@ void	ft_horizontal_keys(int key, int selected)
 {
 	int value;
 
+	if (g_gmode <= NOTHING_WINDOW)
+		return ;
 	pthread_mutex_lock(&g_gmutex);
 	value = ft_handle_define(GET_INFOS, selected, 0);
 	WINDOW	**items = ft_handle_main_menu(GET_INFOS, 0, true, NULL)->items;
@@ -56,22 +58,6 @@ void	ft_horizontal_keys(int key, int selected)
 	pthread_mutex_unlock(&g_gmutex);
 }
 
-void		ft_resize(int sig)// /!\ N'a pas sa place dans le menu vu que c est global
-{
-	void *mother_addr;
-
-	if (sig != SIGWINCH)
-		return ;
-	mother_addr = ft_handle_mother_addr(NULL, GET_INFOS);
-	if (mother_addr)
-		ft_dprintf(2, "GAME: RESIZE_addr:[%p]\n", mother_addr);
-	else if (ft_handle_main_menu(GET_INFOS, 0, true, NULL))
-	{
-		ft_handle_main_menu(ACTUALIZE_SCREEN, 0, true, NULL);
-		ft_dprintf(2, "MAIN_MENU: RESIZE\n");
-	}
-}
-
 void	ft_menu(void)
 {
 	int key;
@@ -80,7 +66,6 @@ void	ft_menu(void)
 	key = 0;
 	selected = 0;
 	ft_handle_main_menu(INIT, 1, true, NULL);
-	signal(SIGWINCH, ft_resize);
 	keypad(stdscr, TRUE);
 	while (getch() != -1);
 	while (1)

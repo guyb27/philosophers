@@ -29,11 +29,12 @@ void		ft_actualize(WINDOW *capsule, char *data, int x, int y)
 	wrefresh(capsule);
 }
 
-WINDOW	*ft_create_philo_window(t_philo *philo, t_philo_mother **mother)
+WINDOW	*ft_create_philo_window(t_philo *philo, t_philo_mother **mother, bool mutex_lock)//PAS BESOIN DE DOUBLE ETOILE POUR MOTHER
 {
 	WINDOW *capsule;
 
-	pthread_mutex_lock(&g_gmutex);
+	if (mutex_lock)
+		pthread_mutex_lock(&g_gmutex);
 	philo->locate->init = true;
 	capsule = subwin((*mother)->win, 4, 20, philo->locate->x_capsule, philo->locate->y_capsule);
 	wbkgd(capsule, COLOR_PAIR(3));
@@ -50,7 +51,8 @@ WINDOW	*ft_create_philo_window(t_philo *philo, t_philo_mother **mother)
 	wprintw(capsule, "TIME: ");
 	wprintw(capsule, "%d", philo->time);
 	wrefresh(capsule);
-	pthread_mutex_unlock(&g_gmutex);
+	if (mutex_lock)
+		pthread_mutex_unlock(&g_gmutex);
 	return (capsule);
 }
 

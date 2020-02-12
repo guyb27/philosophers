@@ -65,7 +65,7 @@ char *ft_store_philo_name(void)
 
 char	*ft_get_name(e_handle_static_function h)
 {
-	static int	already_taken[7] = {0};//A REMPLACER PAR LA FONCTION
+	static int	already_taken[7] = {0};//A REMPLACER PAR LA FONCTION POUR LE NOMBRE DE FONCTION
 	char		*tmp_str;
 	char		**philo_names;
 	int			i;
@@ -243,9 +243,10 @@ void	*ft_philo(void *arg)
 	pthread_mutex_unlock(&g_gmutex);
 	((t_philo*)(philo)->data)->state = TO_REST;
 	((t_philo*)(philo)->data)->life = ft_handle_define(GET_INFOS, LIFE, 0);
-	((t_philo*)philo->data)->capsule = ft_create_philo_window(philo->data, arg);
+	((t_philo*)philo->data)->capsule = ft_create_philo_window(philo->data, arg, true);
 	while ((size_t)((t_philo*)(philo)->data)->life && (*(t_philo_mother**)arg)->all_in_life)
 	{
+		ft_dprintf(2, "000FT_PHILO MOTHER_ADDR: [%p], HEART_ADDR: [%p]\n", arg,&(*(t_philo_mother**)arg)->heart );
 		if ((e_philo_state)((t_philo*)(philo)->data)->state == TO_EAT)
 			ft_rest(&philo, (t_philo**)&philo->data, arg);
 		else
@@ -260,7 +261,6 @@ void	*ft_philo(void *arg)
 				ft_strdel(&str);
 			}
 	}
-	//return ((void*)0);
 	return (__DARWIN_NULL);
 }
 
@@ -340,7 +340,6 @@ void	ft_init_and_begin_game(void)
 	mother->all_in_life = ft_handle_define(GET_INFOS, LIFE, 0) > 0 ? true : false;
 	ft_dprintf(2, "LIFE: [%d]\n", mother->all_in_life ? 1 : 0);
 	getmaxyx(stdscr, mother->ss.y, mother->ss.x);
-	//pthread_mutex_init(&mother->mutex, NULL);
 	ft_get_name(INIT);
 	ft_handle_wand_location(NULL, INIT, mother->ss);
 	mother->win = newwin(mother->ss.y, mother->ss.x, 0, 0);
@@ -350,22 +349,20 @@ void	ft_init_and_begin_game(void)
 		ft_create_wand(&philo_heart, mother->ss);
 	while (--count >= 0)
 		ft_create_philo(&philo_heart, mother->ss);
-//	mother->thread = ft_memalloc(sizeof(pthread_t) * ft_handle_define(GET_INFOS, NBPHILO, 0));
 	mother->heart = philo_heart;
 	while (++count < ft_handle_define(GET_INFOS, NBPHILO, 0))
 	{
 		pthread_create(&thread, NULL, ft_philo, &mother);
 		pthread_detach(thread);
 	}
-	//wrefresh(mother->win);
 	count = 0;
 	while (count < ft_handle_define(GET_INFOS, NBPHILO, 0))
 	{
 		if (philo_heart->type == WAND && !((t_wand*)philo_heart->data)->locate->init)
-			count += ft_print_wand(philo_heart, mother);
+			count += ft_print_wand(philo_heart, mother, true);
 		philo_heart = (philo_heart)->next;
 	}
-	ft_print_game_var(mother);
+	ft_print_game_var(mother, true);
 	ft_main_loop(&mother);
 }
 
@@ -375,10 +372,72 @@ void	ft_init_and_begin_main_menu(void)
 	ft_init_and_begin_game();
 }
 
+void		ft_actualize_game(t_philo_mother **mother)
+{
+	t_philo_heart *heart;
+
+	pthread_mutex_lock(&g_gmutex);
+	heart = (*mother)->heart;
+	delwin((*mother)->win_game_var);
+	for (int i = 0, j = ft_handle_define(GET_INFOS, NBPHILO, 0) * 2; i < j;i++)
+	{
+		if (heart->type == PHILO)
+		{
+			delwin(((t_philo*)heart->data)->capsule);
+		}
+		else
+		{
+			delwin(((t_wand*)heart->data)->capsule);
+		}
+		heart = heart->next;
+	}
+	if ((*mother)->state_game)
+		delwin((*mother)->state_game);
+	free((*mother)->win);
+	touchwin(stdscr);
+	refresh();
+	endwin();
+	ft_init_curses();
+	(*mother)->win = newwin((*mother)->ss.y, (*mother)->ss.x, 0, 0);
+/*	getmaxyx((*mother)->ss.y, (*mother)->ss.x);
+	ft_handle_wand_location(NULL, INIT, (*mother)->ss);
+	//ft_handle_wand_location(&heart->->locate, GET_INFOS, (*mother)->ss);
+	(*mother)->win = newwin((*mother)->ss.y, (*mother)->ss.x, 0, 0);
+	wbkgd((*mother)->win, COLOR_PAIR(1));
+	wrefresh((*mother)->win);
+*/	while (mother);
+	ft_print_game_var(*mother, false);
+//	while (*mother);
+	pthread_mutex_unlock(&g_gmutex);
+}
+
+void		ft_resize(int sig)// /!\ N'a pas sa place dans le menu vu que c est global
+{
+	void *mother_addr;
+
+	if (sig != SIGWINCH)
+		return ;
+	mother_addr = ft_handle_mother_addr(NULL, GET_INFOS);
+	if (mother_addr)
+	{
+		ft_dprintf(2, "000MOTHER_ADDR: [%p], HEART_ADDR: [%p]\n", mother_addr,&(*(t_philo_mother**)mother_addr)->heart );
+		ft_actualize_game((t_philo_mother**)mother_addr);
+		ft_dprintf(2, "1111MOTHER_ADDR: [%p], HEART_ADDR: [%p]\n", mother_addr,&(*(t_philo_mother**)mother_addr)->heart );
+		ft_dprintf(2, "GAME: RESIZE_addr:[%p]\n", mother_addr);
+	}
+	else if (ft_handle_main_menu(GET_INFOS, 0, true, NULL))
+	{
+		ft_handle_main_menu(ACTUALIZE_SCREEN, 0, true, NULL);
+		ft_dprintf(2, "MAIN_MENU: RESIZE\n");
+	}
+}
+
 int main (int ac, char **av)
 {
 	if (ft_catch_error(ac, av))
 		return (1);
+	g_gmode = NOT_INIT;
+	signal(SIGWINCH, ft_resize);
 	pthread_mutex_init(&g_gmutex, NULL);
 	ft_init_curses();
 	ft_init_and_begin_main_menu();

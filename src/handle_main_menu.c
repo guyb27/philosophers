@@ -9,18 +9,30 @@ void		ft_init_main_menu(bool lock_mutex, int data1, t_main_menu **menu)
 	*menu = ft_memalloc(sizeof(t_main_menu));
 	(*menu)->y_pos = data1;
 	getmaxyx(stdscr, (*menu)->ss.y, (*menu)->ss.x);
-	(*menu)->items = ft_memalloc(9 * sizeof(WINDOW*));
-	*(*menu)->items = newwin(10,20,((*menu)->ss.y / 2) - 5, ((*menu)->ss.x / 2) - 10);
-	wbkgd(*(*menu)->items, COLOR_PAIR(1));
-	i = 0;
-	while (++i < 9)
+	ft_dprintf(2, "Y: [%d], X: [%d]\n", (*menu)->ss.y, (*menu)->ss.x);
+	if ((*menu)->ss.y > 10 && (*menu)->ss.x > 20)
 	{
-		(*menu)->items[i] = subwin(*(*menu)->items,1, 20, ((*menu)->ss.y/ 2) - 5 +
-				i + (i < 7 ? -1 : 1), ((*menu)->ss.x / 2) - 10);
-		ft_print_define((*menu)->items[i], i);
+		g_gmode = ALL_WINDOWS;
+		(*menu)->items = ft_memalloc(9 * sizeof(WINDOW*));
+		*(*menu)->items = newwin(10,20,((*menu)->ss.y / 2) - 5,
+														((*menu)->ss.x / 2) - 10);
+		wbkgd(*(*menu)->items, COLOR_PAIR(1));
+		i = 0;
+		while (++i < 9)
+		{
+			(*menu)->items[i] = subwin(*(*menu)->items,1, 20, ((*menu)->ss.y/ 2) -
+								5 + i + (i < 7 ? -1 : 1), ((*menu)->ss.x / 2) - 10);
+			ft_print_define((*menu)->items[i], i);
+		}
+		wbkgd((*menu)->items[data1], COLOR_PAIR(2));
+		wrefresh(*(*menu)->items);
 	}
-	wbkgd((*menu)->items[data1], COLOR_PAIR(2));
-	wrefresh(*(*menu)->items);
+	else
+	{
+		g_gmode = NOTHING_WINDOW;
+		bkgd(COLOR_PAIR(2));
+		refresh();
+	}
 	if (lock_mutex)
 		pthread_mutex_unlock(&g_gmutex);
 }
@@ -43,6 +55,8 @@ void			ft_actualize_screen(bool lock_mutex, int actual_ypos)
 
 void			ft_y_actualize(bool lock_mutex, int data1, int *data2, t_main_menu **menu)
 {
+	if (g_gmode <= NOTHING_WINDOW)
+		return ;
 	if (lock_mutex)
 		pthread_mutex_lock(&g_gmutex);
 	wbkgd((*menu)->items[*(int*)(int*)data2 + 1],COLOR_PAIR(1));

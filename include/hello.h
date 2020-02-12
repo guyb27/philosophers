@@ -13,11 +13,11 @@
 #include <curses.h>
 #include <signal.h>
 
-#define MAX_LIFE 10
-#define EAT_T 0
-#define REST_T 0
-#define THINK_T 0
-#define TIMEOUT 50
+#define MAX_LIFE 1100
+#define EAT_T 10
+#define REST_T 10
+#define THINK_T 10
+#define TIMEOUT 10
 #define NB_PHILO 7
 
 #define X_LIFE 1
@@ -37,7 +37,15 @@
 
 //bool g_all_in_life;
 pthread_mutex_t g_gmutex;
+int				g_gmode;
 
+typedef enum	s_gmode
+{
+	NOT_INIT,//MENU, GAME
+	NOTHING_WINDOW,//MENU, GAME
+	PRINCIPAL_WINDOWS,//GAME
+	ALL_WINDOWS//MENU, GAME
+}				e_gmode;
 
 typedef enum	s_ret_status
 {
@@ -162,14 +170,14 @@ typedef struct				s_main_menu
 void			ft_init_curses(void);
 void			ft_actualize(WINDOW *capsule, char *data, int x, int y);
 void			ft_actualize_wand(t_philo_heart **heart, e_wand_state new_state);
-WINDOW			*ft_create_philo_window(t_philo *philo, t_philo_mother **mother);
-int				ft_print_wand(t_philo_heart *philo_heart, t_philo_mother *mother);
+WINDOW			*ft_create_philo_window(t_philo *philo, t_philo_mother **mother, bool mutex_lock);
+int				ft_print_wand(t_philo_heart *philo_heart, t_philo_mother *mother, bool mutex_lock);
 size_t			ft_eat_begin_actualize(t_philo_heart **philo, t_philo_mother **mother);
 void			ft_eat_end_actualize(t_philo_heart **philo, t_philo_mother **mother);
 size_t			ft_think_begin_actualize(t_philo_heart **philo, int wand, t_philo_mother **mother);
 void			ft_think_end_actualize(t_philo_heart **philo, int wand, t_philo_mother **mother);
 size_t			ft_rest_begin_actualize(t_philo_heart **philo, t_philo_mother **mother);
-void			ft_print_game_var(t_philo_mother *mother);
+void			ft_print_game_var(t_philo_mother *mother, bool mutex_lock);
 void			ft_main_loop(t_philo_mother **mother);
 void			ft_free_philo_heart(t_philo_heart *philo);
 int				ft_get_err_define_size(void);

@@ -1,13 +1,14 @@
 #include "../include/hello.h"
 
-int		ft_print_wand(t_philo_heart *philo_heart, t_philo_mother *mother)//Faire une fonction plus propre qui utilise ft_actualize
+int		ft_print_wand(t_philo_heart *philo_heart, t_philo_mother *mother, bool mutex_lock)//Faire une fonction plus propre qui utilise ft_actualize
 {
 	t_wand	*wand;
 	char *str = NULL;
 
 	if (((t_philo*)philo_heart->prev->data)->name && ((t_philo*)philo_heart->next->data)->name)
 	{
-		pthread_mutex_lock(&g_gmutex);
+		if (mutex_lock)
+			pthread_mutex_lock(&g_gmutex);
 		((t_wand*)philo_heart->data)->capsule = subwin(mother->win, 1, 40,
 		((t_wand*)philo_heart->data)->locate->x_window,
 		((t_wand*)philo_heart->data)->locate->y_window);
@@ -31,10 +32,9 @@ int		ft_print_wand(t_philo_heart *philo_heart, t_philo_mother *mother)//Faire un
 						ft_strlen(((t_philo*)philo_heart->next->data)->name);
 		wand->locate->init = true;
 		wprintw(wand->capsule, str);
-		//pthread_mutex_lock(&g_mut);
 		wrefresh(wand->capsule);
-		pthread_mutex_unlock(&g_gmutex);
-		//pthread_mutex_unlock(&g_mut);
+		if (mutex_lock)
+			pthread_mutex_unlock(&g_gmutex);
 		ft_strdel(&str);
 		return (1);
 	}
