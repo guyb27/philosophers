@@ -426,11 +426,9 @@ void		ft_actualize_game(t_philo_mother **mother)
 	}
 	ft_print_game_var(*mother, false);
 	if (state_game)
-		;//TROUVER UNE SOLUTION
+		;//TROUVER UNE SOLUTION (stocker ca dans la struct)
 	wrefresh((*mother)->win);
-	//while (mother);
 	ft_print_game_var(*mother, false);
-//	while (*mother);
 	pthread_mutex_unlock(&g_gmutex);
 }
 
