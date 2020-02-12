@@ -246,7 +246,6 @@ void	*ft_philo(void *arg)
 	((t_philo*)philo->data)->capsule = ft_create_philo_window(philo->data, arg, true);
 	while ((size_t)((t_philo*)(philo)->data)->life && (*(t_philo_mother**)arg)->all_in_life)
 	{
-		ft_dprintf(2, "000FT_PHILO MOTHER_ADDR: [%p], HEART_ADDR: [%p]\n", arg,&(*(t_philo_mother**)arg)->heart );
 		if ((e_philo_state)((t_philo*)(philo)->data)->state == TO_EAT)
 			ft_rest(&philo, (t_philo**)&philo->data, arg);
 		else
@@ -375,7 +374,9 @@ void	ft_init_and_begin_main_menu(void)
 void		ft_actualize_game(t_philo_mother **mother)
 {
 	t_philo_heart *heart;
+	bool				state_game;
 
+	state_game = false;
 	pthread_mutex_lock(&g_gmutex);
 	heart = (*mother)->heart;
 	delwin((*mother)->win_game_var);
@@ -392,20 +393,42 @@ void		ft_actualize_game(t_philo_mother **mother)
 		heart = heart->next;
 	}
 	if ((*mother)->state_game)
+	{
 		delwin((*mother)->state_game);
+		state_game = true;
+	}
 	free((*mother)->win);
 	touchwin(stdscr);
 	refresh();
 	endwin();
 	ft_init_curses();
+	getmaxyx(stdscr, (*mother)->ss.y, (*mother)->ss.x);
 	(*mother)->win = newwin((*mother)->ss.y, (*mother)->ss.x, 0, 0);
-/*	getmaxyx((*mother)->ss.y, (*mother)->ss.x);
 	ft_handle_wand_location(NULL, INIT, (*mother)->ss);
-	//ft_handle_wand_location(&heart->->locate, GET_INFOS, (*mother)->ss);
-	(*mother)->win = newwin((*mother)->ss.y, (*mother)->ss.x, 0, 0);
+	for (int i = 0, j = ft_handle_define(GET_INFOS, NBPHILO, 0) * 2; i < j;i++)
+	{
+		if (heart->type == WAND)
+			ft_handle_wand_location(&((t_wand*)heart->data)->locate, GET_INFOS, (*mother)->ss);
+		else
+			((t_philo*)heart->data)->locate = ft_get_philo_locate(((t_wand*)heart->prev->data)->locate->number, (*mother)->ss.x, (*mother)->ss.y);
+		heart = heart->next;
+	}
+	//sleep(1);
 	wbkgd((*mother)->win, COLOR_PAIR(1));
+	for (int i = 0, j = ft_handle_define(GET_INFOS, NBPHILO, 0) * 2; i < j;i++)
+	{
+	//	sleep(1);
+		if (heart->type == PHILO)
+			((t_philo*)heart->data)->capsule = ft_create_philo_window(heart->data, mother, false);
+		else if (heart->type == WAND)
+			ft_print_wand(heart, *mother, false);
+		heart = heart->next;
+	}
+	ft_print_game_var(*mother, false);
+	if (state_game)
+		;//TROUVER UNE SOLUTION
 	wrefresh((*mother)->win);
-*/	while (mother);
+	//while (mother);
 	ft_print_game_var(*mother, false);
 //	while (*mother);
 	pthread_mutex_unlock(&g_gmutex);

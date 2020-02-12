@@ -13,11 +13,11 @@
 #include <curses.h>
 #include <signal.h>
 
-#define MAX_LIFE 1100
-#define EAT_T 10
-#define REST_T 10
-#define THINK_T 10
-#define TIMEOUT 10
+#define MAX_LIFE 12
+#define EAT_T 2
+#define REST_T 2
+#define THINK_T 2
+#define TIMEOUT 50
 #define NB_PHILO 7
 
 #define X_LIFE 1
