@@ -43,7 +43,6 @@ typedef enum	s_gmode
 {
 	NOT_INIT,//MENU, GAME
 	NOTHING_WINDOW,//MENU, GAME
-	PRINCIPAL_WINDOWS,//GAME
 	ALL_WINDOWS//MENU, GAME
 }				e_gmode;
 
@@ -109,6 +108,7 @@ typedef struct			s_wand
 	pthread_cond_t		condition;
 	t_wand_location		*locate;
 	WINDOW				*capsule;
+	int					number;
 }						t_wand;
 
 typedef enum	s_philo_state
@@ -177,7 +177,7 @@ void			ft_eat_end_actualize(t_philo_heart **philo, t_philo_mother **mother);
 size_t			ft_think_begin_actualize(t_philo_heart **philo, int wand, t_philo_mother **mother);
 void			ft_think_end_actualize(t_philo_heart **philo, int wand, t_philo_mother **mother);
 size_t			ft_rest_begin_actualize(t_philo_heart **philo, t_philo_mother **mother);
-void			ft_print_game_var(t_philo_mother *mother, bool mutex_lock);
+void			ft_print_game_var(t_philo_mother **mother, bool mutex_lock);
 void			ft_main_loop(t_philo_mother **mother);
 void			ft_free_philo_heart(t_philo_heart *philo);
 int				ft_get_err_define_size(void);

@@ -5,7 +5,7 @@ int		ft_print_wand(t_philo_heart *philo_heart, t_philo_mother *mother, bool mute
 	t_wand	*wand;
 	char *str = NULL;
 
-	if (((t_philo*)philo_heart->prev->data)->name && ((t_philo*)philo_heart->next->data)->name)
+	if (((t_philo*)philo_heart->prev->data)->name && ((t_philo*)philo_heart->next->data)->name && g_gmode == ALL_WINDOWS)
 	{
 		if (mutex_lock)
 			pthread_mutex_lock(&g_gmutex);
@@ -49,7 +49,7 @@ void		ft_actualize_wand(t_philo_heart **heart, e_wand_state new_state)
 	if ((*heart)->type == WAND && (*heart)->prev->type == PHILO && (*heart)->prev->type == PHILO)
 	{
 		wand = ((t_wand*)(*heart)->data);
-		if (wand->locate->init)
+		if (g_gmode == ALL_WINDOWS && wand->locate->init)
 		{
 			y = wand->locate->y_before;
 			wmove(wand->capsule, 0, y);
@@ -70,6 +70,7 @@ void		ft_actualize_wand(t_philo_heart **heart, e_wand_state new_state)
 			wrefresh(wand->capsule);
 		}
 		else
+			//CLI
 			wand->wand_state = new_state;
 	}
 }

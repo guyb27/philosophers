@@ -98,16 +98,8 @@ e_ret_status	ft_can_you_do_eat(t_wand *left, t_wand *right, t_philo *data)
 	int		ret_right;
 
 	(void)data;// A DEL
-	if (left->locate->number % 2)
-	{
-		ret_left = pthread_mutex_trylock(&left->mutex);
-		ret_right = pthread_mutex_trylock(&right->mutex);
-	}
-	else
-	{
-		ret_right = pthread_mutex_trylock(&right->mutex);
-		ret_left = pthread_mutex_trylock(&left->mutex);
-	}
+	ret_left = pthread_mutex_trylock(&left->mutex);
+	ret_right = pthread_mutex_trylock(&right->mutex);
 	if (!ret_left && ret_right)
 		return (LEFT);
 	else if (ret_left && !ret_right)
@@ -129,6 +121,7 @@ int		ft_eat(t_philo **data, t_philo_heart **philo, t_philo_mother **mother)
 	str = NULL;
 	begin_time = ft_eat_begin_actualize(philo, mother);
 	now_time = begin_time;
+
 	while (now_time <= begin_time + eat_t && (*mother)->all_in_life)
 	{
 		if (eat_t > 0)
@@ -249,6 +242,7 @@ void	*ft_philo(void *arg)
 		if ((e_philo_state)((t_philo*)(philo)->data)->state == TO_EAT)
 			ft_rest(&philo, (t_philo**)&philo->data, arg);
 		else
+		{
 			if (ft_eat_or_think(&philo, (t_philo**)&(philo)->data, arg))
 			{
 				usleep(SEC);
@@ -259,6 +253,7 @@ void	*ft_philo(void *arg)
 				pthread_mutex_unlock(&g_gmutex);
 				ft_strdel(&str);
 			}
+		}
 	}
 	return (__DARWIN_NULL);
 }
@@ -275,7 +270,10 @@ void	ft_create_philo(t_philo_heart **philo_heart, t_screen_size ss)
 		if ((*philo_heart)->type == WAND &&
 				(*philo_heart)->prev->type == WAND)
 		{
-			((t_philo*)new_philo_heart->data)->locate = ft_get_philo_locate(((t_wand*)(*philo_heart)->prev->data)->locate->number, ss.x, ss.y);
+			if (g_gmode)
+				((t_philo*)new_philo_heart->data)->locate = ft_get_philo_locate(((t_wand*)(*philo_heart)->prev->data)->locate->number, ss.x, ss.y);
+			else
+				((t_philo*)new_philo_heart->data)->locate = NULL;
 			new_philo_heart->next = *philo_heart;
 			new_philo_heart->prev = (*philo_heart)->prev;
 			(*philo_heart)->prev->next = new_philo_heart;
@@ -325,6 +323,33 @@ void	*ft_handle_mother_addr(void *mother, e_handle_static_function h)
 	return (NULL);
 }
 
+void	*ft_create_mother_window(int y, int x)
+{
+	WINDOW *mother;
+
+	mother = NULL;
+	if (g_gmode == ALL_WINDOWS)
+	{
+		mother = newwin(y, x, 0, 0);
+		wbkgd(mother, COLOR_PAIR(1));
+		wrefresh(mother);
+	}
+	else
+	{
+		bkgd(COLOR_PAIR(2));
+		refresh();
+	}
+	return (mother);
+}
+
+void	ft_get_gmode(int y, int x)
+{
+	if (y >= 40 && x >= 82)
+		g_gmode = ALL_WINDOWS;
+	else
+		g_gmode = NOTHING;
+}
+
 void	ft_init_and_begin_game(void)
 {
 	int					count;
@@ -339,11 +364,10 @@ void	ft_init_and_begin_game(void)
 	mother->all_in_life = ft_handle_define(GET_INFOS, LIFE, 0) > 0 ? true : false;
 	ft_dprintf(2, "LIFE: [%d]\n", mother->all_in_life ? 1 : 0);
 	getmaxyx(stdscr, mother->ss.y, mother->ss.x);
+	ft_get_gmode(mother->ss.y, mother->ss.x);
 	ft_get_name(INIT);
 	ft_handle_wand_location(NULL, INIT, mother->ss);
-	mother->win = newwin(mother->ss.y, mother->ss.x, 0, 0);
-	wbkgd(mother->win, COLOR_PAIR(1));
-	wrefresh(mother->win);
+	mother->win = ft_create_mother_window(mother->ss.y, mother->ss.x);
 	while (++count < ft_handle_define(GET_INFOS, NBPHILO, 0))
 		ft_create_wand(&philo_heart, mother->ss);
 	while (--count >= 0)
@@ -355,13 +379,15 @@ void	ft_init_and_begin_game(void)
 		pthread_detach(thread);
 	}
 	count = 0;
-	while (count < ft_handle_define(GET_INFOS, NBPHILO, 0))
-	{
-		if (philo_heart->type == WAND && !((t_wand*)philo_heart->data)->locate->init)
-			count += ft_print_wand(philo_heart, mother, true);
-		philo_heart = (philo_heart)->next;
-	}
-	ft_print_game_var(mother, true);
+	if (g_gmode == ALL_WINDOWS)
+		while (count < ft_handle_define(GET_INFOS, NBPHILO, 0))
+		{
+			if (philo_heart->type == WAND && !((t_wand*)philo_heart->data)->locate->init)
+				count += ft_print_wand(philo_heart, mother, true);
+			philo_heart = (philo_heart)->next;
+		}
+	//while (mother);
+	ft_print_game_var(&mother, true);
 	ft_main_loop(&mother);
 }
 
@@ -378,57 +404,113 @@ void		ft_actualize_game(t_philo_mother **mother)
 
 	state_game = false;
 	pthread_mutex_lock(&g_gmutex);
-	heart = (*mother)->heart;
-	delwin((*mother)->win_game_var);
-	for (int i = 0, j = ft_handle_define(GET_INFOS, NBPHILO, 0) * 2; i < j;i++)
+	sleep(1);
+	ft_dprintf(2, "ACTUALIZE: MUTEX_BLOCK\n");
+	if (g_gmode == ALL_WINDOWS)
 	{
-		if (heart->type == PHILO)
-		{
-			delwin(((t_philo*)heart->data)->capsule);
-		}
-		else
-		{
-			delwin(((t_wand*)heart->data)->capsule);
-		}
-		heart = heart->next;
-	}
-	if ((*mother)->state_game)
+		heart = (*mother)->heart;
+	sleep(1);
+	ft_dprintf(2, "ACTUALIZE: AVANT TEST WINGAAMEVAR\n");
+	if ((*mother)->win_game_var)
 	{
-		delwin((*mother)->state_game);
-		state_game = true;
+	sleep(1);
+	ft_dprintf(2, "ACTUALIZE: AVANT DELWIN(WINGAAMEVAE)\n");
+		delwin((*mother)->win_game_var);
+		sleep(1);
+		ft_dprintf(2, "ACTUALIZE: APRES DELWIN(WINGAAMEVAE)\n");
+		(*mother)->win_game_var = NULL;
+		sleep(1);
+		ft_dprintf(2, "ACTUALIZE: WINGAMEVAR = NULL\n");
 	}
-	free((*mother)->win);
-	touchwin(stdscr);
-	refresh();
+	sleep(1);
+	ft_dprintf(2, "ACTUALIZE: APRES TEST WINGAAMEVAR\n");
+		for (int i = 0, j = ft_handle_define(GET_INFOS, NBPHILO, 0) * 2; i < j;i++)
+		{
+			if ((*mother)->heart->type == PHILO)
+			{
+				delwin(((t_philo*)(*mother)->heart->data)->capsule);
+				((t_philo*)(*mother)->heart->data)->capsule = NULL;
+			}
+			else
+			{
+				delwin(((t_wand*)(*mother)->heart->data)->capsule);
+				((t_wand*)(*mother)->heart->data)->capsule = NULL;
+			}
+			(*mother)->heart = (*mother)->heart->next;
+		}
+	//while (mother){};
+	sleep(1);
+	ft_dprintf(2, "ACTUALIZE: DELWIN(PHILOS/WANDS)\n");
+		if ((*mother)->state_game)
+		{
+			delwin((*mother)->state_game);
+			(*mother)->state_game = NULL;
+			state_game = true;
+		}
+	sleep(1);
+	ft_dprintf(2, "ACTUALIZE: DELWIN(STATE_GAME)\n");
+		free((*mother)->win);
+		(*mother)->win = NULL;
+	sleep(1);
+	ft_dprintf(2, "ACTUALIZE: DELWIN(WIN)\n");
+	//:refresh();
+	//x_max:82, y_max:40
+	}
 	endwin();
+	sleep(1);
+	ft_dprintf(2, "ACTUALIZE: ENDWIN\n");
 	ft_init_curses();
+	sleep(1);
+	ft_dprintf(2, "ACTUALIZE: INIT_CURSES\n");
 	getmaxyx(stdscr, (*mother)->ss.y, (*mother)->ss.x);
-	(*mother)->win = newwin((*mother)->ss.y, (*mother)->ss.x, 0, 0);
-	ft_handle_wand_location(NULL, INIT, (*mother)->ss);
-	for (int i = 0, j = ft_handle_define(GET_INFOS, NBPHILO, 0) * 2; i < j;i++)
+	if ((*mother)->ss.y >= 40 && (*mother)->ss.x >= 82)
 	{
-		if (heart->type == WAND)
-			ft_handle_wand_location(&((t_wand*)heart->data)->locate, GET_INFOS, (*mother)->ss);
-		else
-			((t_philo*)heart->data)->locate = ft_get_philo_locate(((t_wand*)heart->prev->data)->locate->number, (*mother)->ss.x, (*mother)->ss.y);
-		heart = heart->next;
+		//sleep(2);
+		g_gmode = ALL_WINDOWS;
+		(*mother)->win = newwin((*mother)->ss.y, (*mother)->ss.x, 0, 0);
+	sleep(1);
+	ft_dprintf(2, "ACTUALIZE: NEW_WIN(WIN)\n");
+		ft_handle_wand_location(NULL, INIT, (*mother)->ss);
+	sleep(1);
+	ft_dprintf(2, "ACTUALIZE: INIT_WAND_LOCATION\n");
+		heart = (*mother)->heart->type == PHILO ? (*mother)->heart->next : (*mother)->heart;
+		for (int i = 0, j = ft_handle_define(GET_INFOS, NBPHILO, 0) * 2; i < j;i++)
+		{
+			if (heart->type == WAND)
+				ft_handle_wand_location(&((t_wand*)heart->data)->locate, GET_INFOS, (*mother)->ss);
+			else
+				((t_philo*)heart->data)->locate = ft_get_philo_locate(((t_wand*)heart->prev->data)->locate->number, (*mother)->ss.x, (*mother)->ss.y);
+			heart = heart->next;
+		}
+	sleep(1);
+	ft_dprintf(2, "ACTUALIZE: GET_LOCATION(PHILOS/WANDS)\n");
+		wbkgd((*mother)->win, COLOR_PAIR(1));
+	sleep(1);
+	ft_dprintf(2, "ACTUALIZE: WBKGD(WIN)\n");
+		for (int i = 0, j = ft_handle_define(GET_INFOS, NBPHILO, 0) * 2; i < j;i++)
+		{
+		//	sleep(1);
+			if (heart->type == PHILO)
+				((t_philo*)heart->data)->capsule = ft_create_philo_window(heart->data, mother, false);
+			else if (heart->type == WAND)
+				ft_print_wand(heart, *mother, false);
+			heart = heart->next;
+		}
+	sleep(1);
+	ft_dprintf(2, "ACTUALIZE: PRINT_WINDOWS(PHILOS/WANDS)\n");
+		ft_print_game_var(mother, false);
+	sleep(1);
+	ft_dprintf(2, "ACTUALIZE: PRINT_GAME_VAR\n");
+		if (state_game)
+			;//TROUVER UNE SOLUTION (stocker ca dans la struct)
+		//wrefresh((*mother)->win);
 	}
-	//sleep(1);
-	wbkgd((*mother)->win, COLOR_PAIR(1));
-	for (int i = 0, j = ft_handle_define(GET_INFOS, NBPHILO, 0) * 2; i < j;i++)
+	else
 	{
-	//	sleep(1);
-		if (heart->type == PHILO)
-			((t_philo*)heart->data)->capsule = ft_create_philo_window(heart->data, mother, false);
-		else if (heart->type == WAND)
-			ft_print_wand(heart, *mother, false);
-		heart = heart->next;
+		g_gmode = NOTHING_WINDOW;
+		bkgd(COLOR_PAIR(2));
+		refresh();
 	}
-	ft_print_game_var(*mother, false);
-	if (state_game)
-		;//TROUVER UNE SOLUTION (stocker ca dans la struct)
-	wrefresh((*mother)->win);
-	ft_print_game_var(*mother, false);
 	pthread_mutex_unlock(&g_gmutex);
 }
 
@@ -441,9 +523,7 @@ void		ft_resize(int sig)// /!\ N'a pas sa place dans le menu vu que c est global
 	mother_addr = ft_handle_mother_addr(NULL, GET_INFOS);
 	if (mother_addr)
 	{
-		ft_dprintf(2, "000MOTHER_ADDR: [%p], HEART_ADDR: [%p]\n", mother_addr,&(*(t_philo_mother**)mother_addr)->heart );
 		ft_actualize_game((t_philo_mother**)mother_addr);
-		ft_dprintf(2, "1111MOTHER_ADDR: [%p], HEART_ADDR: [%p]\n", mother_addr,&(*(t_philo_mother**)mother_addr)->heart );
 		ft_dprintf(2, "GAME: RESIZE_addr:[%p]\n", mother_addr);
 	}
 	else if (ft_handle_main_menu(GET_INFOS, 0, true, NULL))

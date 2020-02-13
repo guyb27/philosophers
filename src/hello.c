@@ -3,7 +3,11 @@
 void ft_init_curses(void)
 {
 	initscr();
+	sleep(1);
+	ft_dprintf(2, "INITSCR\n");
 	start_color();
+	sleep(1);
+	ft_dprintf(2, "INITSCR\n");
 	init_pair(1,COLOR_WHITE,COLOR_BLUE);
 	init_pair(2,COLOR_WHITE,COLOR_RED);
 	init_pair(3,COLOR_RED,COLOR_WHITE);
@@ -13,46 +17,69 @@ void ft_init_curses(void)
 	init_pair(7,COLOR_BLACK,COLOR_GREEN);
 	init_pair(8,COLOR_BLACK,COLOR_RED);
 	init_pair(9, COLOR_CYAN,COLOR_MAGENTA);
+	sleep(1);
+	ft_dprintf(2, "IINIT_PAIR\n");
 	curs_set(0);
+	sleep(1);
+	ft_dprintf(2, "CURS_SET\n");
 	noecho();
+	sleep(1);
+	ft_dprintf(2, "NO_ECHO\n");
 	nodelay(stdscr, true);
+	sleep(1);
+	ft_dprintf(2, "NODELAY\n");
 	keypad(stdscr,FALSE);
+	sleep(1);
+	ft_dprintf(2, "KEYPAD\n");
 	bkgd(COLOR_PAIR(1));
+	sleep(1);
+	ft_dprintf(2, "BKGD\n");
 	refresh();
+	sleep(1);
+	ft_dprintf(2, "REFRESH\n");
 }
 
 void		ft_actualize(WINDOW *capsule, char *data, int x, int y)
 {
-	wmove(capsule, x, y);
-	wclrtoeol(capsule);
-	wprintw(capsule, data);
-	wrefresh(capsule);
+	if (g_gmode == ALL_WINDOWS)
+	{
+		wmove(capsule, x, y);
+		wclrtoeol(capsule);
+		wprintw(capsule, data);
+		wrefresh(capsule);
+	}
 }
 
 WINDOW	*ft_create_philo_window(t_philo *philo, t_philo_mother **mother, bool mutex_lock)//PAS BESOIN DE DOUBLE ETOILE POUR MOTHER
 {
 	WINDOW *capsule;
 
-	if (mutex_lock)
-		pthread_mutex_lock(&g_gmutex);
-	philo->locate->init = true;
-	capsule = subwin((*mother)->win, 4, 20, philo->locate->x_capsule, philo->locate->y_capsule);
-	wbkgd(capsule, COLOR_PAIR(3));
-	wmove(capsule, 0, 0);
-	wprintw(capsule, "NAME: ");
-	wprintw(capsule, philo->name);
-	wmove(capsule, 1, 0);
-	wprintw(capsule, "LIFE POINTS: ");
-	wprintw(capsule, "%d", philo->life);
-	wmove(capsule, 2, 0);
-	wprintw(capsule, "STATE: ");
-	wprintw(capsule, philo->state == TO_REST ? "SE REPOSE" : philo->state == TO_EAT ? "MANGE" : philo->state == TO_THINK ? "PENSE" : "UNKNOW");
-	wmove(capsule, 3, 0);
-	wprintw(capsule, "TIME: ");
-	wprintw(capsule, "%d", philo->time);
-	wrefresh(capsule);
-	if (mutex_lock)
-		pthread_mutex_unlock(&g_gmutex);
+	capsule = NULL;
+
+	ft_dprintf(2, "G_GMODE:[%d]", g_gmode);
+	if (g_gmode == ALL_WINDOWS)
+	{
+		if (mutex_lock)
+			pthread_mutex_lock(&g_gmutex);
+		philo->locate->init = true;
+		capsule = subwin((*mother)->win, 4, 20, philo->locate->x_capsule, philo->locate->y_capsule);
+		wbkgd(capsule, COLOR_PAIR(3));
+		wmove(capsule, 0, 0);
+		wprintw(capsule, "NAME: ");
+		wprintw(capsule, philo->name);
+		wmove(capsule, 1, 0);
+		wprintw(capsule, "LIFE POINTS: ");
+		wprintw(capsule, "%d", philo->life);
+		wmove(capsule, 2, 0);
+		wprintw(capsule, "STATE: ");
+		wprintw(capsule, philo->state == TO_REST ? "SE REPOSE" : philo->state == TO_EAT ? "MANGE" : philo->state == TO_THINK ? "PENSE" : "UNKNOW");
+		wmove(capsule, 3, 0);
+		wprintw(capsule, "TIME: ");
+		wprintw(capsule, "%d", philo->time);
+		wrefresh(capsule);
+		if (mutex_lock)
+			pthread_mutex_unlock(&g_gmutex);
+	}
 	return (capsule);
 }
 
@@ -116,8 +143,9 @@ size_t	ft_think_begin_actualize(t_philo_heart **philo, int wand, t_philo_mother 
 			ft_actualize_wand((t_philo_heart**)&(*philo)->next, THINK_LEFT);
 		pthread_mutex_unlock(&((t_wand*)(*philo)->next->data)->mutex);
 	}
-	ft_actualize(((t_philo*)(*philo)->data)->capsule, "REFLECHIS", X_STATE, Y_STATE);
 	ft_sprintf(&str, "%zi", ft_handle_define(GET_INFOS, THINK, 0));
+	//pthread_mutex_lock(&g_gmutex);//Je ne sais plus pk mais quand je met ca ca deconne
+	ft_actualize(((t_philo*)(*philo)->data)->capsule, "REFLECHIS", X_STATE, Y_STATE);
 	ft_actualize(((t_philo*)(*philo)->data)->capsule, str, X_TIME, Y_TIME);
 	pthread_mutex_unlock(&g_gmutex);
 	ft_strdel(&str);

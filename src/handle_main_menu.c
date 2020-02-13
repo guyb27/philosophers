@@ -9,7 +9,6 @@ void		ft_init_main_menu(bool lock_mutex, int data1, t_main_menu **menu)
 	*menu = ft_memalloc(sizeof(t_main_menu));
 	(*menu)->y_pos = data1;
 	getmaxyx(stdscr, (*menu)->ss.y, (*menu)->ss.x);
-	ft_dprintf(2, "Y: [%d], X: [%d]\n", (*menu)->ss.y, (*menu)->ss.x);
 	if ((*menu)->ss.y > 10 && (*menu)->ss.x > 20)
 	{
 		g_gmode = ALL_WINDOWS;
@@ -47,8 +46,8 @@ void			ft_actualize_screen(bool lock_mutex, int actual_ypos)
 	ft_handle_main_menu(DEL, 0, false, NULL);
 	endwin();
 	ft_init_curses();
-	keypad(stdscr,true);
 	ft_handle_main_menu(INIT, tmp, false, NULL);
+	keypad(stdscr,true);
 	if (lock_mutex)
 		pthread_mutex_unlock(&g_gmutex);
 }

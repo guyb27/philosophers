@@ -115,30 +115,33 @@ void	ft_end_game(char *str, t_philo_mother *mother)
 		endwin();
 }
 
-void	ft_print_game_var(t_philo_mother *mother, bool mutex_lock)
+void	ft_print_game_var(t_philo_mother **mother, bool mutex_lock)
 {
-	if (mutex_lock)
+	if (mutex_lock && g_gmode == ALL_WINDOWS)
 		pthread_mutex_lock(&g_gmutex);
-	ft_dprintf(2, "FT_PRINT_VAR_GAME, X:[%d], Y:[%d]\n", mother->ss.x, mother->ss.y);
-	mother->win_game_var = subwin(mother->win, 5, 25, 1, mother->ss.x - 26);
-	wbkgd(mother->win_game_var, COLOR_PAIR(2));
-	wmove(mother->win_game_var, 0, 0);
-	wprintw(mother->win_game_var, "MAX_LIFE: %d",
+	ft_dprintf(2, "FT_PRINT_VAR_GAME, X:[%d], Y:[%d]\n", (*mother)->ss.x, (*mother)->ss.y);
+	if (g_gmode == ALL_WINDOWS || !mutex_lock)
+	{
+		(*mother)->win_game_var = subwin((*mother)->win, 5, 25, 1, (*mother)->ss.x - 26);
+		wbkgd((*mother)->win_game_var, COLOR_PAIR(2));
+		wmove((*mother)->win_game_var, 0, 0);
+		wprintw((*mother)->win_game_var, "MAX_LIFE: %d",
 										ft_handle_define(GET_INFOS, LIFE, 0));
-	wmove(mother->win_game_var, 1, 0);
-	wprintw(mother->win_game_var, "EAT_TIME: %d",
+		wmove((*mother)->win_game_var, 1, 0);
+		wprintw((*mother)->win_game_var, "EAT_TIME: %d",
 										ft_handle_define(GET_INFOS, EAT, 0));
-	wmove(mother->win_game_var, 2, 0);
-	wprintw(mother->win_game_var, "REST_TIME: %d",
+		wmove((*mother)->win_game_var, 2, 0);
+		wprintw((*mother)->win_game_var, "REST_TIME: %d",
 										ft_handle_define(GET_INFOS, REST, 0));
-	wmove(mother->win_game_var, 3, 0);
-	wprintw(mother->win_game_var, "THINK_TIME: %d",
+		wmove((*mother)->win_game_var, 3, 0);
+		wprintw((*mother)->win_game_var, "THINK_TIME: %d",
 										ft_handle_define(GET_INFOS, THINK, 0));
-	wmove(mother->win_game_var, 4, 0);
-	wprintw(mother->win_game_var, "TIME LEFT: %d",
+		wmove((*mother)->win_game_var, 4, 0);
+		wprintw((*mother)->win_game_var, "TIME LEFT: %d",
 										ft_handle_define(GET_INFOS, TIME, 0));
-	wrefresh(mother->win_game_var);
-	if (mutex_lock)
+		wrefresh((*mother)->win_game_var);
+	}
+	if (mutex_lock && g_gmode == ALL_WINDOWS)
 		pthread_mutex_unlock(&g_gmutex);
 }
 
@@ -163,6 +166,6 @@ void	ft_main_loop(t_philo_mother **mother)
 		pthread_mutex_unlock(&g_gmutex);
 		ft_strdel(&str);
 	}
-	ft_end_game((*mother)->all_in_life ? "Now, it is time... To DAAAAAAAANCE ! ! !" :
-			"A philosopher is dead !!!", *mother);
+	ft_end_game((*mother)->all_in_life ? "Now, it is time... To DAAAAAAAANCE ! ! !"
+										: "A philosopher is dead !!!", *mother);
 }

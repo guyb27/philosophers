@@ -72,9 +72,13 @@ void	ft_menu(void)
 	{
 		key = getch();
 		if (key == KEY_DOWN || key == KEY_UP)
+		{
+			ft_dprintf(2, "1\n");
 			ft_handle_main_menu(Y_ACTUALIZE, key, true, &selected);
+		}
 		else if ((key == ENTER || key == KEY_RIGHT) && selected + 1 >= 7)
 		{
+			ft_dprintf(2, "2\n");
 			ft_handle_main_menu(DEL, 0, true, NULL);
 			if (selected + 1 == 7)
 				break ;
@@ -83,6 +87,14 @@ void	ft_menu(void)
 		}
 		else if ((key == KEY_RIGHT || key == KEY_LEFT) && !(selected + 1 >= 7))
 			//PRENDRE AU CAS PAR CAS ET SE REFERER A LA FONCTION ft_get_err_define_size();
+		{
+			ft_dprintf(2, "3\n");
 			ft_horizontal_keys(key, selected);
+		}
+		else if (key == 410)
+		{
+			ft_handle_main_menu(ACTUALIZE_SCREEN, 0, true, NULL);
+			ft_dprintf(2, "4:[%d]\n", key);
+		}
 	}
 }
