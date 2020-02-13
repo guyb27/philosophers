@@ -69,8 +69,9 @@ size_t	ft_eat_begin_actualize(t_philo_heart **philo, t_philo_mother **mother)
 	char	*str;
 	size_t	now_time;
 
-	(void)mother;//A DEL
-	str = NULL;
+	str = (*mother)->result;
+	ft_sprintf(&(*mother)->result, "%s%s mange\n", str, ((t_philo*)(*philo)->data)->name);
+	//ft_strdel(&str);
 	ft_sprintf(&str, "%zi", ft_handle_define(GET_INFOS, EAT, 0));
 	((t_philo*)(*philo)->data)->state = TO_EAT;
 	pthread_mutex_lock(&g_gmutex);
@@ -108,8 +109,9 @@ size_t	ft_think_begin_actualize(t_philo_heart **philo, int wand, t_philo_mother 
 {
 	char	*str;
 
-	str = NULL;
-	(void)mother;//A DEL
+	str = (*mother)->result;
+	ft_sprintf(&(*mother)->result, "%s%s pense\n", str, ((t_philo*)(*philo)->data)->name);
+	//ft_strdel(&str);
 	if (wand == LEFT)
 	{
 	pthread_mutex_lock(&g_gmutex);
@@ -163,8 +165,9 @@ size_t	ft_rest_begin_actualize(t_philo_heart **philo, t_philo_mother **mother)
 {
 	char	*str;
 
-	(void)mother;//A DELE
-	str = NULL;
+	str = (*mother)->result;
+	ft_sprintf(&(*mother)->result, "%s%s se repose\n", str, ((t_philo*)(*philo)->data)->name);
+	//ft_strdel(&str);
 	((t_philo*)(*philo)->data)->state = TO_REST;
 	ft_sprintf(&str, "%d", ft_handle_define(GET_INFOS, REST, 0));
 	pthread_mutex_lock(&g_gmutex);

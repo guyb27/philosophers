@@ -30,6 +30,7 @@
 #define Y_TIMEOUT 11
 
 #define SEC 1000000
+# define RESULT "philo_game"
 
 #define ENTER 10
 #define ESCAPE 27
@@ -155,8 +156,8 @@ typedef struct				s_philo_mother
 	WINDOW			*win;
 	WINDOW			*win_game_var;
 	WINDOW			*state_game;
-//	pthread_mutex_t mutex;
 	t_screen_size	ss;
+	char			*result;
 	bool all_in_life;
 }							t_philo_mother;
 

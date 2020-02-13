@@ -51,7 +51,7 @@ int		ft_end_menu(int x, int y, int color)
 
 	key = 0;
 	ft_creat_menu(&menu, x, y, color);
-	while (1)
+	while (g_gmode)
 	{
 		key = getch();
 		if (key == ENTER || key == ESCAPE)
@@ -82,24 +82,30 @@ void	ft_end_game(char *str, t_philo_mother *mother)
 	mother->all_in_life = false;
 	usleep(SEC);
 	pthread_mutex_lock(&g_gmutex);
-	mother->state_game = subwin(mother->win, 1, mother->ss.x, mother->ss.y - 1, 0);
-	wbkgd(mother->state_game, COLOR_PAIR(all_in_life ? 6 : 5));
-	wmove(mother->state_game, 0, (mother->ss.x / 2) - (ft_strlen(str) / 2));
-	wprintw(mother->state_game, str);
-	wrefresh(mother->state_game);
-	pthread_mutex_unlock(&g_gmutex);
-	keypad(stdscr, TRUE);
-	while (getch() != -1);
-	key = 0;
-	while (1)
+	ft_sprintf(&mother->result, "%s%s%s%s\n", mother->result, all_in_life ?
+	GREEN : RED, str, STOP);
+	if (g_gmode)
 	{
-		key = getch();
-		if (key == ENTER || key == SPACE)
-			break ;
-		else if (key == ESCAPE)
-			if ((ret = ft_end_menu(mother->ss.x, mother->ss.y, all_in_life ? 7 : 8)) > 0)
+		mother->state_game = subwin(mother->win, 1, mother->ss.x, mother->ss.y - 1, 0);
+		wbkgd(mother->state_game, COLOR_PAIR(all_in_life ? 6 : 5));
+		wmove(mother->state_game, 0, (mother->ss.x / 2) - (ft_strlen(str) / 2));
+		wprintw(mother->state_game, str);
+		wrefresh(mother->state_game);
+		pthread_mutex_unlock(&g_gmutex);
+		keypad(stdscr, TRUE);
+		while (getch() != -1);
+		key = 0;
+		while (g_gmode)
+		{
+			key = getch();
+			if (key == ENTER || key == SPACE)
 				break ;
+			else if (key == ESCAPE)
+				if ((ret = ft_end_menu(mother->ss.x, mother->ss.y, all_in_life ? 7 : 8)) > 0)
+					break ;
+		}
 	}
+	ft_fprintf(RESULT, "%s", mother->result);
 	keypad(stdscr, FALSE);
 	ft_free_philo_mother(mother);
 	pthread_mutex_lock(&g_gmutex);
@@ -117,6 +123,23 @@ void	ft_end_game(char *str, t_philo_mother *mother)
 
 void	ft_print_game_var(t_philo_mother **mother, bool mutex_lock)
 {
+	char		*tmp;
+
+	tmp = (*mother)->result;
+		ft_sprintf(&(*mother)->result, "%s%s%d\n%s%d\n%s%d\n%s%d\n%s%d\n\n",
+		tmp,
+		"MAX_LIFE: ",
+		ft_handle_define(GET_INFOS, LIFE, 0),
+		"EAT_TIME: ",
+		ft_handle_define(GET_INFOS, EAT, 0),
+		"REST_TIME: ",
+		ft_handle_define(GET_INFOS, REST, 0),
+		"THINK_TIME: ",
+		ft_handle_define(GET_INFOS, THINK, 0),
+		"TIME_LEFT: ",
+		ft_handle_define(GET_INFOS, TIME, 0)
+		);
+//	free(tmp);
 	if (mutex_lock && g_gmode == ALL_WINDOWS)
 		pthread_mutex_lock(&g_gmutex);
 	if (g_gmode == ALL_WINDOWS || !mutex_lock)
@@ -165,6 +188,7 @@ void	ft_main_loop(t_philo_mother **mother)
 		pthread_mutex_unlock(&g_gmutex);
 		ft_strdel(&str);
 	}
-	ft_end_game((*mother)->all_in_life ? "Now, it is time... To DAAAAAAAANCE ! ! !"
+	ft_end_game((*mother)->all_in_life ?
+									"Now, it is time... To DAAAAAAAANCE ! ! !"
 										: "A philosopher is dead !!!", *mother);
 }
