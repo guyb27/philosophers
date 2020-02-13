@@ -122,7 +122,6 @@ void	ft_print_game_var(t_philo_mother **mother, bool mutex_lock)
 	if (g_gmode == ALL_WINDOWS || !mutex_lock)
 	{
 		(*mother)->win_game_var = subwin((*mother)->win, 5, 25, 1, (*mother)->ss.x - 26);
-	ft_dprintf(2, "FT_PRINT_VAR_GAME, X:[%d], Y:[%d], ADDR:[%p]\n", (*mother)->ss.x, (*mother)->ss.y, &(*mother)->win_game_var);
 		wbkgd((*mother)->win_game_var, COLOR_PAIR(2));
 		wmove((*mother)->win_game_var, 0, 0);
 		wprintw((*mother)->win_game_var, "MAX_LIFE: %d",

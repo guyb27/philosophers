@@ -359,7 +359,6 @@ void	ft_init_and_begin_game(void)
 	mother = ft_memalloc(sizeof(t_philo_mother));
 	ft_handle_mother_addr(&mother, INIT);
 	mother->all_in_life = ft_handle_define(GET_INFOS, LIFE, 0) > 0 ? true : false;
-	ft_dprintf(2, "LIFE: [%d]\n", mother->all_in_life ? 1 : 0);
 	getmaxyx(stdscr, mother->ss.y, mother->ss.x);
 	ft_get_gmode(mother->ss.y, mother->ss.x);
 	ft_get_name(INIT);

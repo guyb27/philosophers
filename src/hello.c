@@ -38,48 +38,29 @@ WINDOW	*ft_create_philo_window(t_philo *philo, t_philo_mother **mother, bool mut
 
 	capsule = NULL;
 
-	ft_dprintf(2, "CREATE PHILO_WINDOWG_GMODE:[%d]\n", g_gmode);
 	if (g_gmode == ALL_WINDOWS)
 	{
 		if (mutex_lock)
 			pthread_mutex_lock(&g_gmutex);
-	ft_dprintf(2, "LOCK\n", g_gmode);
 		philo->locate->init = true;
-	ft_dprintf(2, "INIT\n", g_gmode);
 		capsule = subwin((*mother)->win, 4, 20, philo->locate->x_capsule, philo->locate->y_capsule);
-	ft_dprintf(2, "SUBWIN\n", g_gmode);
 		wbkgd(capsule, COLOR_PAIR(3));
-	ft_dprintf(2, "CAPSULE COLOR_PAIR 3\n", g_gmode);
 		wmove(capsule, 0, 0);
-	ft_dprintf(2, "WMOVE\n", g_gmode);
 		wprintw(capsule, "NAME: ");
-	ft_dprintf(2, "0\n", g_gmode);
 		wprintw(capsule, philo->name);
-	ft_dprintf(2, "1\n", g_gmode);
 		wmove(capsule, 1, 0);
-	ft_dprintf(2, "2\n", g_gmode);
 		wprintw(capsule, "LIFE POINTS: ");
-	ft_dprintf(2, "3\n", g_gmode);
 		wprintw(capsule, "%d", philo->life);
-	ft_dprintf(2, "4\n", g_gmode);
 		wmove(capsule, 2, 0);
-	ft_dprintf(2, "5\n", g_gmode);
 		wprintw(capsule, "STATE: ");
-	ft_dprintf(2, "6\n", g_gmode);
 		wprintw(capsule, philo->state == TO_REST ? "SE REPOSE" : philo->state == TO_EAT ? "MANGE" : philo->state == TO_THINK ? "PENSE" : "UNKNOW");
-	ft_dprintf(2, "7\n", g_gmode);
 		wmove(capsule, 3, 0);
-	ft_dprintf(2, "8\n", g_gmode);
 		wprintw(capsule, "TIME: ");
-	ft_dprintf(2, "9\n", g_gmode);
 		wprintw(capsule, "%d", philo->time);
-	ft_dprintf(2, "10\n", g_gmode);
 		wrefresh(capsule);
-	ft_dprintf(2, "11\n", g_gmode);
 		if (mutex_lock)
 			pthread_mutex_unlock(&g_gmutex);
 	}
-	ft_dprintf(2, "END FIN CREATE_PHILO_WINDOW\n", g_gmode);
 	return (capsule);
 }
 
