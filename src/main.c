@@ -281,7 +281,7 @@ void	ft_create_philo(t_philo_heart **philo_heart, t_screen_size ss)
 		if ((*philo_heart)->type == WAND &&
 				(*philo_heart)->prev->type == WAND)
 		{
-			if (g_gmode)
+			if (g_gmode == ALL_WINDOWS)
 				((t_philo*)new_philo_heart->data)->locate = ft_get_philo_locate(((t_wand*)(*philo_heart)->prev->data)->locate->number, ss.x, ss.y);
 			else
 				((t_philo*)new_philo_heart->data)->locate = NULL;

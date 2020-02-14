@@ -51,7 +51,7 @@ int		ft_end_menu(int x, int y, int color)
 
 	key = 0;
 	ft_creat_menu(&menu, x, y, color);
-	while (g_gmode)
+	while (g_gmode == ALL_WINDOWS)
 	{
 		key = getch();
 		if (key == ENTER || key == ESCAPE)
@@ -84,7 +84,7 @@ void	ft_end_game(char *str, t_philo_mother *mother)
 	pthread_mutex_lock(&g_gmutex);
 	ft_sprintf(&mother->result, "%s%s%s%s\n", mother->result, all_in_life ?
 	GREEN : RED, str, STOP);
-	if (g_gmode)
+	if (g_gmode == ALL_WINDOWS)
 	{
 		mother->state_game = subwin(mother->win, 1, mother->ss.x, mother->ss.y - 1, 0);
 		wbkgd(mother->state_game, COLOR_PAIR(all_in_life ? 6 : 5));
@@ -95,7 +95,7 @@ void	ft_end_game(char *str, t_philo_mother *mother)
 		keypad(stdscr, TRUE);
 		while (getch() != -1);
 		key = 0;
-		while (g_gmode)
+		while (g_gmode == ALL_WINDOWS)
 		{
 			key = getch();
 			if (key == ENTER || key == SPACE)
@@ -105,7 +105,7 @@ void	ft_end_game(char *str, t_philo_mother *mother)
 					break ;
 		}
 	}
-	ft_fprintf(RESULT, "%s", mother->result);
+	ft_fprintf(RESULT, "%s\n", mother->result);
 	keypad(stdscr, FALSE);
 	ft_free_philo_mother(mother);
 	pthread_mutex_lock(&g_gmutex);
