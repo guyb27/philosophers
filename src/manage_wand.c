@@ -46,7 +46,8 @@ void		ft_actualize_wand(t_philo_heart **heart, e_wand_state new_state)
 	t_wand	*wand;
 	int		y;
 
-	if ((*heart)->type == WAND && (*heart)->prev->type == PHILO && (*heart)->prev->type == PHILO)
+	if ((*heart)->type == WAND && (*heart)->prev->type == PHILO &&
+												(*heart)->prev->type == PHILO)
 	{
 		wand = ((t_wand*)(*heart)->data);
 		if (g_gmode == ALL_WINDOWS && wand->locate->init)
@@ -64,13 +65,13 @@ void		ft_actualize_wand(t_philo_heart **heart, e_wand_state new_state)
 			if (wand->wand_state == THINK_LEFT || wand->wand_state == EAT_LEFT)
 				y = wand->locate->y_before;
 			else
-				y = wand->wand_state == FREE ? wand->locate->y_mid : wand->locate->y_after;
+				y = wand->wand_state == FREE ? wand->locate->y_mid :
+														wand->locate->y_after;
 			wmove(wand->capsule, 0, y);
 			wprintw(wand->capsule, "|");
 			wrefresh(wand->capsule);
 		}
 		else
-			//CLI
 			wand->wand_state = new_state;
 	}
 }

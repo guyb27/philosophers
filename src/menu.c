@@ -62,7 +62,6 @@ void	ft_menu(void)
 	int key;
 	int selected;
 
-	key = 0;
 	selected = 0;
 	ft_handle_main_menu(INIT, 1, true, NULL);
 	keypad(stdscr, TRUE);

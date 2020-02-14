@@ -1,21 +1,15 @@
 Debut de la partie
-MAX_LIFE: 3
+MAX_LIFE: 12
 EAT_TIME: 2
 REST_TIME: 2
 THINK_TIME: 2
-TIME_LEFT: 50
+TIME_LEFT: 2
 
 Platon mange
 Aristote pense
-Heraclite mange
-Epictete pense
 Marc-Aurele mange
 Seneque pense
+Heraclite pense
+Epictete pense
 Socrate pense
-Seneque est mort
-Epictete est mort
-Aristote est mort
-Socrate est mort
-[0;31mA philosopher is dead !!![0;m
-
-FINI
+[0;32mNow, it is time... To DAAAAAAAANCE ! ! ![0;m

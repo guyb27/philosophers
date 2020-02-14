@@ -1,0 +1,45 @@
+#include "../include/hello.h"
+
+static void	ft_close_window(t_philo_heart *philo)
+{
+	if (philo->type == PHILO)
+	{
+		delwin(((t_philo*)philo->data)->capsule);
+		free(((t_philo*)philo->data)->locate);
+		free(((t_philo*)philo->data)->name);
+		free((t_philo*)philo->data);
+	}
+	else
+	{
+		delwin(((t_wand*)philo->data)->capsule);
+		free(((t_wand*)philo->data)->locate);
+		free((t_wand*)philo->data);
+	}
+}
+
+static void	ft_free_philo_heart(t_philo_heart *philo)
+{
+	int		i;
+	t_philo_heart	*tmp;
+
+	i = -1;
+	while (++i < ft_handle_define(GET_INFOS, NBPHILO, 0) * 2)
+	{
+		tmp = philo;
+		ft_close_window(philo);
+		philo = philo->next;
+		free(tmp);
+	}
+}
+
+void	ft_free_philo_mother(t_philo_mother *mother)
+{
+	ft_free_philo_heart(mother->heart);
+	free(mother->result);
+	delwin(mother->win_game_var);
+	delwin(mother->state_game);
+	delwin(mother->win);
+	touchwin(stdscr);
+	free(mother);
+	refresh();
+}

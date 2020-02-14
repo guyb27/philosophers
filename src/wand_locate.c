@@ -1,6 +1,6 @@
 #include "../include/hello.h"
 
-void	ft_get_locate(t_wand_location **locate, int x, int y, int *n_time)
+static void	ft_get_locate(t_wand_location **locate, int x, int y, int *n_time)
 //FAIRE UN ALGO POUR DEFINIR LA TAILLE
 {
 	(void)y;//A VOIR

@@ -37,6 +37,15 @@ SRCS_NAME =	\
 			menu.c \
 			wand_locate.c \
 			handle_main_menu.c \
+			end_menu.c \
+			init.c \
+			free.c \
+			eat.c \
+			think.c \
+			rest.c \
+			create.c \
+			philo.c \
+			get_philo_locate.c \
 			manage_wand.c
 
 OBJS_NAME = $(SRCS_NAME:.c=.o)
