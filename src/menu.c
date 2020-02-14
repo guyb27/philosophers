@@ -38,7 +38,8 @@ void	ft_horizontal_keys(int key, int selected)
 	pthread_mutex_lock(&g_gmutex);
 	value = ft_handle_define(GET_INFOS, selected, 0);
 	WINDOW	**items = ft_handle_main_menu(GET_INFOS, 0, true, NULL)->items;
-	if (key == KEY_LEFT && value > 0)
+	if (key == KEY_LEFT && ((value > 0 && (selected == 0 || selected == 4)) ||
+	(value > 1 && (selected > 0 || selected < 4))))
 	{
 		value = ft_handle_define(ACTUALIZE, selected, value - 1);
 		wmove(items[selected + 1], 0, 0);
@@ -79,7 +80,6 @@ void	ft_menu(void)
 				exit(endwin());
 		}
 		else if ((key == KEY_RIGHT || key == KEY_LEFT) && !(selected + 1 >= 6))
-			//PRENDRE AU CAS PAR CAS ET SE REFERER A LA FONCTION ft_get_err_define_size();
 			ft_horizontal_keys(key, selected);
 		else if (key == 410)
 			ft_handle_main_menu(ACTUALIZE_SCREEN, 0, true, NULL);

@@ -29,7 +29,7 @@ INCS_PATH = ./include/
 LIB_PATH = ./libft/
 
 SRCS_NAME =	\
-			hello.c \
+			utils.c \
 			main.c \
 			ft_main_thread.c \
 			management_error.c \

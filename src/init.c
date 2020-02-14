@@ -71,7 +71,7 @@ void	ft_init_and_begin_game(void)
 	mother->all_in_life = ft_handle_define(GET_INFOS, LIFE, 0) > 0 ? true : false;
 	getmaxyx(stdscr, mother->ss.y, mother->ss.x);
 //	ft_get_gmode(mother->ss.y, mother->ss.x);
-	g_gmode = mother->ss.y >= 40 && mother->ss.x >= 82 ? ALL_WINDOWS : NOTHING;
+	g_gmode = mother->ss.y >= 30 && mother->ss.x >= 82 ? ALL_WINDOWS : NOTHING;
 	ft_get_name(INIT);
 	ft_handle_wand_location(NULL, INIT, mother->ss);
 	mother->win = ft_create_mother_window(mother->ss.y, mother->ss.x);
