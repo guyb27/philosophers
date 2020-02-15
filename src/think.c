@@ -57,7 +57,7 @@ static void	ft_think_end_actualize(t_philo_heart **philo, int wand, t_philo_moth
 	}
 }
 
-void		ft_think_mid_actualize(t_philo **data, char *str[],
+static void		ft_think_mid_actualize(t_philo **data, char *str[],
 								t_philo_heart **philo, t_philo_mother **mother)
 {
 		pthread_mutex_lock(&g_gmutex);
@@ -65,7 +65,8 @@ void		ft_think_mid_actualize(t_philo **data, char *str[],
 		ft_actualize((*data)->capsule, str[1], X_LIFE, Y_LIFE);
 		if (!(size_t)((t_philo*)(*philo)->data)->life)
 		{
-			ft_sprintf(&(*mother)->result, "%s%s est mort\n", (*mother)->result, (*data)->name);
+			ft_sprintf(&(*mother)->result, "%s%s est mort\n", (*mother)->result,
+																(*data)->name);
 			(*mother)->all_in_life = false;
 		}
 		pthread_mutex_unlock(&g_gmutex);

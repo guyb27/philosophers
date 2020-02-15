@@ -33,8 +33,8 @@ void	ft_create_philo(t_philo_heart **philo_heart, t_screen_size ss)
 		{
 			if (g_gmode == ALL_WINDOWS)
 				((t_philo*)new_philo_heart->data)->locate =
-	ft_get_philo_locate(((t_wand*)(*philo_heart)->prev->data)->locate->number,
-																	ss.x, ss.y);
+					ft_get_philo_locate(((t_wand*)(*philo_heart)->prev->data)->locate->number,
+							ss.x, ss.y);
 			else
 				((t_philo*)new_philo_heart->data)->locate = NULL;
 			new_philo_heart->next = *philo_heart;
@@ -75,15 +75,13 @@ void	ft_create_wand(t_philo_heart **philo_heart, t_screen_size ss)
 	}
 }
 
-WINDOW	*ft_create_philo_window(t_philo *philo, t_philo_mother **mother, bool mutex_lock)//PAS BESOIN DE DOUBLE ETOILE POUR MOTHER
+WINDOW	*ft_create_philo_window(t_philo *philo, t_philo_mother **mother, bool mutex_lock)
 {
 	WINDOW *capsule;
 
-	capsule = NULL;
-	if (g_gmode == ALL_WINDOWS)
+	if (!(capsule = NULL) && g_gmode == ALL_WINDOWS)
 	{
-		if (mutex_lock)
-			pthread_mutex_lock(&g_gmutex);
+		mutex_lock ? pthread_mutex_lock(&g_gmutex) : 0;
 		philo->locate->init = true;
 		capsule = subwin((*mother)->win, 4, 20, philo->locate->x_capsule, philo->locate->y_capsule);
 		wbkgd(capsule, COLOR_PAIR(3));
@@ -100,9 +98,7 @@ WINDOW	*ft_create_philo_window(t_philo *philo, t_philo_mother **mother, bool mut
 		wprintw(capsule, "TIME: ");
 		wprintw(capsule, "%d", philo->time);
 		wrefresh(capsule);
-		if (mutex_lock)
-			pthread_mutex_unlock(&g_gmutex);
+		mutex_lock ? pthread_mutex_unlock(&g_gmutex) : 0;
 	}
 	return (capsule);
 }
-
