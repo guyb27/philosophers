@@ -40,10 +40,36 @@ char	*ft_get_name(e_handle_static_function h)
 	return (str_ret);
 }
 
+static void	ft_philo_mid(t_philo_heart **philo, void *arg)
+{
+	char			*str;
+
+	while ((size_t)((t_philo*)(*philo)->data)->life &&
+										(*(t_philo_mother**)arg)->all_in_life)
+	{
+		if ((e_philo_state)((t_philo*)(*philo)->data)->state == TO_EAT)
+			ft_rest(philo, (t_philo**)&(*philo)->data, arg);
+		else if (ft_eat_or_think(philo, (t_philo**)&(*philo)->data, arg))
+		{
+			usleep(SEC);
+			((t_philo*)(*philo)->data)->life =
+										((t_philo*)(*philo)->data)->life - 1;
+			ft_sprintf(&str, "%d", ((t_philo*)(*philo)->data)->life);
+			pthread_mutex_lock(&g_gmutex);
+			ft_actualize(((t_philo*)(*philo)->data)->capsule, str,
+																X_LIFE, Y_LIFE);
+			if (((t_philo*)(*philo)->data)->life <= 0)
+			ft_sprintf(&(*(t_philo_mother**)arg)->result, "%s%s est mort\n",
+			(*(t_philo_mother**)arg)->result, ((t_philo*)(*philo)->data)->name);
+			pthread_mutex_unlock(&g_gmutex);
+			ft_strdel(&str);
+		}
+	}
+}
+
 void	*ft_philo(void *arg)
 {
 	t_philo_heart	*philo;
-	char			*str;
 
 	philo = (*(t_philo_mother**)arg)->heart;
 	pthread_mutex_lock(&g_gmutex);
@@ -56,23 +82,6 @@ void	*ft_philo(void *arg)
 	((t_philo*)(philo)->data)->life = ft_handle_define(GET_INFOS, LIFE, 0);
 	((t_philo*)philo->data)->capsule =
 								ft_create_philo_window(philo->data, arg, true);
-	while ((size_t)((t_philo*)(philo)->data)->life &&
-										(*(t_philo_mother**)arg)->all_in_life)
-	{
-		if ((e_philo_state)((t_philo*)(philo)->data)->state == TO_EAT)
-			ft_rest(&philo, (t_philo**)&philo->data, arg);
-		else if (ft_eat_or_think(&philo, (t_philo**)&(philo)->data, arg))
-		{
-			usleep(SEC);
-			((t_philo*)philo->data)->life = ((t_philo*)philo->data)->life - 1;
-			ft_sprintf(&str, "%d", ((t_philo*)philo->data)->life);
-			pthread_mutex_lock(&g_gmutex);
-			ft_actualize(((t_philo*)philo->data)->capsule, str, X_LIFE, Y_LIFE);
-			if (((t_philo*)philo->data)->life <= 0)
-			ft_sprintf(&(*(t_philo_mother**)arg)->result, "%s%s est mort\n", (*(t_philo_mother**)arg)->result, ((t_philo*)philo->data)->name);
-			pthread_mutex_unlock(&g_gmutex);
-			ft_strdel(&str);
-		}
-	}
+	ft_philo_mid(&philo, arg);
 	return (__DARWIN_NULL);
 }

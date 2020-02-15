@@ -62,10 +62,14 @@ static void	ft_init_begin_game(t_philo_mother **mother, t_philo_heart **philo_he
 {
 	pthread_t			thread;
 	int					count;
+	char				*str1;
 
 	count = -1;
 	*mother = ft_memalloc(sizeof(t_philo_mother));
-	ft_sprintf(&(*mother)->result, "Debut de la partie\n");
+	//ft_sprintf(&(*mother)->result, "The game starts\n");
+	str1 = ft_strjoin((*mother)->result, "The game starts\n");
+	free((*mother)->result);
+(*mother)->result = str1;
 	ft_handle_mother_addr(mother, INIT);
 	(*mother)->all_in_life = ft_handle_define(GET_INFOS, LIFE, 0) > 0 ?
 																true : false;

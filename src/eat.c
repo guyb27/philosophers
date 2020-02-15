@@ -3,17 +3,18 @@
 static size_t	ft_eat_begin_actualize(t_philo_heart **philo, t_philo_mother **mother)
 {
 	char	*str;
+	char	*str1;
 	size_t	now_time;
 
-	str = (*mother)->result;
-	ft_sprintf(&(*mother)->result, "%s%s mange\n", str, ((t_philo*)(*philo)->data)->name);
-	//ft_strdel(&str);
-	ft_sprintf(&str, "%zi", ft_handle_define(GET_INFOS, EAT, 0));
 	((t_philo*)(*philo)->data)->state = TO_EAT;
 	pthread_mutex_lock(&g_gmutex);
+	ft_sprintf(&str1, "%s%s is eating\n", (*mother)->result, ((t_philo*)(*philo)->data)->name);
+	free((*mother)->result);
+	(*mother)->result = str1;
 	ft_actualize_wand((t_philo_heart**)&(*philo)->prev, EAT_RIGHT);
 	ft_actualize_wand((t_philo_heart**)&(*philo)->next, EAT_LEFT);
 	ft_actualize(((t_philo*)(*philo)->data)->capsule, "MANGE", X_STATE, Y_STATE);
+	ft_sprintf(&str, "%zi", ft_handle_define(GET_INFOS, EAT, 0));
 	ft_actualize(((t_philo*)(*philo)->data)->capsule, str, X_TIME, Y_TIME);
 	pthread_mutex_unlock(&g_gmutex);
 	ft_strdel(&str);
@@ -41,6 +42,22 @@ static void	ft_eat_end_actualize(t_philo_heart **philo, t_philo_mother **mother)
 	pthread_mutex_unlock(&((t_wand*)(*philo)->next->data)->mutex);
 }
 
+static void	ft_eat_mid_actualize(t_philo **data, t_philo_heart **philo, t_philo_mother **mother, char **str)
+{
+	char	*str1;
+	pthread_mutex_lock(&g_gmutex);
+	ft_actualize((*data)->capsule, *str, X_TIME, Y_TIME);
+	if (!(size_t)((t_philo*)(*philo)->data)->life)
+	{
+		ft_sprintf(&str1, "%s%s est mort\n", (*mother)->result,
+															(*data)->name);
+		free((*mother)->result);
+(*mother)->result = str1;
+		(*mother)->all_in_life = false;
+	}
+	pthread_mutex_unlock(&g_gmutex);
+}
+
 int		ft_eat(t_philo **data, t_philo_heart **philo, t_philo_mother **mother)
 {
 	char			*str;
@@ -55,20 +72,12 @@ int		ft_eat(t_philo **data, t_philo_heart **philo, t_philo_mother **mother)
 
 	while (now_time <= begin_time + eat_t && (*mother)->all_in_life)
 	{
-		if (eat_t > 0)
-			usleep(SEC);
+		usleep(SEC);
 		time( (time_t*)&now_time );
 		ft_sprintf(&str, "%zi", (int)((begin_time + eat_t) - now_time) > 0 ?
 				(begin_time + eat_t) - now_time : 0);
-		pthread_mutex_lock(&g_gmutex);
-		ft_actualize((*data)->capsule, str, X_TIME, Y_TIME);
+		ft_eat_mid_actualize(data, philo, mother, &str);
 		ft_strdel(&str);
-		if (!(size_t)((t_philo*)(*philo)->data)->life)
-		{
-			ft_sprintf(&(*mother)->result, "%s%s est mort\n", (*mother)->result, (*data)->name);
-			(*mother)->all_in_life = false;
-		}
-		pthread_mutex_unlock(&g_gmutex);
 	}
 	ft_eat_end_actualize(philo, mother);
 	return (0);

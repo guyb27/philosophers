@@ -28,23 +28,26 @@ static int	ft_init_end_menu(char *str, t_philo_mother *mother, bool all_in_life)
 	return (0);
 }
 
-static void	ft_end_game(char *str, t_philo_mother *mother)
+static void	ft_end_game(char *str, t_philo_mother **mother)
 {
 	int			ret;
 	bool		all_in_life;
+	char		*str1;
 
 	ret = 0;
-	all_in_life = mother->all_in_life;
-	mother->all_in_life = false;
+	all_in_life = (*mother)->all_in_life;
+	(*mother)->all_in_life = false;
 	usleep(SEC);
-	ft_sprintf(&mother->result, "%s%s%s%s\n", mother->result, all_in_life ?
-			GREEN : RED, str, STOP);
 	if (g_gmode == ALL_WINDOWS)
-		ret = ft_init_end_menu(str, mother, all_in_life);
-	ft_fprintf(RESULT, "%s", mother->result);
+		ret = ft_init_end_menu(str, *mother, all_in_life);
 	keypad(stdscr, FALSE);
-	ft_free_philo_mother(mother);
 	pthread_mutex_lock(&g_gmutex);
+	ft_sprintf(&str1, "%s%s%s%s\n", (*mother)->result, all_in_life ?
+			GREEN : RED, str, STOP);
+	free((*mother)->result);
+(*mother)->result = str1;
+	ft_fprintf(RESULT, "%s", (*mother)->result);
+	ft_free_philo_mother(*mother);
 	touchwin(stdscr);
 	refresh();
 	ft_handle_mother_addr(NULL, INIT);
@@ -127,5 +130,5 @@ void	ft_main_loop(t_philo_mother **mother)
 	}
 	ft_end_game((*mother)->all_in_life ?
 			"Now, it is time... To DAAAAAAAANCE ! ! !"
-			: "A philosopher is dead !!!", *mother);
+			: "A philosopher is dead !!!", mother);
 }
