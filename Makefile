@@ -1,34 +1,33 @@
 # **************************************************************************** #
-#                                                           LE - /             #
-#                                                               /              #
-#    Makefile                                         .::    .:/ .      .::    #
-#                                                  +:+:+   +:    +:  +:+:+     #
-#    By: dzonda <marvin@le-101.fr>                  +:+   +:    +:    +:+      #
-#                                                  #+#   #+    #+    #+#       #
-#    Created: 2017/11/24 18:33:54 by dzonda       #+#   ##    ##    #+#        #
-#    Updated: 2020/02/08 02:16:46 by gmadec      ###    #+. /#+    ###.fr      #
-#                                                          /                   #
-#                                                         /                    #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: dzonda <dzonda@student.le-101.fr>          +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2017/11/24 18:33:54 by dzonda            #+#    #+#              #
+#    Updated: 2020/02/17 22:06:14 by dzonda           ###   ########lyon.fr    #
+#                                                                              #
 # **************************************************************************** #
-
-.PHONY: all re clean fclean lib
 
 NAME = philo
 
-MAKE = make
+SRCDIR = src
+OBJDIR = obj
+INCDIR = include
+LIBDIR = libft
+
+MAKEFILE_NAME = Makefile-$(lastword $(subst /, ,$(NAME)))
+VERBOSE = FALSE
+DEBUG = FALSE
+
 CC = gcc
-CFLAGS = -Wall -Wextra
-CPPFLAGS = -I ./include/
-LDLIBS = -lft
-LDFLAGS = -Llibft/
-RM = rm -f
+CFLAGS =  -Wall -Wextra -Werror -Wunused -Wunreachable-code
+CPPFLAGS = -I$(INCDIR)
+LDFLAGS = -Llibft
+LDLIBS = -lft -lncurses -lpthread -D_REENTRANT
 
-SRCS_PATH = ./src/
-OBJS_PATH = ./obj/
-INCS_PATH = ./include/
-LIB_PATH = ./libft/
-
-SRCS_NAME =	\
+SRC_FILES = \
 			utils.c \
 			main.c \
 			ft_main_thread.c \
@@ -48,83 +47,65 @@ SRCS_NAME =	\
 			get_philo_locate.c \
 			manage_wand.c
 
-OBJS_NAME = $(SRCS_NAME:.c=.o)
+SRCS = $(foreach file, $(SRC_FILES), $(addprefix $(SRCDIR)/, $(file)))
+OBJS = $(subst $(SRCDIR),$(OBJDIR),$(SRCS:.c=.o))
+DEPS = $(OBJS:.o=.d)
 
-SRCS = $(addprefix $(SRCS_PATH),$(SRCS_NAME))
-OBJS = $(addprefix $(OBJS_PATH),$(OBJS_NAME))
+HIDE = @
+MAKE = make -C
+RM = rm -rf
+MKDIR = mkdir -p
+ERRIGNORE = 2>/dev/null
 
-NB_FILES = $(words $(SRCS_NAME))
-SHELL = /bin/bash # just because sh print -n from echo
-COLS = $(shell tput cols)
-DEL_DSYMFILE = $(shell [ -e a.out.dSYM ] && echo rm -rf a.out.dSYM)
+ifeq ($(VERBOSE),TRUE)
+	HIDE =
+endif
+ifeq ($(DEBUG),TRUE)
+	CFLAGS += -g3 -ggdb3
+endif
 
-all: $(NAME)
+NB_FILES = $(words $(SRC_FILES))
+NB_FILES_COMPILED = 0
+NB_FILES_INCREMENT = @$(eval NB_FILES_COMPILED=$(shell echo $$(($(NB_FILES_COMPILED) + 1))))
+SHELL = /bin/bash
 
-$(NAME): init lib $(OBJS)
-	@$(CC) -lncurses $(CFLAGS) -o $(NAME) $(OBJS) $(LDFLAGS) $(LDLIBS) -lpthread -D_REENTRANT
-	@printf "\e[?25h"	# set cursor to visible
-	@tput setaf 10 	# set green color
-	@tput bold
-	@$(eval CURSOR := $(if $(CURSOR),$(CURSOR),0)) # is CURSOR var set ?
-	@echo -n "[ $(NAME)    ] Compiled $(CURSOR)/$(NB_FILES) files."
-	@tput sgr0 	# reset color
-	@tput el 	# clear from cursor to end of line
-	@echo ""
-	@tput el 	# clear from cursor to end of line
+.PHONY: all clean fclean re lib
 
-init:
-	@echo ""
-	@echo ""
-	@echo ""
-	@echo ""
-	@tput cuu 4
+all: lib $(NAME)
 
-$(OBJS_PATH)%.o: $(SRCS_PATH)%.c
-	@$(eval CURSOR=$(shell echo $$(($(CURSOR) + 1))))
-	@$(eval PERCENT=$(shell printf "[%3d/%3d - \e[1m\e[93m%3d%%\e[0m]" $(CURSOR) $(NB_FILES) $$(($(CURSOR) * 100 / $(NB_FILES)))))
-	@$(eval LOADSIZE=$(shell echo $$(($(CURSOR) * $(COLS) / $(NB_FILES)))))
-	@printf "\e[?25l\e[s\e[35m\e[44m"
-	@tput setaf $$((($(CURSOR)%7)+9))
-	@number=1 ; while [[ $$i -le $(LOADSIZE)-1 ]] ; do \
-        	printf "▌" ; \
-        	((i = i + 1)) ; \
-    	done
-	@printf "\e[0K\e[0m\n\e[1m\e[93m"
-	@echo -n "[ $(NAME) ] Compiling: "
-	@printf "\e[0m"			# reset color
-	@echo -n "$(PERCENT) $@"
-	@printf "\e[0K\n\e[u\e[?25h"
-	@mkdir $(OBJS_PATH) 2> /dev/null || true
-	@$(CC) -g3 -Wall -Wextra -Werror -Wunused -Wunreachable-code $(CFLAGS) $(CPPFLAGS) -o $@ -c $<
+$(NAME): $(OBJDIR) $(OBJS)
+	@echo $(MAKEFILE_NAME): [$(NB_FILES_COMPILED)/$(NB_FILES)] "Linking ->" $@
+	$(HIDE)$(CC) $(OBJS) $(LDFLAGS) $(LDLIBS) -o $(NAME)
 
-val: lldb
-	valgrind --leak-check=full --track-origins=yes ./a.out
+-include $(DEPS)
 
-valgrind: lldb
-	valgrind --leak-check=full --track-origins=yes ./a.out
+$(OBJDIR)/%.o: $(SRCDIR)/%.c
+	@$(NB_FILES_INCREMENT)
+	@echo $(MAKEFILE_NAME): [$(NB_FILES_COMPILED)/$(NB_FILES)] "Building ->" $@
+	$(HIDE)$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@ -MMD
+	@tput cuu1
+	@tput el
 
-valsup: lldb
-	valgrind --gen-suppressions=all --leak-check=full --track-origins=yes --show-leak-kinds=all ./a.out
-
-lldb:
-	gcc -ggdb3 src/*.c libft/src/*.c -I include -I libft/include
+$(OBJDIR):
+	$(HIDE)$(MKDIR) $(OBJDIR)
 
 lib:
-	@make -C $(LIB_PATH)
+	$(HIDE)$(MAKE) $(LIBDIR)
+
+valgrind: lib $(NAME)
+	@echo $(MAKEFILE_NAME): "Executing $(NAME) with debug mode :" $(DEBUG)
+	$(HIDE)valgrind --leak-check=full --track-origins=yes ./$(NAME)
+	$(HIDE)$(RM) $(NAME).dSYM $(ERRIGNORE)
 
 clean:
-	@$(MAKE) -C $(LIB_PATH) clean
-	@$(RM) $(OBJS)
-	@rm -rf obj
+	$(HIDE)$(MAKE) $(LIBDIR) clean
+	$(HIDE)$(RM) $(OBJDIR) $(ERRIGNORE)
+	@echo $(MAKEFILE_NAME): Clean done !
 
-fclean: clean
-	@$(MAKE) -C $(LIB_PATH) fclean
-	@$(RM) $(NAME)
-	@rm -rf a.out
-	@printf "\e[1;31m"	# set red color
-	@echo "[ $(NAME)   ] deleted."
-	@printf "\e[0m"		# reset color
-	@rm -rf obj
-	$(DEL_DSYMFILE)
+fclean:
+	$(HIDE)$(MAKE) $(LIBDIR) fclean
+	$(HIDE)$(RM) $(OBJDIR) $(ERRIGNORE)
+	$(HIDE)$(RM) $(NAME) $(ERRIGNORE)
+	@echo $(MAKEFILE_NAME): Fclean done !
 
 re: fclean all
