@@ -7,16 +7,16 @@ static size_t	ft_think_begin_actualize(t_philo_heart **philo, int wand, t_philo_
 
 		pthread_mutex_lock(&g_gmutex);
 	str1 = ft_strjoin_free((*mother)->result, ((t_philo*)(*philo)->data)->name);
-	(*mother)->result = ft_strjoin_free(str1, " is thinking");
+	(*mother)->result = ft_strjoin_free(str1, " is thinking\n");
 	if (wand == LEFT)
 	{
-		if (((t_wand*)(*philo)->prev->data)->wand_state == FREE)
+		if (((t_wand*)(*philo)->prev->data)->state == FREE)
 			ft_actualize_wand((t_philo_heart**)&(*philo)->prev, THINK_RIGHT);
 		pthread_mutex_unlock(&((t_wand*)(*philo)->prev->data)->mutex);
 	}
 	else
 	{
-		if (((t_wand*)(*philo)->next->data)->wand_state == FREE)
+		if (((t_wand*)(*philo)->next->data)->state == FREE)
 			ft_actualize_wand((t_philo_heart**)&(*philo)->next, THINK_LEFT);
 		pthread_mutex_unlock(&((t_wand*)(*philo)->next->data)->mutex);
 	}
@@ -32,9 +32,9 @@ static size_t	ft_think_begin_actualize(t_philo_heart **philo, int wand, t_philo_
 static void	ft_think_end_actualize(t_philo_heart **philo, int wand, t_philo_mother **mother)
 {
 	if (wand == LEFT &&
-			((t_wand*)(*philo)->prev->data)->wand_state == THINK_LEFT)
+			((t_wand*)(*philo)->prev->data)->state == THINK_LEFT)
 	{
-		((t_wand*)(*philo)->prev->data)->wand_state = FREE;
+		((t_wand*)(*philo)->prev->data)->state = FREE;
 		if ((*mother)->all_in_life)
 		{
 			pthread_mutex_lock(&g_gmutex);
@@ -43,9 +43,9 @@ static void	ft_think_end_actualize(t_philo_heart **philo, int wand, t_philo_moth
 		}
 	}
 	else if (wand == RIGHT &&
-			((t_wand*)(*philo)->next->data)->wand_state == THINK_RIGHT)
+			((t_wand*)(*philo)->next->data)->state == THINK_RIGHT)
 	{
-		((t_wand*)(*philo)->next->data)->wand_state = FREE;
+		((t_wand*)(*philo)->next->data)->state = FREE;
 		if ((*mother)->all_in_life)
 		{
 			pthread_mutex_lock(&g_gmutex);
@@ -70,7 +70,6 @@ static void		ft_think_mid_actualize(t_philo **data, char *str[],
 (*mother)->result = str1;
 			(*mother)->all_in_life = false;
 		}
-		pthread_mutex_unlock(&g_gmutex);
 }
 
 int		ft_think(int ret, t_philo_heart **philo, t_philo **data, t_philo_mother **mother)
@@ -87,11 +86,14 @@ int		ft_think(int ret, t_philo_heart **philo, t_philo **data, t_philo_mother **m
 	{
 		usleep(SEC);
 		(*data)->life--;
-		time((time_t*)&now_time);
 		ft_sprintf(&str[0], "%zi", (int)((begin_time + think_t) - now_time) >
 				0 ? (begin_time + think_t) - now_time : 0);
 		ft_sprintf(&str[1], "%d", (*data)->life);
 		ft_think_mid_actualize(data, str, philo, mother);
+		time((time_t*)&now_time);
+		if (now_time > begin_time + think_t && (*mother)->all_in_life)
+			ft_reserve_meal(philo);
+		pthread_mutex_unlock(&g_gmutex);
 		ft_strdel(&str[0]);
 		ft_strdel(&str[1]);
 	}
