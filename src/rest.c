@@ -1,5 +1,23 @@
 #include "../include/hello.h"
 
+e_ret_status	ft_can_you_do_eat(t_wand *left, t_wand *right, t_philo *data)
+{
+	int		ret_left;
+	int		ret_right;
+
+	(void)data;// A DEL
+	ret_left = pthread_mutex_trylock(&left->mutex);
+	ret_right = pthread_mutex_trylock(&right->mutex);
+	if (!ret_left && ret_right)
+		return (LEFT);
+	else if (ret_left && !ret_right)
+		return (RIGHT);
+	else if (ret_left && ret_right)
+		return (NOTHING);
+	else
+		return (ALL);
+}
+
 static size_t	ft_rest_begin_actualize(t_philo_heart **philo, t_philo_mother **mother)
 {
 	char	*str1;
@@ -22,6 +40,7 @@ static size_t	ft_rest_begin_actualize(t_philo_heart **philo, t_philo_mother **mo
 static void	ft_rest_mid_actualize(t_philo **data, t_philo_mother **mother, char *str[])
 {
 	char	*str1;
+	pthread_mutex_lock(&g_gmutex);
 	ft_actualize((*data)->capsule, str[0], X_LIFE, Y_LIFE);
 	ft_actualize((*data)->capsule, str[1], X_TIME, Y_TIME);
 	if (!(*data)->life)
@@ -31,6 +50,7 @@ static void	ft_rest_mid_actualize(t_philo **data, t_philo_mother **mother, char 
 		free((*mother)->result);
 (*mother)->result = str1;
 	}
+	pthread_mutex_unlock(&g_gmutex);
 }
 
 int		ft_rest(t_philo_heart **philo, t_philo **data, t_philo_mother **mother)
@@ -41,6 +61,8 @@ int		ft_rest(t_philo_heart **philo, t_philo **data, t_philo_mother **mother)
 	int				rest_t;
 
 	rest_t = ft_handle_define(GET_INFOS, REST, 0);
+	str[0] = NULL;
+	str[1] = NULL;
 	begin_time = ft_rest_begin_actualize(philo, mother);
 	now_time = begin_time;
 	while (now_time <= begin_time + rest_t && (*mother)->all_in_life)
@@ -51,43 +73,11 @@ int		ft_rest(t_philo_heart **philo, t_philo **data, t_philo_mother **mother)
 		time((time_t*)&now_time);
 		ft_sprintf(&str[1], "%zi", (int)((rest_t + begin_time) - now_time) > 0 ?
 				(rest_t + begin_time) - now_time : 0);
-	pthread_mutex_lock(&g_gmutex);
 	ft_rest_mid_actualize(data, mother, str);
-	if (now_time > begin_time + rest_t && (*mother)->all_in_life)
-		ft_reserve_meal(philo);
-	pthread_mutex_unlock(&g_gmutex);
 	ft_strdel(&str[0]);
 	ft_strdel(&str[1]);
 	}
 	return (0);
-}
-
-e_ret_status	ft_can_you_do_eat(t_wand *left, t_wand *right, t_philo *data)
-{
-	int		ret_left;
-	int		ret_right;
-
-	(void)data;// A DEL
-	ret_left = 0;
-	ret_right = 0;
-	if (left->reserve == FREE || left->reserve == EAT_RIGHT)
-	{
-		ret_left = pthread_mutex_trylock(&left->mutex);
-		left->reserve = FREE;
-	}
-	if (right->reserve == FREE || right->reserve == EAT_LEFT)
-	{
-		ret_right = pthread_mutex_trylock(&right->mutex);
-		right->reserve = FREE;
-	}
-	if (!ret_left && ret_right)
-		return (LEFT);
-	else if (ret_left && !ret_right)
-		return (RIGHT);
-	else if (ret_left && ret_right)
-		return (NOTHING);
-	else
-		return (ALL);
 }
 
 int		ft_eat_or_think(t_philo_heart **philo, t_philo **data, t_philo_mother **mother)

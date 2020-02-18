@@ -36,14 +36,15 @@
 #define ESCAPE 27
 #define SPACE 32
 
+//bool g_all_in_life;
 pthread_mutex_t g_gmutex;
 int				g_gmode;
 
 typedef enum	s_gmode
 {
-	NOT_INIT,
-	NOTHING_WINDOW,
-	ALL_WINDOWS
+	NOT_INIT,//MENU, GAME
+	NOTHING_WINDOW,//MENU, GAME
+	ALL_WINDOWS//MENU, GAME
 }				e_gmode;
 
 typedef enum	s_ret_status
@@ -103,8 +104,7 @@ typedef struct			s_wand_location
 
 typedef struct			s_wand
 {
-	e_wand_state		state;
-	e_wand_state		reserve;
+	e_wand_state		wand_state;//REMPLACER PAR STATE
 	pthread_mutex_t		mutex;
 	pthread_cond_t		condition;
 	t_wand_location		*locate;
@@ -114,9 +114,9 @@ typedef struct			s_wand
 
 typedef enum	s_philo_state
 {
-	TO_REST,
-	TO_EAT,
-	TO_THINK
+	TO_REST = 0,
+	TO_EAT = 1,
+	TO_THINK = 2
 }				e_philo_state;
 
 typedef struct			s_philo_location
@@ -199,6 +199,5 @@ void			ft_create_philo(t_philo_heart **philo_heart, t_screen_size ss);
 void			*ft_philo(void *arg);
 char			*ft_get_name(e_handle_static_function h);
 t_philo_location	*ft_get_philo_locate(int wand_number, int x, int y);
-void				ft_reserve_meal(t_philo_heart **heart);
 
 #endif

@@ -34,11 +34,12 @@ static void	ft_end_game(char *str, t_philo_mother **mother)
 	bool		all_in_life;
 	char		*str1;
 
+	ret = 0;
 	all_in_life = (*mother)->all_in_life;
 	(*mother)->all_in_life = false;
 	usleep(SEC);
-	ret = g_gmode == ALL_WINDOWS ?
-							ft_init_end_menu(str, *mother, all_in_life) : 0;
+	if (g_gmode == ALL_WINDOWS)
+		ret = ft_init_end_menu(str, *mother, all_in_life);
 	keypad(stdscr, FALSE);
 	pthread_mutex_lock(&g_gmutex);
 	ft_sprintf(&str1, "%s%s%s%s\n", (*mother)->result, all_in_life ?
@@ -51,8 +52,10 @@ static void	ft_end_game(char *str, t_philo_mother **mother)
 	refresh();
 	ft_handle_mother_addr(NULL, INIT);
 	pthread_mutex_unlock(&g_gmutex);
-	if (ret == 1 || ret == 2)
-		ret == 1 ? ft_init_and_begin_game() : ft_init_and_begin_main_menu();
+	if (ret == 1)
+		ft_init_and_begin_game();
+	else if (ret == 2)
+		ft_init_and_begin_main_menu();
 	else
 		endwin();
 }

@@ -55,7 +55,7 @@ void	ft_create_wand(t_philo_heart **philo_heart, t_screen_size ss)
 	new_philo_heart = ft_memalloc(sizeof(t_philo_heart));
 	new_philo_heart->type = WAND;
 	wand = ft_memalloc(sizeof(t_wand));
-	wand->state = FREE;
+	wand->wand_state = FREE;
 	wand->mutex = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;
 	ft_handle_wand_location(&wand->locate, GET_INFOS, ss);
 	new_philo_heart->data = wand;

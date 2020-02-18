@@ -14,11 +14,11 @@ static void	ft_init_and_print_wand(t_philo_heart *philo_heart)
 	wand->locate->init = true;
 	ft_sprintf(&str, "%s:[%s], MID:[%s], %s:[%s]",
 			((t_philo*)philo_heart->prev->data)->name,
-			wand->state == THINK_LEFT || wand->state == EAT_LEFT ? "|" :
+			wand->wand_state == THINK_LEFT || wand->wand_state == EAT_LEFT ? "|" :
 			" ",
-			wand->state == FREE ? "|" : " ",
+			wand->wand_state == FREE ? "|" : " ",
 			((t_philo*)philo_heart->next->data)->name,
-			wand->state == THINK_RIGHT || wand->state == EAT_RIGHT ? "|"
+			wand->wand_state == THINK_RIGHT || wand->wand_state == EAT_RIGHT ? "|"
 			: " ");
 	wbkgd(((t_wand*)philo_heart->data)->capsule, COLOR_PAIR(2));
 	wmove(wand->capsule, 0, 0);
@@ -57,11 +57,11 @@ static void		ft_print_new_wand(t_wand **wand, e_wand_state new_state)
 	y = (*wand)->locate->y_after;
 	wmove((*wand)->capsule, 0, y);
 	wprintw((*wand)->capsule, " ");
-	(*wand)->state = new_state;
-	if ((*wand)->state == THINK_LEFT || (*wand)->state == EAT_LEFT)
+	(*wand)->wand_state = new_state;
+	if ((*wand)->wand_state == THINK_LEFT || (*wand)->wand_state == EAT_LEFT)
 		y = (*wand)->locate->y_before;
 	else
-		y = (*wand)->state == FREE ? (*wand)->locate->y_mid :
+		y = (*wand)->wand_state == FREE ? (*wand)->locate->y_mid :
 			(*wand)->locate->y_after;
 	wmove((*wand)->capsule, 0, y);
 	wprintw((*wand)->capsule, "|");
@@ -76,5 +76,5 @@ void		ft_actualize_wand(t_philo_heart **heart, e_wand_state new_state)
 	if ((*heart)->type == WAND && (*heart)->prev->type == PHILO &&
 (*heart)->next->type == PHILO && g_gmode == ALL_WINDOWS && wand->locate->init)
 		ft_print_new_wand(&wand, new_state);
-	wand->state = new_state;
+	wand->wand_state = new_state;
 }
