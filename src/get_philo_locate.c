@@ -1,10 +1,22 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_philo_locate.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gmadec <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/02/29 04:41:51 by gmadec            #+#    #+#             */
+/*   Updated: 2020/02/29 06:00:54 by gmadec           ###   ########lyon.fr   */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../include/hello.h"
 
 t_philo_location	*ft_get_philo_locate(int wand_number, int x, int y)
 {
-	(void)y;//A VOIR !
 	t_philo_location *locate;
 
+	(void)y;
 	locate = ft_memalloc(sizeof(t_philo_location));
 	if (wand_number == 0)
 		locate->x_capsule = 2;

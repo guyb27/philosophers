@@ -1,8 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   handle_main_menu.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gmadec <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/02/29 04:41:51 by gmadec            #+#    #+#             */
+/*   Updated: 2020/02/29 06:11:48 by gmadec           ###   ########lyon.fr   */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../include/hello.h"
 
-static void			ft_actualize_screen(bool lock_mutex, int actual_ypos)
+static void				ft_actualize_screen(bool lock_mutex, int actual_ypos)
 {
-	int		tmp;
+	int					tmp;
 
 	if (lock_mutex)
 		pthread_mutex_lock(&g_gmutex);
@@ -11,36 +23,40 @@ static void			ft_actualize_screen(bool lock_mutex, int actual_ypos)
 	endwin();
 	ft_init_curses();
 	ft_handle_main_menu(INIT, tmp, false, NULL);
-	keypad(stdscr,true);
+	keypad(stdscr, true);
 	if (lock_mutex)
 		pthread_mutex_unlock(&g_gmutex);
 }
 
-static void			ft_y_actualize(bool lock_mutex, int data1, int *data2, t_main_menu **menu)
+static void				ft_y_actualize(bool lock_mutex, int data1, int *data2,
+															t_main_menu **menu)
 {
 	if (g_gmode <= NOTHING_WINDOW)
 		return ;
 	if (lock_mutex)
 		pthread_mutex_lock(&g_gmutex);
-	wbkgd((*menu)->items[*(int*)(int*)data2 + 1],COLOR_PAIR(1));
+	wbkgd((*menu)->items[*(int*)(int*)data2 + 1], COLOR_PAIR(1));
 	wnoutrefresh((*menu)->items[*(int*)data2 + 1]);
 	if (data1 == KEY_DOWN)
 		*(int*)data2 = (*(int*)data2 + 1) % 8;
 	else
 		*(int*)data2 = (*(int*)data2 - 1 + 8) % 8;
 	(*menu)->y_pos = *(int*)data2 + 1;
-	wbkgd((*menu)->items[*(int*)data2 + 1],COLOR_PAIR(2));
+	wbkgd((*menu)->items[*(int*)data2 + 1], COLOR_PAIR(2));
 	wnoutrefresh((*menu)->items[*(int*)data2 + 1]);
 	doupdate();
 	if (lock_mutex)
 		pthread_mutex_unlock(&g_gmutex);
 }
 
-static void			ft_del_menu(bool lock_mutex, t_main_menu **menu)
+static void				ft_del_menu(bool lock_mutex, t_main_menu **menu)
 {
+	int					i;
+
+	i = -1;
 	if (lock_mutex)
 		pthread_mutex_lock(&g_gmutex);
-	for (int i = 0;i < 9;i++)
+	while (++i < 9)
 		delwin((*menu)->items[i]);
 	free((*menu)->items);
 	(*menu)->items = NULL;
@@ -53,7 +69,8 @@ static void			ft_del_menu(bool lock_mutex, t_main_menu **menu)
 		pthread_mutex_unlock(&g_gmutex);
 }
 
-t_main_menu		*ft_handle_main_menu(e_handle_static_function h, int data1, bool lock_mutex, void *data2)
+t_main_menu				*ft_handle_main_menu(e_handle_static_function h,
+										int data1, bool lock_mutex, void *data2)
 {
 	static t_main_menu	*menu = NULL;
 

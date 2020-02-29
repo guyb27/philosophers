@@ -1,61 +1,72 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_main_thread.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gmadec <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/02/29 05:17:18 by gmadec            #+#    #+#             */
+/*   Updated: 2020/02/29 06:00:15 by gmadec           ###   ########lyon.fr   */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../include/hello.h"
 
-static int	ft_init_end_menu(char *str, t_philo_mother *mother, bool all_in_life)
+static int	ft_init_end_menu(char *str, t_philo_mother *mother,
+															bool all_in_life)
 {
-	int			key;
-	int			ret;
+	int		key;
+	int		ret;
 
 	pthread_mutex_lock(&g_gmutex);
-	mother->state_game = subwin(mother->win, 1, mother->ss.x, mother->ss.y - 1, 0);
+	mother->state_game = subwin(mother->win, 1, mother->ss.x,
+														mother->ss.y - 1, 0);
 	wbkgd(mother->state_game, COLOR_PAIR(all_in_life ? 6 : 5));
 	wmove(mother->state_game, 0, (mother->ss.x / 2) - (ft_strlen(str) / 2));
 	wprintw(mother->state_game, str);
 	wrefresh(mother->state_game);
 	pthread_mutex_unlock(&g_gmutex);
 	keypad(stdscr, TRUE);
-	while (getch() != -1);
+	while (getch() != -1)
+		;
 	key = 0;
 	while (g_gmode == ALL_WINDOWS)
 	{
 		key = getch();
 		if (key == ENTER || key == SPACE)
 			return (0);
-		else if (key == ESCAPE)
-			if ((ret = ft_end_menu(mother->ss.x, mother->ss.y, all_in_life ? 7 :
-																		8)) > 0)
-				return (ret);
+		else if (key == ESCAPE && (ret = ft_end_menu(mother->ss.x, mother->ss.y,
+													all_in_life ? 7 : 8)) > 0)
+			return (ret);
 	}
 	return (0);
 }
 
 static void	ft_end_game(char *str, t_philo_mother **mother)
 {
-	int			ret;
-	bool		all_in_life;
-	char		*str1;
+	int		ret;
+	bool	all_in_life;
+	char	*str1;
 
-	ret = 0;
 	all_in_life = (*mother)->all_in_life;
 	(*mother)->all_in_life = false;
 	usleep(SEC);
-	if (g_gmode == ALL_WINDOWS)
-		ret = ft_init_end_menu(str, *mother, all_in_life);
+	ret = g_gmode == ALL_WINDOWS ?
+							ft_init_end_menu(str, *mother, all_in_life) : 0;
 	keypad(stdscr, FALSE);
 	pthread_mutex_lock(&g_gmutex);
 	ft_sprintf(&str1, "%s%s%s%s\n", (*mother)->result, all_in_life ?
 			GREEN : RED, str, STOP);
 	free((*mother)->result);
-(*mother)->result = str1;
+	(*mother)->result = str1;
 	ft_fprintf(RESULT, "%s", (*mother)->result);
 	ft_free_philo_mother(*mother);
 	touchwin(stdscr);
 	refresh();
 	ft_handle_mother_addr(NULL, INIT);
 	pthread_mutex_unlock(&g_gmutex);
-	if (ret == 1)
-		ft_init_and_begin_game();
-	else if (ret == 2)
-		ft_init_and_begin_main_menu();
+	if (ret == 1 || ret == 2)
+		ret == 1 ? ft_init_and_begin_game() : ft_init_and_begin_main_menu();
 	else
 		endwin();
 }
@@ -73,11 +84,10 @@ static void	ft_save_game_var(char **str)
 			"THINK_TIME: ",
 			ft_handle_define(GET_INFOS, THINK, 0),
 			"TIME_LEFT: ",
-			ft_handle_define(GET_INFOS, TIME, 0)
-			);
+			ft_handle_define(GET_INFOS, TIME, 0));
 }
 
-void	ft_print_game_var(t_philo_mother **mother, bool mutex_lock)
+void		ft_print_game_var(t_philo_mother **mother, bool mutex_lock)
 {
 	mutex_lock ? pthread_mutex_lock(&g_gmutex) : 0;
 	ft_save_game_var(&(*mother)->result);
@@ -106,23 +116,22 @@ void	ft_print_game_var(t_philo_mother **mother, bool mutex_lock)
 	mutex_lock ? pthread_mutex_unlock(&g_gmutex) : 0;
 }
 
-void	ft_main_loop(t_philo_mother **mother)
+void		ft_main_loop(t_philo_mother **mother)
 {
-	size_t			begin_time;
-	size_t			now_time;
-	char			*str;
-	int				timeout;
+	size_t	begin_time;
+	size_t	now_time;
+	char	*str;
+	int		timeout;
 
 	timeout = ft_handle_define(GET_INFOS, TIME, 0);
 	str = NULL;
-	time( (time_t*)&begin_time );
+	time((time_t*)&begin_time);
 	now_time = begin_time;
 	while (now_time < begin_time + timeout && (*mother)->all_in_life)
 	{
 		usleep(SEC);
-		time( (time_t*)&now_time );
-		ft_sprintf(&str, "%zi", (timeout - (now_time - begin_time)) < 0 ? 0 :
-				timeout - (now_time - begin_time));
+		time((time_t*)&now_time);
+		ft_sprintf(&str, "%zi", timeout - (now_time - begin_time));
 		pthread_mutex_lock(&g_gmutex);
 		ft_actualize((*mother)->win_game_var, str, X_TIMEOUT, Y_TIMEOUT);
 		pthread_mutex_unlock(&g_gmutex);
