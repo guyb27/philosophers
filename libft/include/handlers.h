@@ -6,7 +6,7 @@
 /*   By: gmadec <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/29 12:48:11 by gmadec            #+#    #+#             */
-/*   Updated: 2020/02/29 12:48:11 by gmadec           ###   ########lyon.fr   */
+/*   Updated: 2020/02/29 13:30:12 by gmadec           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,12 @@
 # define HANDLERS_H
 # include "ft_printf.h"
 
-typedef struct s_printf	t_printf;
-typedef struct s_flags	t_flags;
-typedef struct			s_handlers {
-	char				conv;
+typedef struct s_printf		t_printf;
+typedef struct s_flags		t_flags;
+typedef struct				s_handlers {
+	char					conv;
 	t_printf				*(*fct_handle)(t_flags*, va_list);
-}						t_handlers;
+}							t_handlers;
 
 t_printf					*pf_handle(char **str, va_list args, int i);
 t_printf					*pf_handle_percent(t_flags *spec, va_list args);

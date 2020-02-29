@@ -6,7 +6,7 @@
 /*   By: gmadec <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/29 12:44:20 by gmadec            #+#    #+#             */
-/*   Updated: 2020/02/29 12:44:20 by gmadec           ###   ########lyon.fr   */
+/*   Updated: 2020/02/29 13:24:43 by gmadec           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,10 @@ static int				pf_size_i(long long int n)
 
 char					*pf_itoa(long long int n)
 {
-	char	*str;
-	int		i;
-	int		a;
+	char				*str;
+	int					i;
+	int					a;
+	int					tmp;
 
 	i = pf_size_i(n);
 	if (!(str = (char*)malloc(sizeof(*str) * (i + 1))))
@@ -57,7 +58,9 @@ char					*pf_itoa(long long int n)
 	while (i > 0)
 	{
 		i--;
-		str[a] = (int)ABS((n / pf_pow(10, i))) + '0';
+		tmp = (n / pf_pow(10, i)) > 0 ? (n / pf_pow(10, i)) :
+														-(n / pf_pow(10, i));
+		str[a] = tmp + '0';
 		n = n % (long long int)pf_pow(10, i);
 		a++;
 	}

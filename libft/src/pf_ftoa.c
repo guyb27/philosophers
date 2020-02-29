@@ -6,7 +6,7 @@
 /*   By: gmadec <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/29 12:44:19 by gmadec            #+#    #+#             */
-/*   Updated: 2020/02/29 12:45:13 by gmadec           ###   ########lyon.fr   */
+/*   Updated: 2020/02/29 13:29:26 by gmadec           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,10 @@ static long long int	pf_pow(long long int nb, int pow)
 double					pf_next_n(double n, int ent)
 {
 	int		i;
+	int		tmp;
 
-	i = ABS(n / pf_pow(10, ent - 1));
+	tmp = n / pf_pow(10, ent - 1);
+	i = tmp > 0 ? tmp : -tmp;
 	if (n > 0)
 		n -= i * (pf_pow(10, ent - 1));
 	else
@@ -39,13 +41,17 @@ double					pf_next_n(double n, int ent)
 void					pf_end_of_ftoa(int dec, long double n, int i,
 																	char **str)
 {
+	int					tmp;
+
 	while (dec > 0)
 	{
 		n *= 10;
 		(*str)[i++] = ((int)n) + '0';
 		n -= ((int)n);
 		dec--;
-		if (dec == 0 && ABS(n * 10) >= 5)
+		tmp = n * 10;
+		tmp = tmp > 0 ? tmp : -tmp;
+		if (dec == 0 && tmp >= 5)
 			str[i - 1]++;
 	}
 	(*str)[i++] = '\0';
@@ -69,7 +75,8 @@ char					*pf_ftoa(long double n, int dec)
 	}
 	while (ent > 0)
 	{
-		str[i++] = ABS(n / pf_pow(10, ent - 1)) + '0';
+		str[i++] = (n / pf_pow(10, ent - 1) > 0 ? n / pf_pow(10, ent - 1) :
+											-n / pf_pow(10, ent - 1)) + '0';
 		n = pf_next_n(n, ent);
 		ent--;
 	}

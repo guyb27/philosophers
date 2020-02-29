@@ -6,7 +6,7 @@
 /*   By: gmadec <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/29 12:44:20 by gmadec            #+#    #+#             */
-/*   Updated: 2020/02/29 12:44:20 by gmadec           ###   ########lyon.fr   */
+/*   Updated: 2020/02/29 13:00:20 by gmadec           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ static int			pf_mallsize(t_flags *spec, intmax_t i)
 		i /= 10;
 		rst++;
 	}
-	rst = MAX(rst, MAX(spec->width, spec->prec));
+	rst = max(rst, max(spec->width, spec->prec));
 	return (rst);
 }
 
@@ -41,7 +41,7 @@ static int			pf_is_space(t_flags *spec, char *tmp, intmax_t len, int i)
 	if (spec->flags[space] && i == 0 && tmp[0] != '-')
 		return (1);
 	if (!spec->flags[zero])
-		return (i < len - (MAX((int)(pf_strlen(tmp) + spec->flags[plus]),
+		return (i < len - (max((int)(pf_strlen(tmp) + spec->flags[plus]),
 						spec->prec - spec->flags[space])));
 	else
 	{
@@ -50,7 +50,7 @@ static int			pf_is_space(t_flags *spec, char *tmp, intmax_t len, int i)
 		else
 		{
 			if (spec->prec < spec->width)
-				return (i < spec->width - MAX(spec->prec, (int)pf_strlen(tmp))
+				return (i < spec->width - max(spec->prec, (int)pf_strlen(tmp))
 						+ spec->flags[space]);
 			else
 				return (0);

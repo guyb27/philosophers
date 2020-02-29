@@ -6,7 +6,7 @@
 /*   By: gmadec <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/29 12:44:19 by gmadec            #+#    #+#             */
-/*   Updated: 2020/02/29 12:44:19 by gmadec           ###   ########lyon.fr   */
+/*   Updated: 2020/02/29 13:00:13 by gmadec           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 static int		pf_is_space(t_flags *spec, char *tmp, intmax_t len, int i)
 {
 	if (!spec->flags[zero])
-		return (i < len - (MAX((int)pf_strlen(tmp),
+		return (i < len - (max((int)pf_strlen(tmp),
 						spec->prec) + 2 * spec->flags[hash]));
 	else
 	{
@@ -24,7 +24,7 @@ static int		pf_is_space(t_flags *spec, char *tmp, intmax_t len, int i)
 		else
 		{
 			if (spec->prec < spec->width)
-				return (i < spec->width - MAX(spec->prec, (int)pf_strlen(tmp))
+				return (i < spec->width - max(spec->prec, (int)pf_strlen(tmp))
 						- 2 * spec->flags[hash]);
 			else
 				return (0);
@@ -90,8 +90,8 @@ t_printf		*pf_handle_hex(t_flags *spec, va_list args)
 	if (spec->prec == 0 && arg == 0)
 		return (pf_zeroprec(spec));
 	tmp = pf_itoa_base_unsigned(arg, 16, spec->conv == 'X');
-	len = MAX((int)pf_strlen(tmp) + !(arg == 0) * 2 * spec->flags[hash],
-			(MAX(spec->width, spec->prec + 2 * spec->flags[hash])));
+	len = max((int)pf_strlen(tmp) + !(arg == 0) * 2 * spec->flags[hash],
+			(max(spec->width, spec->prec + 2 * spec->flags[hash])));
 	rst = pf_memalloc(sizeof(*rst) * (len + 1));
 	i = pf_tabset(2);
 	while (pf_is_space(spec, tmp, len, i[0]) && !spec->flags[minus])

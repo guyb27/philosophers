@@ -6,7 +6,7 @@
 /*   By: gmadec <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/29 12:51:26 by gmadec            #+#    #+#             */
-/*   Updated: 2020/02/29 12:56:03 by gmadec           ###   ########lyon.fr   */
+/*   Updated: 2020/02/29 13:21:41 by gmadec           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,4 @@ int		max(int a, int b)
 int		min(int a, int b)
 {
 	return (a > b ? b : a);
-}
-
-int		abs(int a)
-{
-	return (a > 0 ? a : -a);
 }

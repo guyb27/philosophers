@@ -6,7 +6,7 @@
 /*   By: gmadec <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/29 12:44:19 by gmadec            #+#    #+#             */
-/*   Updated: 2020/02/29 12:44:19 by gmadec           ###   ########lyon.fr   */
+/*   Updated: 2020/02/29 13:00:20 by gmadec           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ t_printf	*pf_handle_percent(t_flags *spec, va_list args)
 	int		i;
 
 	(void)args;
-	len = MAX(1, spec->width);
+	len = max(1, spec->width);
 	rst = pf_memalloc(sizeof(*rst) * (len + 1));
 	i = 0;
 	if (spec->flags[minus])

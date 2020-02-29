@@ -6,7 +6,7 @@
 /*   By: gmadec <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/29 12:44:20 by gmadec            #+#    #+#             */
-/*   Updated: 2020/02/29 12:44:20 by gmadec           ###   ########lyon.fr   */
+/*   Updated: 2020/02/29 13:01:41 by gmadec           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,8 @@ static int	pf_mallsize(t_flags *spec, char *arg)
 
 	if (spec->prec == -1 || spec->prec > (int)pf_strlen(arg))
 		spec->prec = pf_strlen(arg);
-	tmp = MIN(spec->prec, (int)pf_strlen(arg));
-	return (MAX(tmp, spec->width));
+	tmp = min(spec->prec, (int)pf_strlen(arg));
+	return (max(tmp, spec->width));
 }
 
 t_printf	*pf_handle_str(t_flags *spec, va_list args)

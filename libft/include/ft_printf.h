@@ -6,7 +6,7 @@
 /*   By: gmadec <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/29 12:48:11 by gmadec            #+#    #+#             */
-/*   Updated: 2020/02/29 12:48:11 by gmadec           ###   ########lyon.fr   */
+/*   Updated: 2020/02/29 13:27:07 by gmadec           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,6 @@
 # include <sys/types.h>
 # include <sys/stat.h>
 # include <fcntl.h>
-
-# define MAX(a, b) ((a > b) ? a : b)
-# define MIN(a, b) ((a > b) ? b : a)
-# define ABS(a) (a > 0 ? a : -a)
 
 int				ft_printf(const char *format, ...);
 int				ft_dprintf(int fd, const char *format, ...);

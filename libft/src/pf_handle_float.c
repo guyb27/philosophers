@@ -6,7 +6,7 @@
 /*   By: gmadec <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/29 12:44:19 by gmadec            #+#    #+#             */
-/*   Updated: 2020/02/29 12:46:45 by gmadec           ###   ########lyon.fr   */
+/*   Updated: 2020/02/29 13:00:13 by gmadec           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ static int				pf_mallsize(t_flags *spec, long double i)
 	}
 	if (spec->prec > 0)
 		rst += spec->prec + 1;
-	rst = MAX(rst, spec->width);
+	rst = max(rst, spec->width);
 	return (rst);
 }
 

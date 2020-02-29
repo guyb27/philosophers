@@ -6,12 +6,12 @@
 /*   By: gmadec <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/29 12:48:11 by gmadec            #+#    #+#             */
-/*   Updated: 2020/02/29 12:50:14 by gmadec           ###   ########lyon.fr   */
+/*   Updated: 2020/02/29 13:30:46 by gmadec           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBFT_H
-# define LIBFT_H
+#ifndef LIBFT_PRINTF_H
+# define LIBFT_PRINTF_H
 # include "ft_printf.h"
 
 char			*pf_strchr(const char *s, int c);
@@ -32,5 +32,8 @@ char			*pf_strnjoin(char *s1, char *s2, int n);
 
 void			*pf_memalloc(size_t size);
 void			*pf_tabset(size_t len);
+
+int				max(int a, int b);
+int				min(int a, int b);
 
 #endif

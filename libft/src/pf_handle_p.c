@@ -6,7 +6,7 @@
 /*   By: gmadec <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/29 12:44:19 by gmadec            #+#    #+#             */
-/*   Updated: 2020/02/29 12:44:19 by gmadec           ###   ########lyon.fr   */
+/*   Updated: 2020/02/29 13:00:20 by gmadec           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static t_printf	*pf_arg_zero(t_flags *spec)
 
 	if (spec->prec == -1)
 		spec->prec = 1;
-	len = MAX(spec->prec + 2, spec->width);
+	len = max(spec->prec + 2, spec->width);
 	rst = pf_memalloc(sizeof(*rst) * len);
 	i = 0;
 	if (!spec->flags[minus])
@@ -50,7 +50,7 @@ t_printf		*pf_handle_p(t_flags *spec, va_list args)
 	tmp = pf_itoa_base_unsigned((long int)arg, 16, 0);
 	if (spec->width == -1)
 		spec->width = 0;
-	len = MAX(spec->prec + 3, MAX((int)pf_strlen(tmp) + 3, spec->width + 1));
+	len = max(spec->prec + 3, max((int)pf_strlen(tmp) + 3, spec->width + 1));
 	rst = pf_memalloc(sizeof(*tmp) * len);
 	i = pf_tabset(2);
 	while (!spec->flags[minus] && spec->width > i[0] + (int)pf_strlen(tmp) + 2)

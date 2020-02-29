@@ -6,7 +6,7 @@
 /*   By: gmadec <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/29 12:44:20 by gmadec            #+#    #+#             */
-/*   Updated: 2020/02/29 12:44:20 by gmadec           ###   ########lyon.fr   */
+/*   Updated: 2020/02/29 13:26:48 by gmadec           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,11 @@ static int			pf_size_i(uintmax_t n, uintmax_t base)
 static char			pf_nbrbase(uintmax_t n, int i, int base, int maj)
 {
 	int		nbr;
+	int		tmp;
 
-	nbr = (uintmax_t)ABS((n / pf_pow(base, i)));
+	tmp = (n / pf_pow(base, i)) > 0 ? (n / pf_pow(base, i)) :
+														(n / pf_pow(base, i));
+	nbr = (uintmax_t)tmp;
 	if (nbr < 10)
 		return (nbr + '0');
 	else
