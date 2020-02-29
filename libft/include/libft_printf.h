@@ -1,14 +1,13 @@
 /* ************************************************************************** */
-/*                                                          LE - /            */
-/*                                                              /             */
-/*   libft.h                                          .::    .:/ .      .::   */
-/*                                                 +:+:+   +:    +:  +:+:+    */
-/*   By: qcharpen <marvin@le-101.fr>                +:+   +:    +:    +:+     */
-/*                                                 #+#   #+    #+    #+#      */
-/*   Created: 2018/07/05 18:29:11 by qcharpen     #+#   ##    ##    #+#       */
-/*   Updated: 2019/11/18 10:18:08 by gmadec      ###    #+. /#+    ###.fr     */
-/*                                                         /                  */
-/*                                                        /                   */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   libft_printf.h                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gmadec <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/02/29 12:48:11 by gmadec            #+#    #+#             */
+/*   Updated: 2020/02/29 12:50:14 by gmadec           ###   ########lyon.fr   */
+/*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LIBFT_H
@@ -19,7 +18,7 @@ char			*pf_strchr(const char *s, int c);
 char			*pf_strdup(const char *src);
 char			*pf_strcut(const char *s, size_t i);
 size_t			pf_strlen(const char *s);
-char			*pf_strsub(const char *s, unsigned int start, size_t len);//A DEL
+char			*pf_strsub(const char *s, unsigned int start, size_t len);
 char			*pf_strjoin_len(const char *s1, const char *s2, int len);
 char			*pf_strjoin_free_len(char *s1, char *s2, int len);
 char			*pf_strnew(size_t size);

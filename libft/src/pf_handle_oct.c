@@ -1,14 +1,13 @@
 /* ************************************************************************** */
-/*                                                          LE - /            */
-/*                                                              /             */
-/*   handle_int.c                                     .::    .:/ .      .::   */
-/*                                                 +:+:+   +:    +:  +:+:+    */
-/*   By: qcharpen <marvin@le-101.fr>                +:+   +:    +:    +:+     */
-/*                                                 #+#   #+    #+    #+#      */
-/*   Created: 2018/08/22 08:26:31 by qcharpen     #+#   ##    ##    #+#       */
-/*   Updated: 2019/11/18 12:30:43 by gmadec      ###    #+. /#+    ###.fr     */
-/*                                                         /                  */
-/*                                                        /                   */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   pf_handle_oct.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gmadec <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/02/29 12:44:19 by gmadec            #+#    #+#             */
+/*   Updated: 2020/02/29 12:47:18 by gmadec           ###   ########lyon.fr   */
+/*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/ft_printf.h"
@@ -24,7 +23,8 @@ static int				pf_mallsize(intmax_t arg, t_flags *spec, char *tmp)
 	return (len);
 }
 
-static int				pf_is_space(t_flags *spec, char *tmp, intmax_t len, int i)
+static int				pf_is_space(t_flags *spec, char *tmp, intmax_t len,
+																		int i)
 {
 	if (!spec->flags[zero])
 		return (i < len - (MAX((int)pf_strlen(tmp),
@@ -44,7 +44,8 @@ static int				pf_is_space(t_flags *spec, char *tmp, intmax_t len, int i)
 	}
 }
 
-static int				pf_is_zero(t_flags *spec, char *tmp, intmax_t len, int *i)
+static int				pf_is_zero(t_flags *spec, char *tmp, intmax_t len,
+																		int *i)
 {
 	if (spec->flags[minus] && (int)pf_strlen(tmp) < spec->prec)
 	{

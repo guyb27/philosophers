@@ -1,14 +1,13 @@
 /* ************************************************************************** */
-/*                                                          LE - /            */
-/*                                                              /             */
-/*   handle_float.c                                   .::    .:/ .      .::   */
-/*                                                 +:+:+   +:    +:  +:+:+    */
-/*   By: qcharpen <marvin@le-101.fr>                +:+   +:    +:    +:+     */
-/*                                                 #+#   #+    #+    #+#      */
-/*   Created: 2018/11/28 12:27:47 by qcharpen     #+#   ##    ##    #+#       */
-/*   Updated: 2019/11/18 12:19:52 by gmadec      ###    #+. /#+    ###.fr     */
-/*                                                         /                  */
-/*                                                        /                   */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   pf_handle_float.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gmadec <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/02/29 12:44:19 by gmadec            #+#    #+#             */
+/*   Updated: 2020/02/29 12:46:45 by gmadec           ###   ########lyon.fr   */
+/*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/ft_printf.h"
@@ -31,14 +30,16 @@ static int				pf_mallsize(t_flags *spec, long double i)
 	return (rst);
 }
 
-static int				pf_is_space(t_flags *spec, char *tmp, intmax_t len, int i)
+static int				pf_is_space(t_flags *spec, char *tmp, intmax_t len,
+																		int i)
 {
 	if (spec->flags[minus])
 		return (0);
 	return (!spec->flags[zero] && i < len - (int)pf_strlen(tmp));
 }
 
-static int				pf_is_zero(t_flags *spec, char *tmp, intmax_t len, int i)
+static int				pf_is_zero(t_flags *spec, char *tmp, intmax_t len,
+																		int i)
 {
 	if (spec->flags[minus])
 		return (0);

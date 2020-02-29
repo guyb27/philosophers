@@ -6,7 +6,7 @@
 #    By: dzonda <dzonda@student.le-101.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/11/10 20:37:15 by dzonda            #+#    #+#              #
-#    Updated: 2020/02/17 22:05:19 by dzonda           ###   ########lyon.fr    #
+#    Updated: 2020/02/29 12:55:02 by gmadec           ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -125,7 +125,7 @@ SRC_FILES =	\
 			pf_handle_signed_int.c \
 			pf_handle_str.c \
 			pf_handle_unsigned_int.c \
-			pf_bzero.c \
+			pf_utils.c \
 			pf_ftoa.c \
 			pf_isdigit.c \
 			pf_isinstr.c \

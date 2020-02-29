@@ -1,14 +1,13 @@
 /* ************************************************************************** */
-/*                                                          LE - /            */
-/*                                                              /             */
-/*   handle.c                                         .::    .:/ .      .::   */
-/*                                                 +:+:+   +:    +:  +:+:+    */
-/*   By: qcharpen <marvin@le-101.fr>                +:+   +:    +:    +:+     */
-/*                                                 #+#   #+    #+    #+#      */
-/*   Created: 2018/07/15 06:53:41 by qcharpen     #+#   ##    ##    #+#       */
-/*   Updated: 2019/11/18 12:13:46 by gmadec      ###    #+. /#+    ###.fr     */
-/*                                                         /                  */
-/*                                                        /                   */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   pf_handle.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gmadec <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/02/29 12:44:19 by gmadec            #+#    #+#             */
+/*   Updated: 2020/02/29 12:46:00 by gmadec           ###   ########lyon.fr   */
+/*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/handlers.h"
@@ -22,7 +21,7 @@ static t_handlers	pf_tabinit(char conv, t_printf *(*fct)(t_flags*, va_list))
 	return (ptr);
 }
 
-static t_printf			*pf_select_conv(t_flags *spec, va_list args)
+static t_printf		*pf_select_conv(t_flags *spec, va_list args)
 {
 	t_handlers		tab_handlers[15];
 	int				i;

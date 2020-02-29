@@ -1,25 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strnequ.c                                       :+:      :+:    :+:   */
+/*   pf_utils.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gmadec <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/02/29 12:44:18 by gmadec            #+#    #+#             */
-/*   Updated: 2020/02/29 12:44:18 by gmadec           ###   ########lyon.fr   */
+/*   Created: 2020/02/29 12:51:26 by gmadec            #+#    #+#             */
+/*   Updated: 2020/02/29 12:56:03 by gmadec           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/libft.h"
+#include "../include/libft_printf.h"
 
-int		ft_strnequ(const char *s1, const char *s2, size_t n)
+void	pf_bzero(void *s, size_t n)
 {
-	int i;
+	while (n)
+	{
+		((int*)s)[n] = 0;
+		n--;
+	}
+}
 
-	i = -1;
-	if (s1 && s2)
-		while (++i < (int)n)
-			if (s1[i] != s2[i])
-				return (0);
-	return (1);
+int		max(int a, int b)
+{
+	return (a > b ? a : b);
+}
+
+int		min(int a, int b)
+{
+	return (a > b ? b : a);
+}
+
+int		abs(int a)
+{
+	return (a > 0 ? a : -a);
 }

@@ -1,14 +1,13 @@
 /* ************************************************************************** */
-/*                                                          LE - /            */
-/*                                                              /             */
-/*   pf_ftoa.c                                        .::    .:/ .      .::   */
-/*                                                 +:+:+   +:    +:  +:+:+    */
-/*   By: gmadec <marvin@le-101.fr>                  +:+   +:    +:    +:+     */
-/*                                                 #+#   #+    #+    #+#      */
-/*   Created: 2019/11/17 15:58:38 by gmadec       #+#   ##    ##    #+#       */
-/*   Updated: 2019/11/18 12:34:13 by gmadec      ###    #+. /#+    ###.fr     */
-/*                                                         /                  */
-/*                                                        /                   */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   pf_ftoa.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gmadec <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/02/29 12:44:19 by gmadec            #+#    #+#             */
+/*   Updated: 2020/02/29 12:45:13 by gmadec           ###   ########lyon.fr   */
+/*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/libft_printf.h"
@@ -37,7 +36,8 @@ double					pf_next_n(double n, int ent)
 	return (n);
 }
 
-void					pf_end_of_ftoa(int dec, long double n, int i, char **str)
+void					pf_end_of_ftoa(int dec, long double n, int i,
+																	char **str)
 {
 	while (dec > 0)
 	{
