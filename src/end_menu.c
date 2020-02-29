@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   end_menu.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gmadec <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/02/29 04:41:51 by gmadec            #+#    #+#             */
+/*   Updated: 2020/02/29 05:08:45 by gmadec           ###   ########lyon.fr   */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../include/hello.h"
 
 static void	ft_creat_menu(WINDOW ***menu, int x, int y, int color)
@@ -9,7 +21,7 @@ static void	ft_creat_menu(WINDOW ***menu, int x, int y, int color)
 	(*menu)[0] = newwin(6, 20, (y / 2) - 2, (x / 2) - 10);
 	wbkgd((*menu)[0], COLOR_PAIR(color == 7 ? 6 : 5));
 	box((*menu)[0], '|', '-');
-	while(++i < 5)
+	while (++i < 5)
 		(*menu)[i] = subwin((*menu)[0], 1, 18, (y / 2) - (2 - i), (x / 2) -
 																	(10 - 1));
 	wbkgd((*menu)[1], COLOR_PAIR(color));
@@ -20,9 +32,12 @@ static void	ft_creat_menu(WINDOW ***menu, int x, int y, int color)
 	wrefresh((*menu)[0]);
 }
 
-static int		ft_cancel(WINDOW ***menu, int ret)
+static int	ft_cancel(WINDOW ***menu, int ret)
 {
-	for (int i = 0;i<5;i++)
+	int		i;
+
+	i = -1;
+	while (++i < 5)
 		delwin((*menu)[i]);
 	wclear((*menu)[0]);
 	wbkgd((*menu)[0], COLOR_PAIR(1));
@@ -44,13 +59,14 @@ static void	ft_vertical_keys(WINDOW ***menu, int *selected, int key, int color)
 	doupdate();
 }
 
-int		ft_end_menu(int x, int y, int color)
+int			ft_end_menu(int x, int y, int color)
 {
-	WINDOW **menu;
+	WINDOW	**menu;
 	int		key;
-	int selected = 0;
+	int		selected;
 
 	key = 0;
+	selected = 0;
 	ft_creat_menu(&menu, x, y, color);
 	while (g_gmode == ALL_WINDOWS)
 	{

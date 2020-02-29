@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   init.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gmadec <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/02/29 04:41:51 by gmadec            #+#    #+#             */
+/*   Updated: 2020/02/29 05:55:21 by gmadec           ###   ########lyon.fr   */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../include/hello.h"
 
 static void		ft_create_main_menu(int data1, t_main_menu **menu)
@@ -66,7 +78,6 @@ static void	ft_init_begin_game(t_philo_mother **mother, t_philo_heart **philo_he
 
 	count = -1;
 	*mother = ft_memalloc(sizeof(t_philo_mother));
-	//ft_sprintf(&(*mother)->result, "The game starts\n");
 	str1 = ft_strjoin((*mother)->result, "The game starts\n");
 	free((*mother)->result);
 (*mother)->result = str1;

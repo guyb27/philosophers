@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   free.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gmadec <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/02/29 04:41:51 by gmadec            #+#    #+#             */
+/*   Updated: 2020/02/29 05:09:35 by gmadec           ###   ########lyon.fr   */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../include/hello.h"
 
-static void	ft_close_window(t_philo_heart *philo)
+static void			ft_close_window(t_philo_heart *philo)
 {
 	if (philo->type == PHILO)
 	{
@@ -17,9 +29,9 @@ static void	ft_close_window(t_philo_heart *philo)
 	}
 }
 
-static void	ft_free_philo_heart(t_philo_heart *philo)
+static void			ft_free_philo_heart(t_philo_heart *philo)
 {
-	int		i;
+	int				i;
 	t_philo_heart	*tmp;
 
 	i = -1;
@@ -32,7 +44,7 @@ static void	ft_free_philo_heart(t_philo_heart *philo)
 	}
 }
 
-void	ft_free_philo_mother(t_philo_mother *mother)
+void				ft_free_philo_mother(t_philo_mother *mother)
 {
 	ft_free_philo_heart(mother->heart);
 	free(mother->result);

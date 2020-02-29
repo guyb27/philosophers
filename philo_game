@@ -1,0 +1,15 @@
+(null)MAX_LIFE: 12
+EAT_TIME: 6
+REST_TIME: 6
+THINK_TIME: 6
+TIME_LEFT: 43
+
+Platon is eating
+Aristote is thinkingHeraclite is thinkingEpictete is thinkingMarc-Aurele is thinkingSeneque is thinkingSocrate is thinkingEpictete is eating
+Aristote is thinkingMarc-Aurele is thinkingSeneque is thinkingPlaton is resting
+Heraclite is thinkingSocrate is eating
+Aristote est mort
+Seneque est mort
+Marc-Aurele est mort
+Heraclite est mort
+[0;31mA philosopher is dead !!![0;m
