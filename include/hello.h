@@ -6,7 +6,7 @@
 /*   By: gmadec <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/29 04:27:41 by gmadec            #+#    #+#             */
-/*   Updated: 2020/02/29 06:15:12 by gmadec           ###   ########lyon.fr   */
+/*   Updated: 2020/02/29 12:01:21 by gmadec           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -227,5 +227,8 @@ void						*ft_philo(void *arg);
 char						*ft_get_name(e_handle_static_function h);
 t_philo_location			*ft_get_philo_locate(int wand_number, int x, int y);
 void						ft_resize(int sig);
+int							ft_change_value(int value, int selected,
+																WINDOW **items);
+void						ft_create_main_menu(int data1, t_main_menu **menu);
 
 #endif

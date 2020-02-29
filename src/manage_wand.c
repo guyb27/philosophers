@@ -6,7 +6,7 @@
 /*   By: gmadec <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/29 04:41:51 by gmadec            #+#    #+#             */
-/*   Updated: 2020/02/29 04:41:51 by gmadec           ###   ########lyon.fr   */
+/*   Updated: 2020/02/29 11:50:20 by gmadec           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 static void	ft_init_and_print_wand(t_philo_heart *philo_heart)
 {
 	t_wand	*wand;
-	char *str;
+	char	*str;
 
 	wand = philo_heart->data;
 	wand->locate->y_before =
@@ -26,12 +26,12 @@ static void	ft_init_and_print_wand(t_philo_heart *philo_heart)
 	wand->locate->init = true;
 	ft_sprintf(&str, "%s:[%s], MID:[%s], %s:[%s]",
 			((t_philo*)philo_heart->prev->data)->name,
-			wand->wand_state == THINK_LEFT || wand->wand_state == EAT_LEFT ? "|" :
-			" ",
-			wand->wand_state == FREE ? "|" : " ",
-			((t_philo*)philo_heart->next->data)->name,
-			wand->wand_state == THINK_RIGHT || wand->wand_state == EAT_RIGHT ? "|"
-			: " ");
+		wand->wand_state == THINK_LEFT || wand->wand_state == EAT_LEFT ? "|" :
+		" ",
+		wand->wand_state == FREE ? "|" : " ",
+		((t_philo*)philo_heart->next->data)->name,
+		wand->wand_state == THINK_RIGHT || wand->wand_state == EAT_RIGHT ? "|"
+		: " ");
 	wbkgd(((t_wand*)philo_heart->data)->capsule, COLOR_PAIR(2));
 	wmove(wand->capsule, 0, 0);
 	wclrtoeol(wand->capsule);
@@ -40,10 +40,11 @@ static void	ft_init_and_print_wand(t_philo_heart *philo_heart)
 	ft_strdel(&str);
 }
 
-int		ft_print_wand(t_philo_heart *philo_heart, t_philo_mother *mother, bool mutex_lock)
+int			ft_print_wand(t_philo_heart *philo_heart, t_philo_mother *mother,
+																bool mutex_lock)
 {
-
-	if (((t_philo*)philo_heart->prev->data)->name && ((t_philo*)philo_heart->next->data)->name && g_gmode == ALL_WINDOWS)
+	if (((t_philo*)philo_heart->prev->data)->name &&
+			((t_philo*)philo_heart->next->data)->name && g_gmode == ALL_WINDOWS)
 	{
 		mutex_lock ? pthread_mutex_lock(&g_gmutex) : 0;
 		((t_wand*)philo_heart->data)->capsule = subwin(mother->win, 1, 40,
@@ -56,7 +57,7 @@ int		ft_print_wand(t_philo_heart *philo_heart, t_philo_mother *mother, bool mute
 	return (0);
 }
 
-static void		ft_print_new_wand(t_wand **wand, e_wand_state new_state)
+static void	ft_print_new_wand(t_wand **wand, e_wand_state new_state)
 {
 	int		y;
 

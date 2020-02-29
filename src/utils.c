@@ -6,7 +6,7 @@
 /*   By: gmadec <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/29 04:41:52 by gmadec            #+#    #+#             */
-/*   Updated: 2020/02/29 06:21:17 by gmadec           ###   ########lyon.fr   */
+/*   Updated: 2020/02/29 11:58:04 by gmadec           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,4 +43,14 @@ void		ft_resize(int sig)
 		ft_actualize_game();
 	else if (ft_handle_main_menu(GET_INFOS, 0, true, NULL))
 		ft_handle_main_menu(ACTUALIZE_SCREEN, 0, true, NULL);
+}
+
+int			ft_change_value(int value, int selected, WINDOW **items)
+{
+	value = ft_handle_define(ACTUALIZE, selected, value + 1);
+	wmove(items[selected + 1], 0, 0);
+	wclrtoeol(items[selected + 1]);
+	ft_print_define(items[selected + 1], selected + 1);
+	wrefresh(items[selected + 1]);
+	return (value);
 }

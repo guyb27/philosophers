@@ -6,15 +6,16 @@
 /*   By: gmadec <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/29 04:41:52 by gmadec            #+#    #+#             */
-/*   Updated: 2020/02/29 04:41:52 by gmadec           ###   ########lyon.fr   */
+/*   Updated: 2020/02/29 11:32:12 by gmadec           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/hello.h"
 
-static void	ft_get_locate(t_wand_location **locate, int x, int *n_time)
+static void		ft_get_locate(t_wand_location **locate, int x, int *n_time)
 {
-	if (*n_time < ft_handle_define(GET_INFOS, NBPHILO, 0) && g_gmode == ALL_WINDOWS)
+	if (*n_time < ft_handle_define(GET_INFOS, NBPHILO, 0) &&
+														g_gmode == ALL_WINDOWS)
 	{
 		*locate = ft_memalloc(sizeof(t_wand_location));
 		if (*n_time == 0 || *n_time == 6)
@@ -38,9 +39,10 @@ static void	ft_get_locate(t_wand_location **locate, int x, int *n_time)
 		*locate = NULL;
 }
 
-void		ft_handle_wand_location(t_wand_location **locate, e_handle_static_function h, t_screen_size ss)
+void			ft_handle_wand_location(t_wand_location **locate,
+								e_handle_static_function h, t_screen_size ss)
 {
-	static int		n_time = 0;
+	static int	n_time = 0;
 
 	if (h == GET_INFOS)
 		ft_get_locate(locate, ss.x, &n_time);

@@ -6,15 +6,15 @@
 /*   By: gmadec <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/29 04:41:51 by gmadec            #+#    #+#             */
-/*   Updated: 2020/02/29 04:41:51 by gmadec           ###   ########lyon.fr   */
+/*   Updated: 2020/02/29 11:34:38 by gmadec           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/hello.h"
 
-static char *ft_store_philo_name(void)
+static char		*ft_store_philo_name(void)
 {
-	char *ret;
+	char		*ret;
 
 	ft_sprintf(&ret, "%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s",
 "Platon", "Aristote", "Heraclite", "Epictete", "Marc-Aurele", "Seneque",
@@ -23,9 +23,9 @@ static char *ft_store_philo_name(void)
 	return (ret);
 }
 
-char	*ft_get_name(e_handle_static_function h)
+char			*ft_get_name(e_handle_static_function h)
 {
-	static int	already_taken[NB_PHILO] = {0};//A REMPLACER PAR LA FONCTION POUR LE NOMBRE DE FONCTION
+	static int	already_taken[NB_PHILO] = {0};
 	char		*tmp_str;
 	char		**philo_names;
 	int			i;
@@ -52,9 +52,9 @@ char	*ft_get_name(e_handle_static_function h)
 	return (str_ret);
 }
 
-static void	ft_philo_mid(t_philo_heart **philo, void *arg)
+static void		ft_philo_mid(t_philo_heart **philo, void *arg)
 {
-	char			*str;
+	char		*str;
 
 	while ((size_t)((t_philo*)(*philo)->data)->life &&
 										(*(t_philo_mother**)arg)->all_in_life)
@@ -71,7 +71,7 @@ static void	ft_philo_mid(t_philo_heart **philo, void *arg)
 			ft_actualize(((t_philo*)(*philo)->data)->capsule, str,
 																X_LIFE, Y_LIFE);
 			if (((t_philo*)(*philo)->data)->life <= 0)
-			ft_sprintf(&(*(t_philo_mother**)arg)->result, "%s%s est mort\n",
+				ft_sprintf(&(*(t_philo_mother**)arg)->result, "%s%s est mort\n",
 			(*(t_philo_mother**)arg)->result, ((t_philo*)(*philo)->data)->name);
 			pthread_mutex_unlock(&g_gmutex);
 			ft_strdel(&str);
@@ -79,7 +79,7 @@ static void	ft_philo_mid(t_philo_heart **philo, void *arg)
 	}
 }
 
-void	*ft_philo(void *arg)
+void			*ft_philo(void *arg)
 {
 	t_philo_heart	*philo;
 

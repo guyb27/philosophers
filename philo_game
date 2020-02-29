@@ -1,15 +1,97 @@
-(null)MAX_LIFE: 12
-EAT_TIME: 6
-REST_TIME: 6
-THINK_TIME: 6
-TIME_LEFT: 43
+(null)MAX_LIFE: 15
+EAT_TIME: 1
+REST_TIME: 1
+THINK_TIME: 1
+TIME_LEFT: 50
 
 Platon is eating
-Aristote is thinkingHeraclite is thinkingEpictete is thinkingMarc-Aurele is thinkingSeneque is thinkingSocrate is thinkingEpictete is eating
-Aristote is thinkingMarc-Aurele is thinkingSeneque is thinkingPlaton is resting
-Heraclite is thinkingSocrate is eating
-Aristote est mort
-Seneque est mort
-Marc-Aurele est mort
-Heraclite est mort
-[0;31mA philosopher is dead !!![0;m
+Aristote is thinkingHeraclite is eating
+Epictete is thinkingMarc-Aurele is eating
+Seneque is thinkingSocrate is thinkingPlaton is resting
+Aristote is thinkingHeraclite is resting
+Epictete is thinkingMarc-Aurele is resting
+Seneque is eating
+Socrate is thinkingPlaton is eating
+Aristote is thinkingHeraclite is eating
+Epictete is thinkingMarc-Aurele is thinkingSeneque is resting
+Socrate is thinkingPlaton is resting
+Heraclite is resting
+Epictete is eating
+Aristote is eating
+Marc-Aurele is thinkingSeneque is eating
+Socrate is thinkingPlaton is thinkingEpictete is resting
+Aristote is resting
+Marc-Aurele is thinkingSeneque is resting
+Socrate is eating
+Heraclite is eating
+Platon is thinkingEpictete is thinkingAristote is thinkingMarc-Aurele is eating
+Socrate is resting
+Heraclite is resting
+Seneque is thinkingPlaton is eating
+Marc-Aurele is resting
+Epictete is eating
+Aristote is thinkingSocrate is thinkingHeraclite is thinkingSeneque is eating
+Platon is resting
+Epictete is resting
+Aristote is eating
+Socrate is thinkingHeraclite is thinkingMarc-Aurele is thinkingSeneque is resting
+Platon is thinkingEpictete is eating
+Aristote is resting
+Socrate is eating
+Heraclite is thinkingMarc-Aurele is thinkingSeneque is thinkingPlaton is thinkingEpictete is resting
+Aristote is eating
+Socrate is resting
+Heraclite is thinkingMarc-Aurele is eating
+Seneque is thinkingPlaton is thinkingEpictete is thinkingSocrate is eating
+Aristote is resting
+Heraclite is eating
+Marc-Aurele is resting
+Seneque is thinkingPlaton is thinkingSocrate is resting
+Aristote is thinkingEpictete is thinkingHeraclite is resting
+Marc-Aurele is eating
+Seneque is thinkingPlaton is eating
+Socrate is thinkingAristote is thinkingEpictete is thinkingHeraclite is eating
+Marc-Aurele is resting
+Seneque is eating
+Platon is resting
+Socrate is thinkingAristote is thinkingEpictete is thinkingHeraclite is resting
+Marc-Aurele is thinkingSeneque is resting
+Platon is eating
+Socrate is thinkingAristote is thinkingEpictete is eating
+Heraclite is thinkingMarc-Aurele is thinkingSeneque is eating
+Platon is resting
+Socrate is thinkingAristote is eating
+Epictete is resting
+Heraclite is thinkingMarc-Aurele is thinkingSeneque is resting
+Platon is thinkingSocrate is eating
+Aristote is resting
+Epictete is eating
+Heraclite is thinkingMarc-Aurele is thinkingSeneque is thinkingPlaton is thinkingAristote is eating
+Socrate is resting
+Epictete is resting
+Heraclite is thinkingMarc-Aurele is eating
+Seneque is thinkingPlaton is thinkingAristote is resting
+Socrate is eating
+Epictete is thinkingHeraclite is eating
+Marc-Aurele is resting
+Seneque is thinkingPlaton is thinkingAristote is thinkingSocrate is resting
+Epictete is thinkingHeraclite is resting
+Marc-Aurele is eating
+Seneque is thinkingPlaton is eating
+Aristote is thinkingSocrate is thinkingEpictete is thinkingHeraclite is eating
+Marc-Aurele is resting
+Seneque is eating
+Platon is resting
+Aristote is thinkingSocrate is thinkingEpictete is thinkingHeraclite is resting
+Marc-Aurele is thinkingSeneque is resting
+Platon is eating
+Aristote is thinkingSocrate is thinkingEpictete is eating
+Heraclite is thinkingMarc-Aurele is thinkingSeneque is eating
+Platon is resting
+Aristote is eating
+Socrate is thinkingEpictete is resting
+Heraclite is thinkingMarc-Aurele is thinkingSeneque is resting
+Platon is thinkingAristote is resting
+Socrate is eating
+Epictete is eating
+Marc-Aurele is thinkingHeraclite is thinkingSeneque is thinkingPlaton is thinking[0;32mNow, it is time... To DAAAAAAAANCE ! ! ![0;m
