@@ -6,7 +6,7 @@
 /*   By: gmadec <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/29 04:41:51 by gmadec            #+#    #+#             */
-/*   Updated: 2020/02/29 06:11:48 by gmadec           ###   ########lyon.fr   */
+/*   Updated: 2020/03/04 03:47:30 by gmadec           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ static void				ft_del_menu(bool lock_mutex, t_main_menu **menu)
 		pthread_mutex_unlock(&g_gmutex);
 }
 
-t_main_menu				*ft_handle_main_menu(e_handle_static_function h,
+t_main_menu				*ft_handle_main_menu(enum e_handle_static_function h,
 										int data1, bool lock_mutex, void *data2)
 {
 	static t_main_menu	*menu = NULL;

@@ -6,7 +6,7 @@
 /*   By: gmadec <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/29 04:41:52 by gmadec            #+#    #+#             */
-/*   Updated: 2020/02/29 11:32:12 by gmadec           ###   ########lyon.fr   */
+/*   Updated: 2020/03/04 03:47:09 by gmadec           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ static void		ft_get_locate(t_wand_location **locate, int x, int *n_time)
 }
 
 void			ft_handle_wand_location(t_wand_location **locate,
-								e_handle_static_function h, t_screen_size ss)
+							enum e_handle_static_function h, t_screen_size ss)
 {
 	static int	n_time = 0;
 

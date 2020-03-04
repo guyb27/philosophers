@@ -6,7 +6,7 @@
 /*   By: gmadec <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/29 04:41:51 by gmadec            #+#    #+#             */
-/*   Updated: 2020/02/29 11:34:38 by gmadec           ###   ########lyon.fr   */
+/*   Updated: 2020/03/04 03:49:27 by gmadec           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static char		*ft_store_philo_name(void)
 	return (ret);
 }
 
-char			*ft_get_name(e_handle_static_function h)
+char			*ft_get_name(enum e_handle_static_function h)
 {
 	static int	already_taken[NB_PHILO] = {0};
 	char		*tmp_str;
@@ -59,7 +59,7 @@ static void		ft_philo_mid(t_philo_heart **philo, void *arg)
 	while ((size_t)((t_philo*)(*philo)->data)->life &&
 										(*(t_philo_mother**)arg)->all_in_life)
 	{
-		if ((e_philo_state)((t_philo*)(*philo)->data)->state == TO_EAT)
+		if ((enum e_philo_state)((t_philo*)(*philo)->data)->state == TO_EAT)
 			ft_rest(philo, (t_philo**)&(*philo)->data, arg);
 		else if (ft_eat_or_think(philo, (t_philo**)&(*philo)->data, arg))
 		{

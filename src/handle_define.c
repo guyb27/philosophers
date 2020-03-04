@@ -6,14 +6,14 @@
 /*   By: gmadec <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/29 04:41:51 by gmadec            #+#    #+#             */
-/*   Updated: 2020/02/29 06:01:32 by gmadec           ###   ########lyon.fr   */
+/*   Updated: 2020/03/04 03:56:48 by gmadec           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/hello.h"
 
-static int		ft_handle_def_others(e_handle_static_function h,
-													e_define_type d, int value)
+static int		ft_handle_def_others(enum e_handle_static_function h,
+												enum e_define_type d, int value)
 {
 	static int	nb_philo = NB_PHILO;
 	static int	max_life = MAX_LIFE;
@@ -32,8 +32,8 @@ static int		ft_handle_def_others(e_handle_static_function h,
 	return (-1);
 }
 
-static int		ft_handle_def_time(e_handle_static_function h, e_define_type d,
-																	int value)
+static int		ft_handle_def_time(enum e_handle_static_function h,
+											enum e_define_type d, int value)
 {
 	static int	eat_t = EAT_T;
 	static int	think_t = THINK_T;
@@ -60,8 +60,8 @@ static int		ft_handle_def_time(e_handle_static_function h, e_define_type d,
 	return (-1);
 }
 
-int				ft_handle_define(e_handle_static_function h, e_define_type d,
-																	int value)
+int				ft_handle_define(enum e_handle_static_function h,
+												enum e_define_type d, int value)
 {
 	if (d == NBPHILO || d == LIFE)
 		return (ft_handle_def_others(h, d, value));

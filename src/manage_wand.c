@@ -6,7 +6,7 @@
 /*   By: gmadec <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/29 04:41:51 by gmadec            #+#    #+#             */
-/*   Updated: 2020/02/29 11:50:20 by gmadec           ###   ########lyon.fr   */
+/*   Updated: 2020/03/04 03:50:01 by gmadec           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ int			ft_print_wand(t_philo_heart *philo_heart, t_philo_mother *mother,
 	return (0);
 }
 
-static void	ft_print_new_wand(t_wand **wand, e_wand_state new_state)
+static void	ft_print_new_wand(t_wand **wand, enum e_wand_state new_state)
 {
 	int		y;
 
@@ -81,7 +81,8 @@ static void	ft_print_new_wand(t_wand **wand, e_wand_state new_state)
 	wrefresh((*wand)->capsule);
 }
 
-void		ft_actualize_wand(t_philo_heart **heart, e_wand_state new_state)
+void		ft_actualize_wand(t_philo_heart **heart,
+													enum e_wand_state new_state)
 {
 	t_wand	*wand;
 

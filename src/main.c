@@ -6,13 +6,14 @@
 /*   By: gmadec <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/29 04:41:51 by gmadec            #+#    #+#             */
-/*   Updated: 2020/02/29 11:33:10 by gmadec           ###   ########lyon.fr   */
+/*   Updated: 2020/03/04 03:45:16 by gmadec           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/hello.h"
 
-void			*ft_handle_mother_addr(void *mother, e_handle_static_function h)
+void			*ft_handle_mother_addr(void *mother,
+												enum e_handle_static_function h)
 {
 	static void	*store_mother = NULL;
 

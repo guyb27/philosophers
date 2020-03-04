@@ -6,16 +6,17 @@
 /*   By: gmadec <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/29 04:41:51 by gmadec            #+#    #+#             */
-/*   Updated: 2020/02/29 11:28:49 by gmadec           ###   ########lyon.fr   */
+/*   Updated: 2020/03/04 03:48:55 by gmadec           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/hello.h"
 
-e_ret_status	ft_can_you_do_eat(t_wand *left, t_wand *right, t_philo *data)
+enum e_ret_status	ft_can_you_do_eat(t_wand *left, t_wand *right,
+																t_philo *data)
 {
-	int			ret_left;
-	int			ret_right;
+	int				ret_left;
+	int				ret_right;
 
 	(void)data;
 	ret_left = pthread_mutex_trylock(&left->mutex);
@@ -30,11 +31,11 @@ e_ret_status	ft_can_you_do_eat(t_wand *left, t_wand *right, t_philo *data)
 		return (ALL);
 }
 
-static size_t	ft_rest_begin_actualize(t_philo_heart **philo,
+static size_t		ft_rest_begin_actualize(t_philo_heart **philo,
 														t_philo_mother **mother)
 {
-	char		*str1;
-	char		*str;
+	char			*str1;
+	char			*str;
 
 	((t_philo*)(*philo)->data)->state = TO_REST;
 	pthread_mutex_lock(&g_gmutex);
@@ -51,10 +52,10 @@ static size_t	ft_rest_begin_actualize(t_philo_heart **philo,
 	return (time(NULL));
 }
 
-static void		ft_rest_mid_actualize(t_philo **data, t_philo_mother **mother,
-																	char *str[])
+static void			ft_rest_mid_actualize(t_philo **data,
+										t_philo_mother **mother, char *str[])
 {
-	char		*str1;
+	char			*str1;
 
 	pthread_mutex_lock(&g_gmutex);
 	ft_actualize((*data)->capsule, str[0], X_LIFE, Y_LIFE);
@@ -69,13 +70,13 @@ static void		ft_rest_mid_actualize(t_philo **data, t_philo_mother **mother,
 	pthread_mutex_unlock(&g_gmutex);
 }
 
-int				ft_rest(t_philo_heart **philo, t_philo **data,
+int					ft_rest(t_philo_heart **philo, t_philo **data,
 														t_philo_mother **mother)
 {
-	char		*str[2];
-	size_t		begin_time;
-	size_t		now_time;
-	int			rest_t;
+	char			*str[2];
+	size_t			begin_time;
+	size_t			now_time;
+	int				rest_t;
 
 	rest_t = ft_handle_define(GET_INFOS, REST, 0);
 	str[0] = NULL;
@@ -97,10 +98,10 @@ int				ft_rest(t_philo_heart **philo, t_philo **data,
 	return (0);
 }
 
-int				ft_eat_or_think(t_philo_heart **philo, t_philo **data,
+int					ft_eat_or_think(t_philo_heart **philo, t_philo **data,
 														t_philo_mother **mother)
 {
-	int			ret;
+	int				ret;
 
 	if ((ret = ft_can_you_do_eat((*philo)->prev->data, (*philo)->next->data,
 					(*philo)->data)) == ALL)
