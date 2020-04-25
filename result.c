@@ -1,0 +1,14 @@
+[0;33m1RESERVE_WAND[0;32m: (Platon), R:GET, R:GET, GET_B: OK[0;m
+[0;34m1CYDE[0;32m (Platon) LEFT: [RIGHT], RIGHT: [LEFT][0;m
+[0;33m0RESERVE_WAND[0;31m: (Aristote), L: 16, R: 0[0;m
+[0;34m0CYDE[0;31m (Aristote) LEFT: [LEFT], RIGHT: [NOTHING][0;31m
+[0;33m1RESERVE_WAND[0;32m: (Seneque), R:GET, R:GET, GET_B: OK[0;m
+[0;34m1CYDE[0;32m (Seneque) LEFT: [RIGHT], RIGHT: [LEFT][0;m
+[0;33m1RESERVE_WAND[0;32m: (Epictete), R:GET, R:GET, GET_B: OK[0;m
+[0;34m1CYDE[0;32m (Epictete) LEFT: [RIGHT], RIGHT: [LEFT][0;m
+[0;33m0RESERVE_WAND[0;31m: (Socrate), L: 16, R: 16[0;m
+[0;34m0CYDE[0;31m (Socrate) LEFT: [LEFT], RIGHT: [NOTHING][0;31m
+[0;33m0RESERVE_WAND[0;31m: (Marc-Aurele), L: 16, R: 16[0;m
+[0;34m0CYDE[0;31m (Marc-Aurele) LEFT: [LEFT], RIGHT: [NOTHING][0;31m
+[0;33m0RESERVE_WAND[0;31m: (Heraclite), L: 16, R: 16[0;m
+[0;34m0CYDE[0;31m (Heraclite) LEFT: [NOTHING], RIGHT: [RIGHT][0;31m

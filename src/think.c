@@ -70,13 +70,16 @@ static void		ft_think_end_actualize(t_philo_heart **philo, int wand,
 }
 
 static void		ft_think_mid_actualize(t_philo **data, char *str[],
-								t_philo_heart **philo, t_philo_mother **mother)
+								t_philo_heart **philo, t_philo_mother **mother, int i, size_t begin_time, size_t now_time, int think_t)
 {
 	char		*str1;
 
 	pthread_mutex_lock(&g_gmutex);
-	ft_actualize((*data)->capsule, str[0], X_TIME, Y_TIME);
-	ft_actualize((*data)->capsule, str[1], X_LIFE, Y_LIFE);
+	if (i % 2 != 0)
+	{
+		ft_actualize((*data)->capsule, str[0], X_TIME, Y_TIME);
+		ft_actualize((*data)->capsule, str[1], X_LIFE, Y_LIFE);
+	}
 	if (!(size_t)((t_philo*)(*philo)->data)->life)
 	{
 		ft_sprintf(&str1, "%s%s est mort\n", (*mother)->result,
@@ -84,6 +87,12 @@ static void		ft_think_mid_actualize(t_philo **data, char *str[],
 		free((*mother)->result);
 		(*mother)->result = str1;
 		(*mother)->all_in_life = false;
+	}
+	//Quand il reste un demi-seconde on peut reserver la wand
+	//if (now_time >= begin_time + think_t - 1)
+	if (now_time + 1 >= begin_time + think_t)
+	{
+		ft_reserve_wands(philo);
 	}
 	pthread_mutex_unlock(&g_gmutex);
 }
@@ -95,21 +104,26 @@ int				ft_think(int ret, t_philo_heart **philo, t_philo **data,
 	size_t		now_time;
 	char		*str[2];
 	int			think_t;
+	int			i;
 
 	think_t = ft_handle_define(GET_INFOS, THINK, 0);
 	begin_time = ft_think_begin_actualize(philo, ret, mother);
 	now_time = begin_time;
+	i = 0;
 	while (now_time <= begin_time + think_t && (*mother)->all_in_life)
 	{
-		usleep(SEC);
-		(*data)->life--;
+		usleep(DEMI_SEC);
+		//Demi-sec
+		if (i % 2 != 0)
+			(*data)->life--;
 		time((time_t*)&now_time);
 		ft_sprintf(&str[0], "%zi", (int)((begin_time + think_t) - now_time) >
 				0 ? (begin_time + think_t) - now_time : 0);
 		ft_sprintf(&str[1], "%d", (*data)->life);
-		ft_think_mid_actualize(data, str, philo, mother);
+		ft_think_mid_actualize(data, str, philo, mother, i, now_time, begin_time, think_t);
 		ft_strdel(&str[0]);
 		ft_strdel(&str[1]);
+		i++;
 	}
 	ft_think_end_actualize(philo, ret, mother);
 	return (0);
