@@ -89,7 +89,7 @@ int				ft_eat(t_philo **data, t_philo_heart **philo,
 	str = NULL;
 	begin_time = ft_eat_begin_actualize(philo, mother);
 	now_time = begin_time;
-	while (now_time <= begin_time + eat_t && (*mother)->all_in_life)
+	while (now_time < begin_time + eat_t && (*mother)->all_in_life)
 	{
 		usleep(SEC);
 		time((time_t*)&now_time);

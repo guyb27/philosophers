@@ -88,108 +88,6 @@ static void		ft_think_mid_actualize(t_philo **data, char *str[],
 	pthread_mutex_unlock(&g_gmutex);
 }
 
-int				ft_wand_is_stealable(t_philo_heart **philo, int direction)
-{
-	if (direction == 0 && ((t_wand*)(*philo)->prev->data)->reserved == LEFT &&
-	((t_philo*)(*philo)->prev->prev->data)->life > ((t_philo*)(*philo)->data)->life)
-		return (1);
-	else if (direction == 0 && ((t_wand*)(*philo)->prev->data)->reserved == NOTHING)
-		return (1);
-	else if (direction == 1 && ((t_wand*)(*philo)->next->data)->reserved == RIGHT &&
-	((t_philo*)(*philo)->next->next->data)->life > ((t_philo*)(*philo)->data)->life)
-		return (1);
-	else if (direction == 1 && ((t_wand*)(*philo)->next->data)->reserved == RIGHT)
-		return (1);
-	return (0);
-	
-}
-
-int				ft_wand_is_reserbable(t_philo_heart **philo, int direction)
-{
-	int				ret;
-
-	ret = 0;
-	if (direction == 0 && !pthread_mutex_trylock(&((t_wand*)(*philo)->prev->data)->mutex))
-	{
-		if (!ft_strcmp(((t_philo*)(*philo)->data)->name, "Socrate"))
-		ft_dprintf(2, "%sWand droite%s,%s TRY_LOCK: %s[%s]\n", GREENB, STOP, BLUE, STOP, ((t_philo*)(*philo)->data)->name);
-		pthread_mutex_unlock(&((t_wand*)(*philo)->prev->data)->mutex);
-		ret = 1;
-	}
-	if (direction == 1 && !pthread_mutex_trylock(&((t_wand*)(*philo)->next->data)->mutex))
-	{
-		if (!ft_strcmp(((t_philo*)(*philo)->data)->name, "Socrate"))
-			ft_dprintf(2, "%sWand gauche%s,%s TRY_LOCK: %s[%s]\n", GREENB, STOP, BLUE, STOP, ((t_philo*)(*philo)->data)->name);
-		pthread_mutex_unlock(&((t_wand*)(*philo)->next->data)->mutex);
-		ret = 1;
-	}
-	else if (direction == 0 && ((t_philo*)(*philo)->prev->data)->time <= 1)
-	{
-		if (!ft_strcmp(((t_philo*)(*philo)->data)->name, "Socrate"))
-		ft_dprintf(2, "%sWand droite%s,%s TIME <= 1: %s[%s]\n", GREENB, STOP, BLUE, STOP, ((t_philo*)(*philo)->data)->name);
-		ret = 2;
-	}
-	else if (direction == 1 && ((t_philo*)(*philo)->next->data)->time <= 1)
-	{
-		if (!ft_strcmp(((t_philo*)(*philo)->data)->name, "Socrate"))
-			ft_dprintf(2, "%sWand gauche%s,%s TIME <= 1: %s[%s]\n", GREENB, STOP, BLUE, STOP, ((t_philo*)(*philo)->data)->name);
-		ret = 2;
-	}
-	else if (direction == 0 && !ft_strcmp(((t_philo*)(*philo)->data)->name, "Socrate"))
-			ft_dprintf(2, "%sWand droite%s,%s Is_not_reserbable: %s[%s]\n", REDB, STOP, BLUE, STOP, ((t_philo*)(*philo)->data)->name);
-	else if (direction == 1 && !ft_strcmp(((t_philo*)(*philo)->data)->name, "Socrate"))
-			ft_dprintf(2, "%sWand gauche%s,%s Is_not_reserbable: %s[%s]\n", REDB, STOP, BLUE, STOP, ((t_philo*)(*philo)->data)->name);
-	if (ret && ft_wand_is_stealable(philo, direction))
-	{
-		ret = 1;
-	}
-	else
-	{
-		ret = 0;
-	}
-	return (ret);
-}
-
-void				ft_left_reservation(t_philo_heart **philo)
-{
-	((t_wand*)(*philo)->next->data)->reserved = NOTHING;
-	((t_wand*)(*philo)->prev->data)->reserved = NOTHING;
-}
-
-void			ft_reserve_wand(t_philo_heart **philo)
-{
-	int			is_reseved;
-
-	is_reseved = 0;
-	//if (((t_wand*)(*philo)->next->data)->reserved == RIGHT &&
-	//((t_philo*)(*philo)->next->next->data)->life > ((t_philo*)(*philo)->data)->life)
-	if (!ft_strcmp(((t_philo*)(*philo)->data)->name, "Socrate"))
-		ft_dprintf(2, "-----------------------\n");
-	if (ft_wand_is_reserbable(philo, 1))
-	{
-//		if (!ft_strcmp(((t_philo*)(*philo)->data)->name, "Socrate"))
-//			ft_dprintf(2, "%sWand droite%s is_reserbable: [%s]\n", GREENB, STOP, ((t_philo*)(*philo)->data)->name);
-		is_reseved++;
-	}
-//	else if (!ft_strcmp(((t_philo*)(*philo)->data)->name, "Socrate"))
-//		ft_dprintf(2, "%sWand droite%s%s is_not_available: %s[%s]\n", GREENB, STOP, RED, STOP, ((t_philo*)(*philo)->data)->name);
-	//if (((t_wand*)(*philo)->prev->data)->reserved == LEFT &&
-	//((t_philo*)(*philo)->prev->prev->data)->life > ((t_philo*)(*philo)->data)->life)
-	if (ft_wand_is_reserbable(philo, 0))
-	{
-//		if (!ft_strcmp(((t_philo*)(*philo)->data)->name, "Socrate"))
-//			ft_dprintf(2, "%sWand gauche%s is_reserbable: [%s]\n", YELLOWB, STOP, ((t_philo*)(*philo)->data)->name);
-		is_reseved++;
-	}
-//	else if (!ft_strcmp(((t_philo*)(*philo)->data)->name, "Socrate"))
-//		ft_dprintf(2, "%sWand gauche%s is_not_available: %s[%s]\n", YELLOWB, RED, STOP, ((t_philo*)(*philo)->data)->name);
-	if (is_reseved == 2)
-	{
-		((t_wand*)(*philo)->next->data)->reserved = LEFT;
-		((t_wand*)(*philo)->prev->data)->reserved = RIGHT;
-	}
-}
-
 int				ft_think(int ret, t_philo_heart **philo, t_philo **data,
 														t_philo_mother **mother)
 {
@@ -201,19 +99,8 @@ int				ft_think(int ret, t_philo_heart **philo, t_philo **data,
 	think_t = ft_handle_define(GET_INFOS, THINK, 0);
 	begin_time = ft_think_begin_actualize(philo, ret, mother);
 	now_time = begin_time;
-	while (now_time <= begin_time + think_t && (*mother)->all_in_life)
+	while (now_time < begin_time + think_t && (*mother)->all_in_life)
 	{
-		((t_philo*)(*philo)->data)->time = begin_time + think_t - now_time;
-		if (((t_philo*)(*philo)->data)->time <= 1)//√
-		{
-			//if (!ft_strcmp(((t_philo*)(*philo)->data)->name, "Socrate"))
-			//	ft_dprintf(2, "%sTIME, [%s]: [%zi]%s\n", PURPLEB, ((t_philo*)(*philo)->data)->name, ((t_philo*)(*philo)->data)->time, STOP);
-			pthread_mutex_lock(&g_gmutex);
-			//ft_dprintf(2, "[%s]: [%zi]\n", ((t_philo*)(*philo)->data)->name, ((t_philo*)(*philo)->data)->time);
-			//RESERVE WAND
-			ft_reserve_wand(philo);
-			pthread_mutex_unlock(&g_gmutex);
-		}
 		usleep(SEC);
 		(*data)->life--;
 		time((time_t*)&now_time);
