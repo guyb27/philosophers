@@ -13,14 +13,40 @@
 #include "../include/hello.h"
 
 enum e_ret_status	ft_can_you_do_eat(t_wand *left, t_wand *right,
-																t_philo *data)
+										t_philo *data, t_philo_heart **philo)
 {
 	int				ret_left;
 	int				ret_right;
 
 	(void)data;
-	ret_left = pthread_mutex_trylock(&left->mutex);
-	ret_right = pthread_mutex_trylock(&right->mutex);
+	//REGARDER SI ELLE N EST PAS RESERVER ET SI ELLE EST RESERVER,
+	//ALORS CHECKER SI LE PHILO ACTUELLE N'EST PAS DANS UNE SITUATION PLUS CRITIQUE
+	//if (left->reserved == LEFT || right->reserved == RIGHT)
+	//{
+		//ret_left = pthread_mutex_trylock(&left->mutex);
+		//ret_right = pthread_mutex_trylock(&right->mutex);
+	//}
+	//else
+	//{
+	//	ret_left = pthread_mutex_lock(&left->mutex);
+	//	ret_right = pthread_mutex_lock(&right->mutex);
+	//}
+	//ft_reserve_wand(philo);
+	if (left->reserved == RIGHT && right->reserved == LEFT)
+	{
+		ret_left = pthread_mutex_lock(&left->mutex);
+		ret_right = pthread_mutex_lock(&right->mutex);
+	}
+	else
+	{
+		ret_left = pthread_mutex_trylock(&left->mutex);
+		if (ret_left || right->reserved == NOTHING)
+			ret_right = pthread_mutex_trylock(&right->mutex);
+	}
+	if (((t_wand*)(*philo)->next->data)->reserved == LEFT)
+		((t_wand*)(*philo)->next->data)->reserved = NOTHING;
+	if (((t_wand*)(*philo)->prev->data)->reserved == RIGHT)
+		((t_wand*)(*philo)->prev->data)->reserved = NOTHING;
 	if (!ret_left && ret_right)
 		return (LEFT);
 	else if (ret_left && !ret_right)
@@ -104,7 +130,7 @@ int					ft_eat_or_think(t_philo_heart **philo, t_philo **data,
 	int				ret;
 
 	if ((ret = ft_can_you_do_eat((*philo)->prev->data, (*philo)->next->data,
-					(*philo)->data)) == ALL)
+					(*philo)->data, philo)) == ALL)
 		ft_eat(data, philo, mother);
 	else if (ret == LEFT || ret == RIGHT)
 		ft_think(ret, philo, data, mother);
