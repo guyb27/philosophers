@@ -63,7 +63,7 @@ static void		ft_philo_mid(t_philo_heart **philo, void *arg)
 			ft_rest(philo, (t_philo**)&(*philo)->data, arg);
 		else if (ft_eat_or_think(philo, (t_philo**)&(*philo)->data, arg))
 		{
-			//usleep(SEC);
+			usleep(SEC);
 			((t_philo*)(*philo)->data)->life =
 										((t_philo*)(*philo)->data)->life - 1;
 			ft_sprintf(&str, "%d", ((t_philo*)(*philo)->data)->life);
@@ -76,8 +76,6 @@ static void		ft_philo_mid(t_philo_heart **philo, void *arg)
 			pthread_mutex_unlock(&g_gmutex);
 			ft_strdel(&str);
 		}
-
-	//sleep(20);
 	}
 }
 
@@ -96,7 +94,6 @@ void			*ft_philo(void *arg)
 	((t_philo*)(philo)->data)->life = ft_handle_define(GET_INFOS, LIFE, 0);
 	((t_philo*)philo->data)->capsule =
 								ft_create_philo_window(philo->data, arg, true);
-	//sleep(20);
 	ft_philo_mid(&philo, arg);
 	return (__DARWIN_NULL);
 }

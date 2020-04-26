@@ -25,11 +25,11 @@
 # include <curses.h>
 # include <signal.h>
 
-# define MAX_LIFE 10
-# define EAT_T 1
-# define REST_T 1
-# define THINK_T 1
-# define TIMEOUT 50
+# define MAX_LIFE 12
+# define EAT_T 2
+# define REST_T 2
+# define THINK_T 2
+# define TIMEOUT 2
 # define NB_PHILO 7
 
 # define X_LIFE 1
@@ -42,8 +42,6 @@
 # define Y_TIMEOUT 11
 
 # define SEC 1000000
-# define DEMI_SEC SEC / 2
-# define QUART_SEC DEMI_SEC / 2
 # define RESULT "philo_game"
 
 # define ENTER 10
@@ -118,7 +116,6 @@ typedef struct					s_wand_location
 typedef struct					s_wand
 {
 	enum e_wand_state			wand_state;
-	enum e_ret_status			reserved;
 	pthread_mutex_t				mutex;
 	pthread_cond_t				condition;
 	t_wand_location				*locate;
@@ -235,5 +232,5 @@ int								ft_change_value(int value, int selected,
 																WINDOW **items);
 void							ft_create_main_menu(int data1,
 															t_main_menu **menu);
-void				ft_reserve_wands(t_philo_heart **philo);
+
 #endif

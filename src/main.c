@@ -34,7 +34,6 @@ int				main(int ac, char **av)
 {
 	if (ft_catch_error(ac, av))
 		return (1);
-	ft_dprintf(2, "\n");//POUR LES TESTS
 	g_gmode = NOT_INIT;
 	signal(SIGWINCH, ft_resize);
 	pthread_mutex_init(&g_gmutex, NULL);
