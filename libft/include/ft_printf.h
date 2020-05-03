@@ -26,6 +26,7 @@
 # include <sys/stat.h>
 # include <fcntl.h>
 
+
 int				ft_printf(const char *format, ...);
 int				ft_dprintf(int fd, const char *format, ...);
 int				ft_sprintf(char **str, const char *format, ...);

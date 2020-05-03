@@ -14,6 +14,12 @@
 # define LIBFT_PRINTF_H
 # include "ft_printf.h"
 
+	#if __linux__
+		#define intmax_t __intmax_t
+		#define uintmax_t __uintmax_t
+	#endif
+
+
 char			*pf_strchr(const char *s, int c);
 char			*pf_strdup(const char *src);
 char			*pf_strcut(const char *s, size_t i);

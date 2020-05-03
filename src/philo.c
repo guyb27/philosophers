@@ -95,5 +95,5 @@ void			*ft_philo(void *arg)
 	((t_philo*)philo->data)->capsule =
 								ft_create_philo_window(philo->data, arg, true);
 	ft_philo_mid(&philo, arg);
-	return (__DARWIN_NULL);
+	return (NULL);
 }
