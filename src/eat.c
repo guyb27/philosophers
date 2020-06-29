@@ -35,7 +35,6 @@ static void		ft_eat_end_actualize(t_philo_heart **philo,
 	{
 		ft_sprintf(&str, "%d", ft_handle_define(GET_INFOS, LIFE, 0));
 		((t_philo*)(*philo)->data)->life = ft_handle_define(GET_INFOS, LIFE, 0);
-
 		((t_wand*)(*philo)->prev->data)->wand_state = FREE;
 		((t_wand*)(*philo)->next->data)->wand_state = FREE;
 		ft_strdel(&str);
@@ -50,7 +49,8 @@ int				ft_eat(t_philo **data, t_philo_heart **philo,
 	size_t		begin_time;
 	size_t		now_time;
 	int			eat_t;
-(void)data;
+
+	(void)data;
 	eat_t = ft_handle_define(GET_INFOS, EAT, 0);
 	begin_time = ft_eat_begin_actualize(philo);
 	now_time = begin_time;

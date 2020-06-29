@@ -60,15 +60,10 @@ void		ft_menu(void)
 {
 	int		key;
 	int		selected;
-	int				y;
-	int				x;
 
 	selected = 0;
 	ft_handle_main_menu(INIT, 1, true, NULL);
-	getmaxyx(stdscr, y, x);
 	g_gmode = ALL_WINDOWS;
-	if (!(y > 10 && x > 20))
-		return ;
 	while (getch() != -1)
 		;
 	while (1)

@@ -12,7 +12,6 @@
 
 #include "../include/hello.h"
 
-
 void		ft_actualize_game(void)
 {
 	pthread_mutex_lock(&g_gmutex);
