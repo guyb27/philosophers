@@ -233,14 +233,12 @@ int								ft_change_value(int value, int selected,
 																WINDOW **items);
 void							ft_create_main_menu(int data1,
 															t_main_menu **menu);
-
-//void							ft_end_game(char *str, t_philo_mother **mother);
 /*
 **	visu.c
 */
-int    							gui_init(void);
-void    						gui_main_loop(t_philo_mother *mother, int timeout);
-int    							gui_test(void);
-
+int								gui_init(void);
+void							gui_main_loop(t_philo_mother *mother\
+													, int timeout);
+int								gui_test(void);
 
 #endif

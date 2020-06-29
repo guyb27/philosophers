@@ -42,7 +42,7 @@ void		ft_horizontal_keys(int key, int selected)
 	pthread_mutex_lock(&g_gmutex);
 	value = ft_handle_define(GET_INFOS, selected, 0);
 	items = ft_handle_main_menu(GET_INFOS, 0, true, NULL)->items;
-	if (key == KEY_LEFT && ((value > 0 && (selected == 0 || selected == 4)) ||
+	if (key == KEY_LEFT && ((value > 1 && (selected == 0 || selected == 4)) ||
 	(value > 1 && (selected > 0 || selected < 4))))
 	{
 		value = ft_handle_define(ACTUALIZE, selected, value - 1);
