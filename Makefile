@@ -22,9 +22,11 @@ VERBOSE = FALSE
 DEBUG = FALSE
 
 CC = gcc
-CFLAGS =  -Wall -Wextra -Werror -Wunused -Wunreachable-code
-CPPFLAGS = -I$(INCDIR)
-LDFLAGS = -Llibft
+INC = -I$(INCDIR) #-Isfml/CSFML/include
+CFLAGS =  	-Wall -Wextra -Werror -Wunused -Wunreachable-code \
+			-Wno-deprecated-declarations -std=c11 -fms-extensions
+CSFML = -fms-extensions -lcsfml-graphics -lcsfml-window -lcsfml-system
+LDFLAGS = -Llibft $(CSFML)
 LDLIBS = -lft -lncurses -lpthread -D_REENTRANT
 
 SRC_FILES = \
@@ -45,7 +47,8 @@ SRC_FILES = \
 			create.c \
 			philo.c \
 			get_philo_locate.c \
-			manage_wand.c
+			manage_wand.c \
+			visu.c
 
 SRCS = $(foreach file, $(SRC_FILES), $(addprefix $(SRCDIR)/, $(file)))
 OBJS = $(subst $(SRCDIR),$(OBJDIR),$(SRCS:.c=.o))
@@ -75,14 +78,14 @@ all: lib $(NAME)
 
 $(NAME): $(OBJDIR) $(OBJS)
 	@echo $(MAKEFILE_NAME): [$(NB_FILES_COMPILED)/$(NB_FILES)] "Linking ->" $@
-	$(HIDE)$(CC) $(OBJS) $(LDFLAGS) $(LDLIBS) -o $(NAME)
+	$(HIDE)$(CC) $(OBJS) $(LDFLAGS) $(LDLIBS) $(INC) -o $(NAME)
 
 -include $(DEPS)
 
-$(OBJDIR)/%.o: $(SRCDIR)/%.c
+$(OBJDIR)/%.o: $(SRCDIR)/%.c #inc_path?
 	@$(NB_FILES_INCREMENT)
 	@echo $(MAKEFILE_NAME): [$(NB_FILES_COMPILED)/$(NB_FILES)] "Building ->" $@
-	$(HIDE)$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@ -MMD
+	$(HIDE)$(CC) $(CFLAGS) $(INC) -c $< -o $@ -MMD
 	@tput cuu1
 	@tput el
 

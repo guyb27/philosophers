@@ -12,6 +12,9 @@
 
 #ifndef HELLO_H
 # define HELLO_H
+
+# define _DEFAULT_SOURCE
+
 # include "../libft/include/libft.h"
 
 # include <pthread.h>
@@ -28,8 +31,8 @@
 # define MAX_LIFE 12
 # define EAT_T 2
 # define REST_T 2
-# define THINK_T 2
-# define TIMEOUT 2
+# define THINK_T 4
+# define TIMEOUT 30
 # define NB_PHILO 7
 
 # define X_LIFE 1
@@ -100,6 +103,15 @@ enum							e_define_type
 	THINK,
 	TIME,
 	NBPHILO
+};
+
+enum							e_gui_colors
+{
+	gc_background,
+	gc_green,
+	gc_blue,
+	gc_grey,
+	gc_red
 };
 
 typedef struct					s_wand_location
@@ -232,5 +244,14 @@ int								ft_change_value(int value, int selected,
 																WINDOW **items);
 void							ft_create_main_menu(int data1,
 															t_main_menu **menu);
+
+//void							ft_end_game(char *str, t_philo_mother **mother);
+/*
+**	visu.c
+*/
+int    							gui_init(void);
+void    						gui_main_loop(t_philo_mother *mother, int timeout);
+int    							gui_test(void);
+
 
 #endif

@@ -96,6 +96,7 @@ int				ft_think(int ret, t_philo_heart **philo, t_philo **data,
 	char		*str[2];
 	int			think_t;
 
+	(*data)->state = TO_THINK;
 	think_t = ft_handle_define(GET_INFOS, THINK, 0);
 	begin_time = ft_think_begin_actualize(philo, ret, mother);
 	now_time = begin_time;
