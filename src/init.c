@@ -68,13 +68,9 @@ static void			ft_init_begin_game(t_philo_mother **mother,
 													t_philo_heart **philo_heart)
 {
 	int				count;
-	char			*str1;
 
 	count = -1;
 	*mother = ft_memalloc(sizeof(t_philo_mother));
-	str1 = ft_strjoin((*mother)->result, "The game starts\n");
-	free((*mother)->result);
-	(*mother)->result = str1;
 	ft_handle_mother_addr(mother, INIT);
 	(*mother)->all_in_life = ft_handle_define(GET_INFOS, LIFE, 0) > 0 ?
 																true : false;
@@ -83,8 +79,6 @@ static void			ft_init_begin_game(t_philo_mother **mother,
 																		NOTHING;
 	ft_get_name(INIT);
 	ft_handle_wand_location(NULL, INIT, (*mother)->ss);
-	//(*mother)->win = ft_create_mother_window((*mother)->ss.y, (*mother)->ss.x);
-	//ft_print_game_var(mother, true);
 	while (++count < ft_handle_define(GET_INFOS, NBPHILO, 0))
 		ft_create_wand(philo_heart, (*mother)->ss);
 	while (--count >= 0)

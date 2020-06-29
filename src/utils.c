@@ -12,21 +12,6 @@
 
 #include "../include/hello.h"
 
-void		ft_actualize(WINDOW *capsule, char *data, int x, int y)
-{
-	(void)capsule;
-	(void)data;
-	(void)x;
-	(void)y;
-	/*A DELE
-	if (g_gmode == ALL_WINDOWS)
-	{
-		wmove(capsule, x, y);
-		wclrtoeol(capsule);
-		wprintw(capsule, data);
-		wrefresh(capsule);
-	}*/
-}
 
 void		ft_actualize_game(void)
 {

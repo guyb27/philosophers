@@ -12,25 +12,6 @@
 
 #include "../include/hello.h"
 
-void				*ft_create_mother_window(int y, int x)
-{
-	WINDOW			*mother;
-
-	mother = NULL;
-	if (g_gmode == ALL_WINDOWS)
-	{
-		mother = newwin(y, x, 0, 0);
-		wbkgd(mother, COLOR_PAIR(1));
-		wrefresh(mother);
-	}
-	else
-	{
-		bkgd(COLOR_PAIR(2));
-		refresh();
-	}
-	return (mother);
-}
-
 void				ft_create_philo(t_philo_heart **philo_heart,
 															t_screen_size ss)
 {
@@ -87,42 +68,4 @@ void				ft_create_wand(t_philo_heart **philo_heart,
 		(*philo_heart)->prev = new_philo_heart;
 		*philo_heart = (*philo_heart)->prev;
 	}
-}
-
-static void			ft_print_philo_window(WINDOW **capsule, t_philo *philo)
-{
-	wbkgd(*capsule, COLOR_PAIR(3));
-	wmove(*capsule, 0, 0);
-	wprintw(*capsule, "NAME: ");
-	wprintw(*capsule, philo->name);
-	wmove(*capsule, 1, 0);
-	wprintw(*capsule, "LIFE POINTS: ");
-	wprintw(*capsule, "%d", philo->life);
-	wmove(*capsule, 2, 0);
-	wprintw(*capsule, "STATE: ");
-	if (philo->state == TO_REST || philo->state == TO_EAT)
-		wprintw(*capsule, philo->state == TO_REST ? "SE REPOSE" : "MANGE");
-	else
-		wprintw(*capsule, philo->state == TO_THINK ? "PENSE" : "UNKNOW");
-	wmove(*capsule, 3, 0);
-	wprintw(*capsule, "TIME: ");
-	wprintw(*capsule, "%d", philo->time);
-	wrefresh(*capsule);
-}
-
-WINDOW				*ft_create_philo_window(t_philo *philo,
-									t_philo_mother **mother, bool mutex_lock)
-{
-	WINDOW			*capsule;
-
-	if (!(capsule = NULL) && g_gmode == ALL_WINDOWS)
-	{
-		mutex_lock ? pthread_mutex_lock(&g_gmutex) : 0;
-		philo->locate->init = true;
-		capsule = subwin((*mother)->win, 4, 20, philo->locate->x_capsule,
-													philo->locate->y_capsule);
-		ft_print_philo_window(&capsule, philo);
-		mutex_lock ? pthread_mutex_unlock(&g_gmutex) : 0;
-	}
-	return (capsule);
 }

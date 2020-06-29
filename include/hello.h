@@ -177,10 +177,8 @@ typedef struct					s_philo_mother
 {
 	t_philo_heart				*heart;
 	WINDOW						*win;
-	WINDOW						*win_game_var;
 	WINDOW						*state_game;
 	t_screen_size				ss;
-	char						*result;
 	bool						all_in_life;
 }								t_philo_mother;
 
@@ -192,16 +190,8 @@ typedef struct					s_main_menu
 }								t_main_menu;
 
 void							ft_init_curses(void);
-void							ft_actualize(WINDOW *capsule, char *data, int x,
-																		int y);
-void							ft_actualize_wand(t_philo_heart **heart,
-												enum e_wand_state new_state);
-WINDOW							*ft_create_philo_window(t_philo *philo,
-									t_philo_mother **mother, bool mutex_lock);
 int								ft_print_wand(t_philo_heart *philo_heart,
 									t_philo_mother *mother, bool mutex_lock);
-void							ft_print_game_var(t_philo_mother **mother,
-															bool mutex_lock);
 void							ft_main_loop(t_philo_mother **mother);
 int								ft_get_err_define_size(void);
 int								ft_catch_error(int ac, char **av);

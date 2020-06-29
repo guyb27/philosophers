@@ -54,8 +54,6 @@ char			*ft_get_name(enum e_handle_static_function h)
 
 static void		ft_philo_mid(t_philo_heart **philo, void *arg)
 {
-	char		*str;
-
 	while ((size_t)((t_philo*)(*philo)->data)->life &&
 										(*(t_philo_mother**)arg)->all_in_life)
 	{
@@ -66,15 +64,6 @@ static void		ft_philo_mid(t_philo_heart **philo, void *arg)
 			usleep(SEC);
 			((t_philo*)(*philo)->data)->life =
 										((t_philo*)(*philo)->data)->life - 1;
-			ft_sprintf(&str, "%d", ((t_philo*)(*philo)->data)->life);
-			pthread_mutex_lock(&g_gmutex);
-			ft_actualize(((t_philo*)(*philo)->data)->capsule, str,
-																X_LIFE, Y_LIFE);
-			if (((t_philo*)(*philo)->data)->life <= 0)
-				ft_sprintf(&(*(t_philo_mother**)arg)->result, "%s%s est mort\n",
-			(*(t_philo_mother**)arg)->result, ((t_philo*)(*philo)->data)->name);
-			pthread_mutex_unlock(&g_gmutex);
-			ft_strdel(&str);
 		}
 	}
 }
@@ -92,8 +81,6 @@ void			*ft_philo(void *arg)
 	pthread_mutex_unlock(&g_gmutex);
 	((t_philo*)(philo)->data)->state = TO_REST;
 	((t_philo*)(philo)->data)->life = ft_handle_define(GET_INFOS, LIFE, 0);
-//	((t_philo*)philo->data)->capsule =
-								//ft_create_philo_window(philo->data, arg, true);
 	ft_philo_mid(&philo, arg);
 	return (NULL);
 }
