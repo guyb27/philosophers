@@ -242,6 +242,7 @@ void		gui_main_loop(t_philo_mother *mother, int timeout)
 
 	time(&begin_time);
 	last_frame_time = 1;
+
 	while (sfRenderWindow_isOpen(g_window))
 	{
 		while (sfRenderWindow_pollEvent(g_window, &event))

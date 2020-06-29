@@ -16,7 +16,6 @@
 void		ft_actualize_game(void)
 {
 	pthread_mutex_lock(&g_gmutex);
-	g_gmode = NOTHING_WINDOW;
 	bkgd(COLOR_PAIR(2));
 	refresh();
 	pthread_mutex_unlock(&g_gmutex);

@@ -32,15 +32,6 @@ void		ft_print_define(WINDOW *win, int i)
 		wprintw(win, "Quit");
 }
 
-int			ft_enter_key(int selected)
-{
-	ft_handle_main_menu(DEL, 0, true, NULL);
-	if (selected + 1 == 7)
-		return (1);
-	else
-		exit(endwin());
-}
-
 void		ft_horizontal_keys(int key, int selected)
 {
 	int		value;
@@ -69,10 +60,15 @@ void		ft_menu(void)
 {
 	int		key;
 	int		selected;
+	int				y;
+	int				x;
 
 	selected = 0;
-	if (ft_handle_main_menu(INIT, 1, true, NULL))
-		return;
+	ft_handle_main_menu(INIT, 1, true, NULL);
+	getmaxyx(stdscr, y, x);
+	g_gmode = ALL_WINDOWS;
+	if (!(y > 10 && x > 20))
+		return ;
 	while (getch() != -1)
 		;
 	while (1)

@@ -18,10 +18,8 @@ int					ft_init_main_menu(bool lock_mutex, int data1,
 	int				y;
 	int				x;
 
-	lock_mutex ? pthread_mutex_lock(&g_gmutex) : 0;
 	getmaxyx(stdscr, y, x);
-	if (!(y > 10 && x > 20))
-		return (1);
+	lock_mutex ? pthread_mutex_lock(&g_gmutex) : 0;
 	*menu = ft_memalloc(sizeof(t_main_menu));
 	(*menu)->y_pos = data1;
 	(*menu)->ss.y = y;
@@ -75,8 +73,7 @@ static void			ft_init_begin_game(t_philo_mother **mother,
 	(*mother)->all_in_life = ft_handle_define(GET_INFOS, LIFE, 0) > 0 ?
 																true : false;
 	getmaxyx(stdscr, (*mother)->ss.y, (*mother)->ss.x);
-	g_gmode = (*mother)->ss.y >= 30 && (*mother)->ss.x >= 82 ? ALL_WINDOWS :
-																		NOTHING;
+	g_gmode = ALL_WINDOWS;
 	ft_get_name(INIT);
 	ft_handle_wand_location(NULL, INIT, (*mother)->ss);
 	while (++count < ft_handle_define(GET_INFOS, NBPHILO, 0))

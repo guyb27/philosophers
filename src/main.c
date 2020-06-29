@@ -36,7 +36,7 @@ int				main(int ac, char **av)
 {
 	if (ft_catch_error(ac, av))
 		return (1);
-	g_gmode = NOT_INIT;
+	g_gmode = ALL_WINDOWS;
 	signal(SIGWINCH, ft_resize);
 	pthread_mutex_init(&g_gmutex, NULL);
 	ft_init_curses();
