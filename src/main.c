@@ -27,6 +27,7 @@ void			*ft_handle_mother_addr(void *mother,
 void			ft_init_and_begin_main_menu(void)
 {
 	ft_menu();
+	endwin();
 	gui_init();
 	ft_init_and_begin_game();
 }

@@ -83,8 +83,8 @@ static void			ft_init_begin_game(t_philo_mother **mother,
 																		NOTHING;
 	ft_get_name(INIT);
 	ft_handle_wand_location(NULL, INIT, (*mother)->ss);
-	(*mother)->win = ft_create_mother_window((*mother)->ss.y, (*mother)->ss.x);
-	ft_print_game_var(mother, true);
+	//(*mother)->win = ft_create_mother_window((*mother)->ss.y, (*mother)->ss.x);
+	//ft_print_game_var(mother, true);
 	while (++count < ft_handle_define(GET_INFOS, NBPHILO, 0))
 		ft_create_wand(philo_heart, (*mother)->ss);
 	while (--count >= 0)

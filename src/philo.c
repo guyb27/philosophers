@@ -92,8 +92,8 @@ void			*ft_philo(void *arg)
 	pthread_mutex_unlock(&g_gmutex);
 	((t_philo*)(philo)->data)->state = TO_REST;
 	((t_philo*)(philo)->data)->life = ft_handle_define(GET_INFOS, LIFE, 0);
-	((t_philo*)philo->data)->capsule =
-								ft_create_philo_window(philo->data, arg, true);
+//	((t_philo*)philo->data)->capsule =
+								//ft_create_philo_window(philo->data, arg, true);
 	ft_philo_mid(&philo, arg);
 	return (NULL);
 }
