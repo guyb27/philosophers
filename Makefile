@@ -38,7 +38,6 @@ SRC_FILES = \
 			menu.c \
 			wand_locate.c \
 			handle_main_menu.c \
-			end_menu.c \
 			init.c \
 			free.c \
 			eat.c \

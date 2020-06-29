@@ -45,8 +45,6 @@ static void			ft_free_philo_heart(t_philo_heart *philo)
 void				ft_free_philo_mother(t_philo_mother *mother)
 {
 	ft_free_philo_heart(mother->heart);
-	//free(mother->result);
-	//delwin(mother->win);
 	touchwin(stdscr);
 	free(mother);
 }
