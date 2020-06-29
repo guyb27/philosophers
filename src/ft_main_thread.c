@@ -42,5 +42,6 @@ void		ft_main_loop(t_philo_mother **mother)
 
 	timeout = ft_handle_define(GET_INFOS, TIME, 0);
 	gui_main_loop(*mother, timeout);
+	ft_free_philo_mother(*mother);
 //	endwin();
 }

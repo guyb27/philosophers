@@ -57,33 +57,6 @@ int			ft_print_wand(t_philo_heart *philo_heart, t_philo_mother *mother,
 	return (0);
 }
 
-static void	ft_print_new_wand(t_wand **wand, enum e_wand_state new_state)
-{
-	(void)wand;
-	(void)new_state;
-	/*
-	int		y;
-
-	y = (*wand)->locate->y_before;
-	wmove((*wand)->capsule, 0, y);
-	wprintw((*wand)->capsule, " ");
-	y = (*wand)->locate->y_mid;
-	wmove((*wand)->capsule, 0, y);
-	wprintw((*wand)->capsule, " ");
-	y = (*wand)->locate->y_after;
-	wmove((*wand)->capsule, 0, y);
-	wprintw((*wand)->capsule, " ");
-	(*wand)->wand_state = new_state;
-	if ((*wand)->wand_state == THINK_LEFT || (*wand)->wand_state == EAT_LEFT)
-		y = (*wand)->locate->y_before;
-	else
-		y = (*wand)->wand_state == FREE ? (*wand)->locate->y_mid :
-			(*wand)->locate->y_after;
-	wmove((*wand)->capsule, 0, y);
-	wprintw((*wand)->capsule, "|");
-	wrefresh((*wand)->capsule);*/
-}
-
 void		ft_actualize_wand(t_philo_heart **heart,
 													enum e_wand_state new_state)
 {
@@ -92,6 +65,5 @@ void		ft_actualize_wand(t_philo_heart **heart,
 	wand = ((t_wand*)(*heart)->data);
 	//if ((*heart)->type == WAND && (*heart)->prev->type == PHILO &&
 //(*heart)->next->type == PHILO && g_gmode == ALL_WINDOWS && wand->locate->init)
-		ft_print_new_wand(&wand, new_state);
 	wand->wand_state = new_state;
 }
