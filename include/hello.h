@@ -219,7 +219,7 @@ t_main_menu						*ft_handle_main_menu(
 	enum e_handle_static_function h, int data1, bool lock_mutex, void *data2);
 void							ft_print_define(WINDOW *win, int i);
 int								ft_end_menu(int x, int y, int color);
-void							ft_init_main_menu(bool lock_mutex, int data1,
+int								ft_init_main_menu(bool lock_mutex, int data1,
 															t_main_menu **menu);
 int								ft_eat(t_philo **data, t_philo_heart **philo,
 													t_philo_mother **mother);

@@ -71,8 +71,8 @@ void		ft_menu(void)
 	int		selected;
 
 	selected = 0;
-	ft_handle_main_menu(INIT, 1, true, NULL);
-	keypad(stdscr, TRUE);
+	if (ft_handle_main_menu(INIT, 1, true, NULL))
+		return;
 	while (getch() != -1)
 		;
 	while (1)

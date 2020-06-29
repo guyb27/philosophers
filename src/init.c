@@ -12,22 +12,24 @@
 
 #include "../include/hello.h"
 
-void				ft_init_main_menu(bool lock_mutex, int data1,
+int					ft_init_main_menu(bool lock_mutex, int data1,
 															t_main_menu **menu)
 {
+	int				y;
+	int				x;
+
 	lock_mutex ? pthread_mutex_lock(&g_gmutex) : 0;
+	getmaxyx(stdscr, y, x);
+	if (!(y > 10 && x > 20))
+		return (1);
 	*menu = ft_memalloc(sizeof(t_main_menu));
 	(*menu)->y_pos = data1;
-	getmaxyx(stdscr, (*menu)->ss.y, (*menu)->ss.x);
-	if ((*menu)->ss.y > 10 && (*menu)->ss.x > 20)
-		ft_create_main_menu(data1, menu);
-	else
-	{
-		g_gmode = NOTHING_WINDOW;
-		bkgd(COLOR_PAIR(2));
-		refresh();
-	}
+	(*menu)->ss.y = y;
+	(*menu)->ss.x = x;
+	ft_create_main_menu(data1, menu);
+	keypad(stdscr, TRUE);
 	lock_mutex ? pthread_mutex_unlock(&g_gmutex) : 0;
+	return (0);
 }
 
 void				ft_init_curses(void)

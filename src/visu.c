@@ -16,8 +16,8 @@
 #include <SFML/Graphics.h>
 
 #define WIN_TITLE   "Philosophers"
-#define WIN_WIDTH   800
-#define WIN_HEIGHT  600
+#define WIN_WIDTH   1500
+#define WIN_HEIGHT  1000
 
 sfRenderWindow	*g_window;
 
