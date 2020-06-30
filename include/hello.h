@@ -51,6 +51,19 @@
 # define ESCAPE 27
 # define SPACE 32
 
+/*
+******************************* GUI*********************************************
+*/
+# include <SFML/Audio.h>
+# include <SFML/Graphics.h>
+
+# define WIN_TITLE   "Philosophers"
+# define WIN_WIDTH   1500
+# define WIN_HEIGHT  1000
+/*
+********************************************************************************
+*/
+
 pthread_mutex_t					g_gmutex;
 int								g_gmode;
 
@@ -234,11 +247,26 @@ int								ft_change_value(int value, int selected,
 void							ft_create_main_menu(int data1,
 															t_main_menu **menu);
 /*
+********************************************************************************
 **	visu.c
 */
+sfColor							gui_get_color(int gui_color);
 int								gui_init(void);
-void							gui_main_loop(t_philo_mother *mother\
-													, int timeout);
-int								gui_test(void);
+void							gui_main_loop(t_philo_mother *mother, int timeout);
+
+/*
+**	visu_philo.c
+*/
+void							gui_print_free_chopstick(t_wand *wand);
+void							gui_print_philo(t_philo *philo, t_philo_heart *philo_heart);
+void							gui_time_to_dance(char *s, clock_t last_frame_time, sfEvent event);
+
+/*
+**	visu_utils.c
+*/
+void							gui_print_str(float x, float y, int size, char *str);
+void							gui_print_rect(sfVector2f pos, sfVector2f size, sfColor color);
+void							gui_print_picture(sfVector2f pos, sfVector2f scale, char *image_path);
+void							gui_print_loadbar(sfVector2f pos, sfVector2f size, int percent);
 
 #endif

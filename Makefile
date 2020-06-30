@@ -47,7 +47,9 @@ SRC_FILES = \
 			philo.c \
 			get_philo_locate.c \
 			manage_wand.c \
-			visu.c
+			visu.c \
+			visu_philo.c \
+			visu_utils.c
 
 SRCS = $(foreach file, $(SRC_FILES), $(addprefix $(SRCDIR)/, $(file)))
 OBJS = $(subst $(SRCDIR),$(OBJDIR),$(SRCS:.c=.o))
